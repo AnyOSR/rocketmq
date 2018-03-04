@@ -51,14 +51,16 @@ public class NamesrvStartup {
         try {
             //PackageConflictDetect.detectFastjson();
 
-            //  help命令行
-            // namesrvAddr命令行
+            //  help命令行                   h
+            //  namesrvAddr命令行            n
             Options options = ServerUtil.buildCommandlineOptions(new Options());
 
-            //configFile命令行
-            //printConfigItem命令行
+            //configFile命令行             c
+            //printConfigItem命令行        p
             //根据传入参数解析命令行，如果是help，打印信息并返回null，否则返回CommandLine
             commandLine = ServerUtil.parseCmdLine("mqnamesrv", args, buildCommandlineOptions(options), new PosixParser());
+
+            //如果是null（命令行对应help），则退出
             if (null == commandLine) {
                 System.exit(-1);
                 return null;
@@ -67,6 +69,9 @@ public class NamesrvStartup {
             final NamesrvConfig namesrvConfig = new NamesrvConfig();
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();
             nettyServerConfig.setListenPort(9876);
+
+            //解析配置文件
+            //并将相关属性值配置到namesrvConfig和nettyServerConfig中
             if (commandLine.hasOption('c')) {
                 String file = commandLine.getOptionValue('c');
                 if (file != null) {
@@ -75,9 +80,7 @@ public class NamesrvStartup {
                     properties.load(in);
                     MixAll.properties2Object(properties, namesrvConfig);
                     MixAll.properties2Object(properties, nettyServerConfig);
-
                     namesrvConfig.setConfigStorePath(file);
-
                     System.out.printf("load config properties file OK, " + file + "%n");
                     in.close();
                 }
@@ -89,6 +92,7 @@ public class NamesrvStartup {
                 System.exit(0);
             }
 
+            //将命令行中的相关属性值设置到namesrvConfig中
             MixAll.properties2Object(ServerUtil.commandLine2Properties(commandLine), namesrvConfig);
 
             if (null == namesrvConfig.getRocketmqHome()) {
