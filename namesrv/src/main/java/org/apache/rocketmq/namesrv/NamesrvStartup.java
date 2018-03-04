@@ -100,6 +100,7 @@ public class NamesrvStartup {
                 System.exit(-2);
             }
 
+            //设置日志相关
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
