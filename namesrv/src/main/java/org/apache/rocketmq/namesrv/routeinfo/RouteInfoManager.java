@@ -45,15 +45,16 @@ import org.apache.rocketmq.remoting.common.RemotingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//路由管理器 topic和broker之间   根据topic找到相关的broker?
 public class RouteInfoManager {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
     private final static long BROKER_CHANNEL_EXPIRED_TIME = 1000 * 60 * 2;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final HashMap<String/* topic */, List<QueueData>> topicQueueTable;
-    private final HashMap<String/* brokerName */, BrokerData> brokerAddrTable;
-    private final HashMap<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;
-    private final HashMap<String/* brokerAddr */, BrokerLiveInfo> brokerLiveTable;
-    private final HashMap<String/* brokerAddr */, List<String>/* Filter Server */> filterServerTable;
+    private final HashMap<String/* topic */, List<QueueData>> topicQueueTable;                             //topic队列
+    private final HashMap<String/* brokerName */, BrokerData> brokerAddrTable;                             //broker列表
+    private final HashMap<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;          //broker集群？
+    private final HashMap<String/* brokerAddr */, BrokerLiveInfo> brokerLiveTable;                         //broker地址相关
+    private final HashMap<String/* brokerAddr */, List<String>/* Filter Server */> filterServerTable;      //filterServer是啥？
 
     public RouteInfoManager() {
         this.topicQueueTable = new HashMap<String, List<QueueData>>(1024);
