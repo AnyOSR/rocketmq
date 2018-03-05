@@ -44,9 +44,9 @@ public class NamesrvController {
 
     //底层通信
     private RemotingServer remotingServer;
-    //这个线程池又是干嘛的？
+    //默认请求处理器里面要用的线程池
     private ExecutorService remotingExecutor;
-    //有一个线程池，干嘛的？
+    //线程池，周期性执行一些后台任务，扫描不活跃的broker以及打印kv值信息
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl("NSScheduledThread"));
     private final KVConfigManager kvConfigManager;
     private final RouteInfoManager routeInfoManager;
@@ -73,8 +73,10 @@ public class NamesrvController {
 
         this.remotingExecutor = Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
+        //注册默认请求处理器
         this.registerProcessor();
 
+        //向scheduledExecutorService提交一个周期任务，定期扫描不活跃的broker，每十秒一次
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -83,6 +85,7 @@ public class NamesrvController {
             }
         }, 5, 10, TimeUnit.SECONDS);
 
+        //向scheduledExecutorService提交一个周期任务，周期打印kv存储里面的信息，每十分钟一次
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override

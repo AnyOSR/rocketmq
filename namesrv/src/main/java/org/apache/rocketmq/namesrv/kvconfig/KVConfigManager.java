@@ -176,8 +176,7 @@ public class KVConfigManager {
 
                 {
                     log.info("configTable SIZE: {}", this.configTable.size());
-                    Iterator<Entry<String, HashMap<String, String>>> it =
-                        this.configTable.entrySet().iterator();
+                    Iterator<Entry<String, HashMap<String, String>>> it = this.configTable.entrySet().iterator();
                     while (it.hasNext()) {
                         Entry<String, HashMap<String, String>> next = it.next();
                         Iterator<Entry<String, String>> itSub = next.getValue().entrySet().iterator();
