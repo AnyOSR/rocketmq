@@ -70,15 +70,13 @@ public abstract class NettyRemotingAbstract {
     /**
      * This map caches all on-going requests.
      */
-    protected final ConcurrentMap<Integer /* opaque */, ResponseFuture> responseTable =
-        new ConcurrentHashMap<Integer, ResponseFuture>(256);
+    protected final ConcurrentMap<Integer /* opaque */, ResponseFuture> responseTable = new ConcurrentHashMap<Integer, ResponseFuture>(256);
 
     /**
      * This container holds all processors per request code, aka, for each incoming request, we may look up the
      * responding processor in this map to handle the request.
      */
-    protected final HashMap<Integer/* request code */, Pair<NettyRequestProcessor, ExecutorService>> processorTable =
-        new HashMap<Integer, Pair<NettyRequestProcessor, ExecutorService>>(64);
+    protected final HashMap<Integer/* request code */, Pair<NettyRequestProcessor, ExecutorService>> processorTable = new HashMap<Integer, Pair<NettyRequestProcessor, ExecutorService>>(64);
 
     /**
      * Executor to feed netty events to user defined {@link ChannelEventListener}.

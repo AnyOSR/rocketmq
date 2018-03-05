@@ -733,6 +733,7 @@ public class RouteInfoManager {
     }
 }
 
+//相当于一个Javabean
 class BrokerLiveInfo {
     private long lastUpdateTimestamp;
     private DataVersion dataVersion;

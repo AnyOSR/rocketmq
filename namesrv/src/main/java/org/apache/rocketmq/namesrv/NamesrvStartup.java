@@ -71,7 +71,7 @@ public class NamesrvStartup {
             nettyServerConfig.setListenPort(9876);
 
             //解析配置文件
-            //并将相关属性值配置到namesrvConfig和nettyServerConfig中
+            //将配置文件中的相关属性值配置到namesrvConfig和nettyServerConfig中
             if (commandLine.hasOption('c')) {
                 String file = commandLine.getOptionValue('c');
                 if (file != null) {
@@ -108,6 +108,8 @@ public class NamesrvStartup {
             configurator.doConfigure(namesrvConfig.getRocketmqHome() + "/conf/logback_namesrv.xml");
             final Logger log = LoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
 
+            //打印namesrvConfig日志
+            //打印nettyServerConfig日志
             MixAll.printObjectProperties(log, namesrvConfig);
             MixAll.printObjectProperties(log, nettyServerConfig);
 
