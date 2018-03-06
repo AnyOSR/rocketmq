@@ -27,7 +27,9 @@ public abstract class ServiceThread implements Runnable {
 
     private static final long JOIN_TIME = 90 * 1000;
     protected final Thread thread;
+    //用来决定是否调用Object的motify()方法，如果没掉用过则调用，否则不调用
     protected volatile boolean hasNotified = false;
+    //用来标记当前线程是否被关闭过
     protected volatile boolean stopped = false;
 
     public ServiceThread() {
