@@ -51,13 +51,14 @@ public class NamesrvStartup {
         try {
             //PackageConflictDetect.detectFastjson();
 
-            //  help命令行                   h
-            //  namesrvAddr命令行            n
+            // help命令行                   h
+            // namesrvAddr命令行            n
             Options options = ServerUtil.buildCommandlineOptions(new Options());
 
-            //configFile命令行             c
-            //printConfigItem命令行        p
-            //根据传入参数解析命令行，如果是help，打印信息并返回null，否则返回CommandLine
+            // configFile命令行             c
+            // printConfigItem命令行        p
+            // 根据传入参数解析命令行
+            // 如果是help，打印信息并返回null，否则返回CommandLine，CommandLine包含了命令行信息
             commandLine = ServerUtil.parseCmdLine("mqnamesrv", args, buildCommandlineOptions(options), new PosixParser());
 
             //如果是null（命令行对应help），则退出
