@@ -73,6 +73,7 @@ public class NamesrvStartup {
 
             //解析配置文件
             //将配置文件中的相关属性值配置到namesrvConfig和nettyServerConfig中
+            //并用命令行参数-c指定的值对namesrvConfig中的配置存储路径进行更新
             if (commandLine.hasOption('c')) {
                 String file = commandLine.getOptionValue('c');
                 if (file != null) {
