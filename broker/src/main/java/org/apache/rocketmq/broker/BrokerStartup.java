@@ -120,6 +120,7 @@ public class BrokerStartup {
                 messageStoreConfig.setAccessMessageInMemoryMaxRatio(ratio);
             }
 
+            //将配置文件中的参数配置写入各config中
             if (commandLine.hasOption('c')) {
                 String file = commandLine.getOptionValue('c');
                 if (file != null) {
@@ -139,6 +140,7 @@ public class BrokerStartup {
                 }
             }
 
+            //将命令行中的属性值写入brokerConfig中
             MixAll.properties2Object(ServerUtil.commandLine2Properties(commandLine), brokerConfig);
 
             if (null == brokerConfig.getRocketmqHome()) {
@@ -147,6 +149,7 @@ public class BrokerStartup {
                 System.exit(-2);
             }
 
+            //获取nameServer地址
             String namesrvAddr = brokerConfig.getNamesrvAddr();
             if (null != namesrvAddr) {
                 try {
@@ -162,6 +165,7 @@ public class BrokerStartup {
                 }
             }
 
+            //broker角色  同步master 异步master slave？ 同步异步之间的区别在于master和slave之间消息的传递方式？
             switch (messageStoreConfig.getBrokerRole()) {
                 case ASYNC_MASTER:
                 case SYNC_MASTER:
@@ -207,11 +211,8 @@ public class BrokerStartup {
             MixAll.printObjectProperties(log, nettyClientConfig);
             MixAll.printObjectProperties(log, messageStoreConfig);
 
-            final BrokerController controller = new BrokerController(
-                    brokerConfig,
-                    nettyServerConfig,
-                    nettyClientConfig,
-                    messageStoreConfig);
+            //start
+            final BrokerController controller = new BrokerController(brokerConfig, nettyServerConfig, nettyClientConfig, messageStoreConfig);
             // remember all configs to prevent discard
             controller.getConfiguration().registerConfig(properties);
 
