@@ -4994,9 +4994,9 @@
 							"left": 760,
 							"top": 152,
 							"width": 297,
-							"height": 81,
+							"height": 85,
 							"autoResize": false,
-							"text": "NameServer整体架构\nNameServer之间不相互连接\n每个broker都需要和所有的nameServer连接",
+							"text": "RocketMq整体架构\nNameServer之间不相互连接\n每个broker都需要和所有的nameServer连接\n每个producer连接一台nameserver\n每个consumer连接一台nameserver",
 							"wordWrap": true
 						}
 					]
