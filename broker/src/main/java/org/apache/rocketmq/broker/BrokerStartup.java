@@ -108,7 +108,9 @@ public class BrokerStartup {
             //broker参数实体bean
             final BrokerConfig brokerConfig = new BrokerConfig();
             //netty相关配置参数
+            //netty服务端配置，对于producer和consumer来说，broker是服务端
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();
+            //netty客户端配置，对于nameServer来说，broker是客户端
             final NettyClientConfig nettyClientConfig = new NettyClientConfig();
 
             nettyClientConfig.setUseTLS(Boolean.parseBoolean(System.getProperty(TLS_ENABLE, String.valueOf(TlsSystemConfig.tlsMode == TlsMode.ENFORCING))));

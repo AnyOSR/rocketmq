@@ -79,7 +79,7 @@
     </logger>
 
     <root>
-        <level value="INFO"/>
-        <appender-ref ref="DefaultAppender"/>
+        <level value="DEBUG"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
