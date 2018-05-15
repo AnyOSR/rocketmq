@@ -32,7 +32,6 @@ public class SlaveSynchronize {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.BROKER_LOGGER_NAME);
     private final BrokerController brokerController;
     private volatile String masterAddr = null;
-
     public SlaveSynchronize(BrokerController brokerController) {
         this.brokerController = brokerController;
     }

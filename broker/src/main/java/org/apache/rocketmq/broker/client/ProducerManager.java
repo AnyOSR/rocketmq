@@ -37,7 +37,6 @@ public class ProducerManager {
 
     private final Lock groupChannelLock = new ReentrantLock();
     private final HashMap<String /* group name */, HashMap<Channel, ClientChannelInfo>> groupChannelTable = new HashMap<String, HashMap<Channel, ClientChannelInfo>>();
-
     public ProducerManager() {
     }
 
