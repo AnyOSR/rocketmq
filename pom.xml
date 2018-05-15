@@ -125,6 +125,8 @@
         <module>test</module>
         <module>distribution</module>
         <module>openmessaging</module>
+        <module>producer</module>
+        <module>consumer</module>
     </modules>
 
     <build>
