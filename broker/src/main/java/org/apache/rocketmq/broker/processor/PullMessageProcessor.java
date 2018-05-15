@@ -71,7 +71,6 @@ public class PullMessageProcessor implements NettyRequestProcessor {
     private final BrokerController brokerController;
 
     private List<ConsumeMessageHook> consumeMessageHookList;
-
     public PullMessageProcessor(final BrokerController brokerController) {
         this.brokerController = brokerController;
     }

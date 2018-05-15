@@ -667,6 +667,7 @@ public class BrokerController {
             this.filterServerManager.start();
         }
 
+        //向所有的nameServer注册broker自身
         this.registerBrokerAll(true, false);
 
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
