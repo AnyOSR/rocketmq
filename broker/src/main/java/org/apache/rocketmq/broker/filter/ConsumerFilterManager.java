@@ -44,14 +44,10 @@ public class ConsumerFilterManager extends ConfigManager {
 
     private static final Logger log = LoggerFactory.getLogger(LoggerName.FILTER_LOGGER_NAME);
 
-    private static final long MS_24_HOUR = 24 * 3600 * 1000;
-
-    private ConcurrentMap<String/*Topic*/, FilterDataMapByTopic>
-        filterDataByTopic = new ConcurrentHashMap<String/*consumer group*/, FilterDataMapByTopic>(256);
-
     private transient BrokerController brokerController;
     private transient BloomFilter bloomFilter;
-
+    private static final long MS_24_HOUR = 24 * 3600 * 1000;
+    private ConcurrentMap<String/*Topic*/, FilterDataMapByTopic> filterDataByTopic = new ConcurrentHashMap<String/*consumer group*/, FilterDataMapByTopic>(256);
     public ConsumerFilterManager() {
         // just for test
         this.bloomFilter = BloomFilter.createByFn(20, 64);
