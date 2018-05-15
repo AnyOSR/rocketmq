@@ -31,7 +31,6 @@ public abstract class ServiceThread implements Runnable {
     protected final CountDownLatch2 waitPoint = new CountDownLatch2(1);
     protected volatile AtomicBoolean hasNotified = new AtomicBoolean(false);
     protected volatile boolean stopped = false;
-
     public ServiceThread() {
         this.thread = new Thread(this, this.getServiceName());
     }
