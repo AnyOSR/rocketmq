@@ -29,6 +29,7 @@ import org.apache.rocketmq.store.ConsumeQueueExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//拉取消息处理线程
 public class PullRequestHoldService extends ServiceThread {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.BROKER_LOGGER_NAME);
     private static final String TOPIC_QUEUEID_SEPARATOR = "@";

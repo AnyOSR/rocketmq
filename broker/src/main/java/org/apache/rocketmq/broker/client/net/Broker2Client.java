@@ -61,18 +61,12 @@ public class Broker2Client {
         this.brokerController = brokerController;
     }
 
-    public void checkProducerTransactionState(
-        final Channel channel,
-        final CheckTransactionStateRequestHeader requestHeader,
-        final SelectMappedBufferResult selectMappedBufferResult) {
-        RemotingCommand request =
-            RemotingCommand.createRequestCommand(RequestCode.CHECK_TRANSACTION_STATE, requestHeader);
+    public void checkProducerTransactionState(final Channel channel, final CheckTransactionStateRequestHeader requestHeader, final SelectMappedBufferResult selectMappedBufferResult) {
+        RemotingCommand request = RemotingCommand.createRequestCommand(RequestCode.CHECK_TRANSACTION_STATE, requestHeader);
         request.markOnewayRPC();
 
         try {
-            FileRegion fileRegion =
-                new OneMessageTransfer(request.encodeHeader(selectMappedBufferResult.getSize()),
-                    selectMappedBufferResult);
+            FileRegion fileRegion = new OneMessageTransfer(request.encodeHeader(selectMappedBufferResult.getSize()),selectMappedBufferResult);
             channel.writeAndFlush(fileRegion).addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
@@ -88,9 +82,7 @@ public class Broker2Client {
         }
     }
 
-    public RemotingCommand callClient(final Channel channel,
-        final RemotingCommand request
-    ) throws RemotingSendRequestException, RemotingTimeoutException, InterruptedException {
+    public RemotingCommand callClient(final Channel channel, final RemotingCommand request) throws RemotingSendRequestException, RemotingTimeoutException, InterruptedException {
         return this.brokerController.getRemotingServer().invokeSync(channel, request, 10000);
     }
 

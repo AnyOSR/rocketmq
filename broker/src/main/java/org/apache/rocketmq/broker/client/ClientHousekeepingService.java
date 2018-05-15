@@ -37,7 +37,6 @@ public class ClientHousekeepingService implements ChannelEventListener {
     }
 
     public void start() {
-
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {

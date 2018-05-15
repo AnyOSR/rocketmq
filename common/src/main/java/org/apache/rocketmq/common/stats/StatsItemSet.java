@@ -27,13 +27,12 @@ import org.apache.rocketmq.common.UtilAll;
 import org.slf4j.Logger;
 
 public class StatsItemSet {
-    private final ConcurrentMap<String/* key */, StatsItem> statsItemTable =
-        new ConcurrentHashMap<String, StatsItem>(128);
 
     private final String statsName;
     private final ScheduledExecutorService scheduledExecutorService;
     private final Logger log;
 
+    private final ConcurrentMap<String/* key */, StatsItem> statsItemTable = new ConcurrentHashMap<String, StatsItem>(128);
     public StatsItemSet(String statsName, ScheduledExecutorService scheduledExecutorService, Logger log) {
         this.statsName = statsName;
         this.scheduledExecutorService = scheduledExecutorService;

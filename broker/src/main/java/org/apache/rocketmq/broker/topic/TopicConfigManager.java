@@ -46,12 +46,13 @@ public class TopicConfigManager extends ConfigManager {
     private transient BrokerController brokerController;
 
     private transient final Lock lockTopicConfigTable = new ReentrantLock();
-    private final ConcurrentMap<String, TopicConfig> topicConfigTable = new ConcurrentHashMap<String, TopicConfig>(1024);
-    private final DataVersion dataVersion = new DataVersion();
-    private final Set<String> systemTopicList = new HashSet<String>();
+    private final ConcurrentMap<String, TopicConfig> topicConfigTable = new ConcurrentHashMap<String, TopicConfig>(1024);                  //主题名称  主题配置
+    private final DataVersion dataVersion = new DataVersion();                                                                         //数据版本
+    private final Set<String> systemTopicList = new HashSet<String>();                                                                      //所有主题set集合
     public TopicConfigManager() {
     }
 
+    //主题配置管理器  默认添加了几个主题
     public TopicConfigManager(BrokerController brokerController) {
         this.brokerController = brokerController;
         {
