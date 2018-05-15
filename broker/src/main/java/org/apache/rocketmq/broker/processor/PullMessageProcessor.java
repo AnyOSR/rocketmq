@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 public class PullMessageProcessor implements NettyRequestProcessor {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.BROKER_LOGGER_NAME);
     private final BrokerController brokerController;
+
     private List<ConsumeMessageHook> consumeMessageHookList;
 
     public PullMessageProcessor(final BrokerController brokerController) {
