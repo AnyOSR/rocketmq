@@ -22,6 +22,8 @@ import org.apache.rocketmq.common.constant.LoggerName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//可以wait多长时间 或者被其他线程唤醒 然后再运行
+//并且可以复用
 public abstract class ServiceThread implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.COMMON_LOGGER_NAME);
 
