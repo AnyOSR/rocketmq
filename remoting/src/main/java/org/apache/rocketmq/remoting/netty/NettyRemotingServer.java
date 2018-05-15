@@ -69,18 +69,15 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
     private final EventLoopGroup eventLoopGroupSelector;
     private final EventLoopGroup eventLoopGroupBoss;
     private final NettyServerConfig nettyServerConfig;
-
     private final ChannelEventListener channelEventListener;
-
     private final ExecutorService publicExecutor;
-    //这个timer是干嘛用的？
-    private final Timer timer = new Timer("ServerHouseKeepingService", true);
     private DefaultEventExecutorGroup defaultEventExecutorGroup;
 
     private RPCHook rpcHook;
 
     private int port = 0;
-
+    //这个timer是干嘛用的？
+    private final Timer timer = new Timer("ServerHouseKeepingService", true);
     private static final String HANDSHAKE_HANDLER_NAME = "handshakeHandler";
     private static final String TLS_HANDLER_NAME = "sslHandler";
     private static final String FILE_REGION_ENCODER_NAME = "fileRegionEncoder";
