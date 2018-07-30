@@ -16,10 +16,6 @@
  */
 package org.apache.rocketmq.namesrv;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import org.apache.rocketmq.common.Configuration;
 import org.apache.rocketmq.common.ThreadFactoryImpl;
 import org.apache.rocketmq.common.constant.LoggerName;
@@ -35,22 +31,25 @@ import org.apache.rocketmq.remoting.netty.NettyServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class NamesrvController {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
 
     private final NamesrvConfig namesrvConfig;
 
     private final NettyServerConfig nettyServerConfig;
-
-    //底层通信
-    private RemotingServer remotingServer;
-    //默认请求处理器里面要用的线程池
-    private ExecutorService remotingExecutor;
     //线程池，周期性执行一些后台任务，扫描不活跃的broker以及打印kv值信息
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl("NSScheduledThread"));
     private final KVConfigManager kvConfigManager;
     private final RouteInfoManager routeInfoManager;
-
+    //底层通信
+    private RemotingServer remotingServer;
+    //默认请求处理器里面要用的线程池
+    private ExecutorService remotingExecutor;
     private BrokerHousekeepingService brokerHousekeepingService;
 
     private Configuration configuration;
@@ -69,8 +68,10 @@ public class NamesrvController {
 
         this.kvConfigManager.load();
 
+        //初始化netty相关组件
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
 
+        //默认请求处理器会用到的线程池
         this.remotingExecutor = Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
         //注册默认请求处理器
