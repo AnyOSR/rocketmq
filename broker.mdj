@@ -316,7 +316,7 @@
 											"top": 283,
 											"width": 388.451171875,
 											"height": 13,
-											"text": "+Attribute10",
+											"text": "+ConsumerOffsetManager",
 											"horizontalAlignment": 0
 										},
 										{
@@ -333,7 +333,7 @@
 											"top": 298,
 											"width": 388.451171875,
 											"height": 13,
-											"text": "+Attribute11",
+											"text": "+ConsumerManager",
 											"horizontalAlignment": 0
 										},
 										{
@@ -350,7 +350,7 @@
 											"top": 313,
 											"width": 388.451171875,
 											"height": 13,
-											"text": "+Attribute12",
+											"text": "+ConsumerFilterManager",
 											"horizontalAlignment": 0
 										},
 										{
@@ -367,7 +367,7 @@
 											"top": 328,
 											"width": 388.451171875,
 											"height": 13,
-											"text": "+Attribute13",
+											"text": "+",
 											"horizontalAlignment": 0
 										},
 										{
@@ -384,7 +384,7 @@
 											"top": 343,
 											"width": 388.451171875,
 											"height": 13,
-											"text": "+Attribute14",
+											"text": "+producerManager",
 											"horizontalAlignment": 0
 										},
 										{
@@ -642,8 +642,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFjZpAi89PNw3Q="
 							},
-							"name": "Attribute10",
-							"type": ""
+							"name": "ConsumerOffsetManager"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -651,8 +650,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFjZpAi89PNw3Q="
 							},
-							"name": "Attribute11",
-							"type": ""
+							"name": "ConsumerManager"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -660,8 +658,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFjZpAi89PNw3Q="
 							},
-							"name": "Attribute12",
-							"type": ""
+							"name": "ConsumerFilterManager"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -669,7 +666,6 @@
 							"_parent": {
 								"$ref": "AAAAAAFjZpAi89PNw3Q="
 							},
-							"name": "Attribute13",
 							"type": ""
 						},
 						{
@@ -678,8 +674,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFjZpAi89PNw3Q="
 							},
-							"name": "Attribute14",
-							"type": ""
+							"name": "producerManager"
 						},
 						{
 							"_type": "UMLAttribute",
