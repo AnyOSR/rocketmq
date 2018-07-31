@@ -68,13 +68,13 @@ public class NamesrvController {
 
         this.kvConfigManager.load();
 
-        //初始化netty相关组件
+        //netty通信组件
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
 
-        //默认请求处理器会用到的线程池
+        //设置netty通信组件 里的默认请求处理器defaultRequestProcessor 将会用到的线程池
         this.remotingExecutor = Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
-        //注册默认请求处理器
+        //给netty通信组件 注册默认请求处理器defaultRequestProcessor
         this.registerProcessor();
 
         //向scheduledExecutorService提交一个周期任务，定期扫描不活跃的broker，每十秒一次
