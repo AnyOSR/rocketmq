@@ -107,6 +107,7 @@ public class BrokerStartup {
 
             //broker参数实体bean
             final BrokerConfig brokerConfig = new BrokerConfig();
+
             //netty相关配置参数
             //netty服务端配置，对于producer和consumer来说，broker是服务端
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();
