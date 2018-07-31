@@ -103,7 +103,11 @@ public abstract class ServiceThread implements Runnable {
         }
     }
 
+    //如果之前没有被shutdown或者stop，则wait一段时间然后调用onWaitEnd()方法
+    //如果之前有被shutdown或者stop,则直接调用onWaitEnd()方法
+    //此方法调用完后，hasNotified的值一定为false
     protected void waitForRunning(long interval) {
+        // 如果hasNotified的值为true，且原子的更新为false，则直接调用hasNotified()方法，并返回
         if (hasNotified.compareAndSet(true, false)) {
             this.onWaitEnd();
             return;
@@ -112,6 +116,7 @@ public abstract class ServiceThread implements Runnable {
         //entry to wait
         waitPoint.reset();
 
+        //如果hasNotified之前已经是false了，则wait一段时间，将hasNotified设置成false，并执行onWaitEnd()方法
         try {
             waitPoint.await(interval, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
