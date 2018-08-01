@@ -23,11 +23,25 @@ import org.slf4j.LoggerFactory;
 
 //配置管理基类，主要是加载配置文件读数据，或者持久化到文件
 //模板设计模式
+//基类抽取共同行为，子类实现具体的业务逻辑(在这儿就是获取配置文件的fileName)
 public abstract class ConfigManager {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.COMMON_LOGGER_NAME);
 
+    //
     public abstract String encode();
 
+    //返回配置文件文件名
+    public abstract String configFilePath();
+
+    //
+    public abstract String encode(final boolean prettyFormat);
+
+    //
+    public abstract void decode(final String jsonString);
+
+    //首先从配置的文件读取数据
+    //如果读取不到或者异常，则从备份文件读取数据
+    //如果读取到数据，则对数据进行decode()操作
     public boolean load() {
         String fileName = null;
         try {
@@ -47,8 +61,6 @@ public abstract class ConfigManager {
         }
     }
 
-    public abstract String configFilePath();
-
     private boolean loadBak() {
         String fileName = null;
         try {
@@ -67,8 +79,8 @@ public abstract class ConfigManager {
         return true;
     }
 
-    public abstract void decode(final String jsonString);
-
+    //首先encode
+    //然后将数据持久化到文件
     public synchronized void persist() {
         String jsonString = this.encode(true);
         if (jsonString != null) {
@@ -81,5 +93,5 @@ public abstract class ConfigManager {
         }
     }
 
-    public abstract String encode(final boolean prettyFormat);
+
 }

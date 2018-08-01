@@ -181,6 +181,8 @@ public class MixAll {
         return file2String(file);
     }
 
+    //把从文件里面读到的数据编码成string(默认使用平台默认字符集进行编码)
+    //并返回这个string
     public static String file2String(final File file) throws IOException {
         if (file.exists()) {
             byte[] data = new byte[(int) file.length()];
