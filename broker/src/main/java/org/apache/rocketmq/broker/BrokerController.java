@@ -92,24 +92,12 @@ public class BrokerController {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.BROKER_LOGGER_NAME);
     private static final Logger LOG_PROTECTION = LoggerFactory.getLogger(LoggerName.PROTECTION_LOGGER_NAME);
     private static final Logger LOG_WATER_MARK = LoggerFactory.getLogger(LoggerName.WATER_MARK_LOGGER_NAME);
+
     private final BrokerConfig brokerConfig;
     private final NettyServerConfig nettyServerConfig;
     private final NettyClientConfig nettyClientConfig;
     private final MessageStoreConfig messageStoreConfig;
-
-    private final ConsumerOffsetManager consumerOffsetManager;
-    private final ConsumerManager consumerManager;
-    private final ConsumerFilterManager consumerFilterManager;
-    private final ProducerManager producerManager;
-    private final ClientHousekeepingService clientHousekeepingService;
-    private final PullMessageProcessor pullMessageProcessor;
-    private final PullRequestHoldService pullRequestHoldService;
-    private final MessageArrivingListener messageArrivingListener;
-    private final Broker2Client broker2Client;
-    private final SubscriptionGroupManager subscriptionGroupManager;
-    private final ConsumerIdsChangeListener consumerIdsChangeListener;
-    private final BrokerOuterAPI brokerOuterAPI;
-    private final SlaveSynchronize slaveSynchronize;
+    private Configuration configuration;
 
     private final BlockingQueue<Runnable> sendThreadPoolQueue;
     private final BlockingQueue<Runnable> pullThreadPoolQueue;
@@ -117,26 +105,40 @@ public class BrokerController {
     private final BlockingQueue<Runnable> clientManagerThreadPoolQueue;
     private final BlockingQueue<Runnable> consumerManagerThreadPoolQueue;
 
+    private final ConsumerOffsetManager consumerOffsetManager;
+    private final ConsumerManager consumerManager;
+    private final ConsumerFilterManager consumerFilterManager;
+    private final ProducerManager producerManager;
+    private final SubscriptionGroupManager subscriptionGroupManager;
     private final FilterServerManager filterServerManager;
     private final BrokerStatsManager brokerStatsManager;
+    private TopicConfigManager topicConfigManager;
+    private final RebalanceLockManager rebalanceLockManager = new RebalanceLockManager();
+
+    private final ClientHousekeepingService clientHousekeepingService;
+    private final PullRequestHoldService pullRequestHoldService;
+    private final MessageArrivingListener messageArrivingListener;
+    private final ConsumerIdsChangeListener consumerIdsChangeListener;
+    private final PullMessageProcessor pullMessageProcessor;
+    private final SlaveSynchronize slaveSynchronize;
+    private InetSocketAddress storeHost;
+
+    private final Broker2Client broker2Client;
+    private final BrokerOuterAPI brokerOuterAPI;
+    private BrokerStats brokerStats;
+    private BrokerFastFailure brokerFastFailure;
+
     private MessageStore messageStore;
     private RemotingServer remotingServer;
     private RemotingServer fastRemotingServer;
-    private TopicConfigManager topicConfigManager;
-
     private ExecutorService sendMessageExecutor;
     private ExecutorService pullMessageExecutor;
     private ExecutorService queryMessageExecutor;
     private ExecutorService adminBrokerExecutor;
     private ExecutorService clientManageExecutor;
     private ExecutorService consumerManageExecutor;
-    private BrokerStats brokerStats;
-    private InetSocketAddress storeHost;
-    private BrokerFastFailure brokerFastFailure;
-    private Configuration configuration;
 
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl("BrokerControllerScheduledThread"));
-    private final RebalanceLockManager rebalanceLockManager = new RebalanceLockManager();
     private final List<SendMessageHook> sendMessageHookList = new ArrayList<SendMessageHook>();
     private final List<ConsumeMessageHook> consumeMessageHookList = new ArrayList<ConsumeMessageHook>();
     private boolean updateMasterHAServerAddrPeriodically = false;
