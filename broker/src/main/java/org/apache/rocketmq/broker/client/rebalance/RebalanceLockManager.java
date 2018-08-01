@@ -229,6 +229,7 @@ public class RebalanceLockManager {
         }
     }
 
+    //LockEntry初始化时设定lastUpdateTimestamp为当前时间戳
     static class LockEntry {
         private String clientId;
         private volatile long lastUpdateTimestamp = System.currentTimeMillis();
@@ -249,6 +250,7 @@ public class RebalanceLockManager {
             this.lastUpdateTimestamp = lastUpdateTimestamp;
         }
 
+        //clientId一致，且没过期，则isLocked()返回true
         public boolean isLocked(final String clientId) {
             boolean eq = this.clientId.equals(clientId);
             return eq && !this.isExpired();

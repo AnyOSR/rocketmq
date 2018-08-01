@@ -123,14 +123,14 @@ public class BrokerController {
     private final SlaveSynchronize slaveSynchronize;
     private InetSocketAddress storeHost;
 
+    private MessageStore messageStore;
     private final Broker2Client broker2Client;
     private final BrokerOuterAPI brokerOuterAPI;
     private BrokerStats brokerStats;
     private BrokerFastFailure brokerFastFailure;
-
-    private MessageStore messageStore;
     private RemotingServer remotingServer;
     private RemotingServer fastRemotingServer;
+
     private ExecutorService sendMessageExecutor;
     private ExecutorService pullMessageExecutor;
     private ExecutorService queryMessageExecutor;
