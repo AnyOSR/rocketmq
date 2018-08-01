@@ -50,10 +50,7 @@ public class RebalanceLockManager {
                         lockEntry = new LockEntry();
                         lockEntry.setClientId(clientId);
                         groupValue.put(mq, lockEntry);
-                        log.info("tryLock, message queue not locked, I got it. Group: {} NewClientId: {} {}",
-                            group,
-                            clientId,
-                            mq);
+                        log.info("tryLock, message queue not locked, I got it. Group: {} NewClientId: {} {}", group, clientId, mq);
                     }
 
                     if (lockEntry.isLocked(clientId)) {
@@ -66,22 +63,13 @@ public class RebalanceLockManager {
                     if (lockEntry.isExpired()) {
                         lockEntry.setClientId(clientId);
                         lockEntry.setLastUpdateTimestamp(System.currentTimeMillis());
-                        log.warn(
-                            "tryLock, message queue lock expired, I got it. Group: {} OldClientId: {} NewClientId: {} {}",
-                            group,
-                            oldClientId,
-                            clientId,
-                            mq);
+                        log.warn("tryLock, message queue lock expired, I got it. Group: {} OldClientId: {} NewClientId: {} {}", group, oldClientId, clientId, mq);
                         return true;
                     }
 
-                    log.warn(
-                        "tryLock, message queue locked by other client. Group: {} OtherClientId: {} NewClientId: {} {}",
-                        group,
-                        oldClientId,
-                        clientId,
-                        mq);
+                    log.warn("tryLock, message queue locked by other client. Group: {} OtherClientId: {} NewClientId: {} {}", group, oldClientId, clientId, mq);
                     return false;
+
                 } finally {
                     this.lock.unlock();
                 }
