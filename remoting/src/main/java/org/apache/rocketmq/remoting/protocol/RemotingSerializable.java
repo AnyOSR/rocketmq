@@ -19,10 +19,12 @@ package org.apache.rocketmq.remoting.protocol;
 import com.alibaba.fastjson.JSON;
 import java.nio.charset.Charset;
 
-//序列化工具 json 对象 字符串
+//序列化工具 对象 json字符串 字节数组
 public abstract class RemotingSerializable {
     private final static Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
+    //将对象序列化成json字符串(不格式化)
+    //返回这个字符串的字节数组(utf8编码)
     public static byte[] encode(final Object obj) {
         final String json = toJson(obj, false);
         if (json != null) {
@@ -35,6 +37,8 @@ public abstract class RemotingSerializable {
         return JSON.toJSONString(obj, prettyFormat);
     }
 
+    //将字节数组转换为json串(utf8编码)
+    //然后将该json串序列化成对象
     public static <T> T decode(final byte[] data, Class<T> classOfT) {
         final String json = new String(data, CHARSET_UTF8);
         return fromJson(json, classOfT);
