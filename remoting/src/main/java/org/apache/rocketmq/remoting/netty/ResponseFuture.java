@@ -25,26 +25,26 @@ import org.apache.rocketmq.remoting.protocol.RemotingCommand;
 
 public class ResponseFuture {
     private final int opaque;
-    private final long timeoutMillis;
+    private final long timeoutMillis;                                         //超时时间
     private final InvokeCallback invokeCallback;
-    private final long beginTimestamp = System.currentTimeMillis();
-    private final CountDownLatch countDownLatch = new CountDownLatch(1);
+    private final long beginTimestamp = System.currentTimeMillis();           //初始化时设置该值
+    private final CountDownLatch countDownLatch = new CountDownLatch(1);      //用于控制waitResponse和putResponse的阻塞行为 waitResponse会一直阻塞，直到putResponse返回
 
-    private final SemaphoreReleaseOnlyOnce once;
+    private final SemaphoreReleaseOnlyOnce once;                              //只能Realease一次
 
-    private final AtomicBoolean executeCallbackOnlyOnce = new AtomicBoolean(false);
+    private final AtomicBoolean executeCallbackOnlyOnce = new AtomicBoolean(false);    //用于控制执行次数，仅执行一次
     private volatile RemotingCommand responseCommand;
     private volatile boolean sendRequestOK = true;
     private volatile Throwable cause;
 
-    public ResponseFuture(int opaque, long timeoutMillis, InvokeCallback invokeCallback,
-        SemaphoreReleaseOnlyOnce once) {
+    public ResponseFuture(int opaque, long timeoutMillis, InvokeCallback invokeCallback, SemaphoreReleaseOnlyOnce once) {
         this.opaque = opaque;
         this.timeoutMillis = timeoutMillis;
         this.invokeCallback = invokeCallback;
         this.once = once;
     }
 
+    //只能执行回调一次
     public void executeInvokeCallback() {
         if (invokeCallback != null) {
             if (this.executeCallbackOnlyOnce.compareAndSet(false, true)) {

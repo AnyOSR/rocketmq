@@ -20,7 +20,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SemaphoreReleaseOnlyOnce {
-    private final AtomicBoolean released = new AtomicBoolean(false);
+    private final AtomicBoolean released = new AtomicBoolean(false);                   //用于控制只能Realease一次
     private final Semaphore semaphore;
 
     public SemaphoreReleaseOnlyOnce(Semaphore semaphore) {

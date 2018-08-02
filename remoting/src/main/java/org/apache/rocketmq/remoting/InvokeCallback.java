@@ -18,6 +18,7 @@ package org.apache.rocketmq.remoting;
 
 import org.apache.rocketmq.remoting.netty.ResponseFuture;
 
+//是不是有点类似于访问者模式？
 public interface InvokeCallback {
     void operationComplete(final ResponseFuture responseFuture);
 }
