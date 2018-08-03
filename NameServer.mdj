@@ -4744,13 +4744,47 @@
 											"height": 13,
 											"text": "+serializeTypeCurrentRPC: SerializeType",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFk/0oLykhlQwg=",
+											"_parent": {
+												"$ref": "AAAAAAFk+GkjRg8ZvjA="
+											},
+											"model": {
+												"$ref": "AAAAAAFk/0oLhEhiYrA="
+											},
+											"font": "Arial;13;0",
+											"left": 2285,
+											"top": 440,
+											"width": 279.98876953125,
+											"height": 13,
+											"text": "+extFields: HashMap<String, String>",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFk/0oQI0iJq3o=",
+											"_parent": {
+												"$ref": "AAAAAAFk+GkjRg8ZvjA="
+											},
+											"model": {
+												"$ref": "AAAAAAFk/0oP7EiGV6A="
+											},
+											"font": "Arial;13;0",
+											"left": 2285,
+											"top": 455,
+											"width": 279.98876953125,
+											"height": 13,
+											"text": "+customHeader: CommandCustomHeader",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 2280,
 									"top": 255,
 									"width": 289.98876953125,
-									"height": 188
+									"height": 218
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -4763,7 +4797,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 2280,
-									"top": 443,
+									"top": 473,
 									"width": 289.98876953125,
 									"height": 10
 								},
@@ -4805,7 +4839,7 @@
 							"left": 2280,
 							"top": 230,
 							"width": 289.98876953125,
-							"height": 223,
+							"height": 253,
 							"nameCompartment": {
 								"$ref": "AAAAAAFk+GkjRQ8UsdU="
 							},
@@ -5780,7 +5814,7 @@
 							"tail": {
 								"$ref": "AAAAAAFjm1k3mIjzRao="
 							},
-							"points": "2102:520;2416:520;2416:452",
+							"points": "2102:520;2416:520;2416:482",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFk+MGOHG5Hlwc="
@@ -8655,6 +8689,24 @@
 							"type": {
 								"$ref": "AAAAAAFk+G7ZAxRGL2M="
 							}
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFk/0oLhEhiYrA=",
+							"_parent": {
+								"$ref": "AAAAAAFk+GkjRQ8R5rg="
+							},
+							"name": "extFields",
+							"type": "HashMap<String, String>"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFk/0oP7EiGV6A=",
+							"_parent": {
+								"$ref": "AAAAAAFk+GkjRQ8R5rg="
+							},
+							"name": "customHeader",
+							"type": "CommandCustomHeader"
 						}
 					]
 				},
