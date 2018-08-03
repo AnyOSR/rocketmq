@@ -1200,30 +1200,11 @@
 									"model": {
 										"$ref": "AAAAAAFh9SWRcRs8aU8="
 									},
-									"subViews": [
-										{
-											"_type": "UMLOperationView",
-											"_id": "AAAAAAFk+tWFCSCK5FI=",
-											"_parent": {
-												"$ref": "AAAAAAFh9SWRcRtFjiQ="
-											},
-											"model": {
-												"$ref": "AAAAAAFk+tWE2CCHHrk="
-											},
-											"font": "Arial;13;0",
-											"left": 1493,
-											"top": 711,
-											"width": 336.3876953125,
-											"height": 13,
-											"text": "+Operation1()",
-											"horizontalAlignment": 0
-										}
-									],
 									"font": "Arial;13;0",
 									"left": 1488,
 									"top": 706,
 									"width": 346.3876953125,
-									"height": 23
+									"height": 10
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -7954,16 +7935,6 @@
 							},
 							"name": "defaultEventExecutorGroup",
 							"type": "DefaultEventExecutorGroup"
-						}
-					],
-					"operations": [
-						{
-							"_type": "UMLOperation",
-							"_id": "AAAAAAFk+tWE2CCHHrk=",
-							"_parent": {
-								"$ref": "AAAAAAFh9SWRcRs8aU8="
-							},
-							"name": "Operation1"
 						}
 					]
 				},
