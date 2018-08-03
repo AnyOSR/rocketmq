@@ -16,11 +16,13 @@
  */
 package org.apache.rocketmq.common.sysflag;
 
+
+//用于帮助生成TopicConfig里的topicSysFlag属性
 public class TopicSysFlag {
 
-    private final static int FLAG_UNIT = 0x1 << 0;
+    private final static int FLAG_UNIT = 0x1 << 0;            //    00 00 00 01
 
-    private final static int FLAG_UNIT_SUB = 0x1 << 1;
+    private final static int FLAG_UNIT_SUB = 0x1 << 1;        //    00 00 00 02
 
     public static int buildSysFlag(final boolean unit, final boolean hasUnitSub) {
         int sysFlag = 0;
@@ -36,10 +38,12 @@ public class TopicSysFlag {
         return sysFlag;
     }
 
+    //将sysFlag的FLAG_UNIT位置为1(最后一位)，对其他位没影响
     public static int setUnitFlag(final int sysFlag) {
         return sysFlag | FLAG_UNIT;
     }
 
+    //将sysFlag的FLAG_UNIT位置为0(最后一位)，对其他位没影响
     public static int clearUnitFlag(final int sysFlag) {
         return sysFlag & (~FLAG_UNIT);
     }
@@ -48,10 +52,12 @@ public class TopicSysFlag {
         return (sysFlag & FLAG_UNIT) == FLAG_UNIT;
     }
 
+    //将sysFlag的FLAG_UNIT_SUB位置为1(倒数第二位)，对其他位没影响
     public static int setUnitSubFlag(final int sysFlag) {
         return sysFlag | FLAG_UNIT_SUB;
     }
 
+    //将sysFlag的FLAG_UNIT_SUB位置为0(倒数第二位)，对其他位没影响
     public static int clearUnitSubFlag(final int sysFlag) {
         return sysFlag & (~FLAG_UNIT_SUB);
     }
