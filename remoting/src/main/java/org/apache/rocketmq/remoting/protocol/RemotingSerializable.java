@@ -48,6 +48,7 @@ public abstract class RemotingSerializable {
         return JSON.parseObject(json, classOfT);
     }
 
+    //编码自身
     public byte[] encode() {
         final String json = this.toJson();
         if (json != null) {
@@ -56,6 +57,7 @@ public abstract class RemotingSerializable {
         return null;
     }
 
+    //序列化自身
     public String toJson() {
         return toJson(false);
     }

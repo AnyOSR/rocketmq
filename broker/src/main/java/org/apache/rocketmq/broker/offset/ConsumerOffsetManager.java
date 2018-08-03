@@ -38,6 +38,8 @@ public class ConsumerOffsetManager extends ConfigManager {
     private static final String TOPIC_GROUP_SEPARATOR = "@";
     private transient BrokerController brokerController;
 
+    //key:topic@group
+    //value:queueId,offset
     private ConcurrentMap<String/* topic@group */, ConcurrentMap<Integer, Long>> offsetTable = new ConcurrentHashMap<String, ConcurrentMap<Integer, Long>>(512);
     public ConsumerOffsetManager() {
     }
@@ -56,8 +58,7 @@ public class ConsumerOffsetManager extends ConfigManager {
                 String topic = arrays[0];
                 String group = arrays[1];
 
-                if (null == brokerController.getConsumerManager().findSubscriptionData(group, topic)
-                    && this.offsetBehindMuchThanData(topic, next.getValue())) {
+                if (null == brokerController.getConsumerManager().findSubscriptionData(group, topic) && this.offsetBehindMuchThanData(topic, next.getValue())) {
                     it.remove();
                     log.warn("remove topic offset, {}", topicAtGroup);
                 }
@@ -79,6 +80,7 @@ public class ConsumerOffsetManager extends ConfigManager {
         return result;
     }
 
+    //根据group找topic
     public Set<String> whichTopicByConsumer(final String group) {
         Set<String> topics = new HashSet<String>();
 
@@ -97,6 +99,7 @@ public class ConsumerOffsetManager extends ConfigManager {
         return topics;
     }
 
+    //根据topic找group
     public Set<String> whichGroupByTopic(final String topic) {
         Set<String> groups = new HashSet<String>();
 
@@ -115,8 +118,7 @@ public class ConsumerOffsetManager extends ConfigManager {
         return groups;
     }
 
-    public void commitOffset(final String clientHost, final String group, final String topic, final int queueId,
-        final long offset) {
+    public void commitOffset(final String clientHost, final String group, final String topic, final int queueId, final long offset) {
         // topic@group
         String key = topic + TOPIC_GROUP_SEPARATOR + group;
         this.commitOffset(clientHost, key, queueId, offset);
@@ -182,6 +184,7 @@ public class ConsumerOffsetManager extends ConfigManager {
 
     public Map<Integer, Long> queryMinOffsetInAllGroup(final String topic, final String filterGroups) {
 
+        //首先移除掉offsetTable里group为filterGroups.split()的数据
         Map<Integer, Long> queueMinOffset = new HashMap<Integer, Long>();
         Set<String> topicGroups = this.offsetTable.keySet();
         if (!UtilAll.isBlank(filterGroups)) {
