@@ -5725,8 +5725,8 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 128,
-											"top": -80,
+											"left": 1936,
+											"top": -1440,
 											"width": 64.32080078125,
 											"height": 13,
 											"text": "«interface»"
@@ -5738,8 +5738,8 @@
 												"$ref": "AAAAAAFk/xXdCaIM6TM="
 											},
 											"font": "Arial;13;3",
-											"left": 237,
-											"top": 2278,
+											"left": 1141,
+											"top": 1598,
 											"width": 147.38623046875,
 											"height": 13,
 											"text": "NettyRequestProcessor"
@@ -5752,8 +5752,8 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 128,
-											"top": -80,
+											"left": 1936,
+											"top": -1440,
 											"width": 73.67724609375,
 											"height": 13,
 											"text": "(from Model)"
@@ -5766,15 +5766,15 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 128,
-											"top": -80,
+											"left": 1936,
+											"top": -1440,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 232,
-									"top": 2271,
+									"left": 1136,
+									"top": 1591,
 									"width": 157.38623046875,
 									"height": 25,
 									"stereotypeLabel": {
@@ -5801,8 +5801,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 64,
-									"top": -40,
+									"left": 968,
+									"top": -720,
 									"width": 10,
 									"height": 10
 								},
@@ -5826,8 +5826,8 @@
 												"$ref": "AAAAAAFk/xYaEaI9rrc="
 											},
 											"font": "Arial;13;2",
-											"left": 237,
-											"top": 2301,
+											"left": 1141,
+											"top": 1621,
 											"width": 147.38623046875,
 											"height": 13,
 											"text": "+processRequest()",
@@ -5843,8 +5843,8 @@
 												"$ref": "AAAAAAFk/xYmYaJDBt0="
 											},
 											"font": "Arial;13;2",
-											"left": 237,
-											"top": 2316,
+											"left": 1141,
+											"top": 1636,
 											"width": 147.38623046875,
 											"height": 13,
 											"text": "+rejectRequest()",
@@ -5852,8 +5852,8 @@
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 232,
-									"top": 2296,
+									"left": 1136,
+									"top": 1616,
 									"width": 157.38623046875,
 									"height": 38
 								},
@@ -5868,8 +5868,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 64,
-									"top": -40,
+									"left": 968,
+									"top": -720,
 									"width": 10,
 									"height": 10
 								},
@@ -5884,16 +5884,16 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 64,
-									"top": -40,
+									"left": 968,
+									"top": -720,
 									"width": 10,
 									"height": 10
 								}
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
-							"left": 232,
-							"top": 2248,
+							"left": 1136,
+							"top": 1568,
 							"width": 157.38623046875,
 							"height": 87,
 							"stereotypeDisplay": "icon",
@@ -5942,8 +5942,8 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 112,
-											"top": -48,
+											"left": 1920,
+											"top": -1408,
 											"height": 13
 										},
 										{
@@ -5953,8 +5953,8 @@
 												"$ref": "AAAAAAFk/xfSHqJUSmM="
 											},
 											"font": "Arial;13;1",
-											"left": 221,
-											"top": 2391,
+											"left": 1125,
+											"top": 1711,
 											"width": 776.9404296875,
 											"height": 13,
 											"text": "PullMessageProcessor"
@@ -5967,8 +5967,8 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 112,
-											"top": -48,
+											"left": 1920,
+											"top": -1408,
 											"width": 73.67724609375,
 											"height": 13,
 											"text": "(from Model)"
@@ -5981,15 +5981,15 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 112,
-											"top": -48,
+											"left": 1920,
+											"top": -1408,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 216,
-									"top": 2384,
+									"left": 1120,
+									"top": 1704,
 									"width": 786.9404296875,
 									"height": 25,
 									"stereotypeLabel": {
@@ -6025,8 +6025,8 @@
 												"$ref": "AAAAAAFk/xf2V6J87WY="
 											},
 											"font": "Arial;13;0",
-											"left": 221,
-											"top": 2414,
+											"left": 1125,
+											"top": 1734,
 											"width": 776.9404296875,
 											"height": 13,
 											"text": "+consumeMessageHookList: List<ConsumeMessageHook>",
@@ -6034,8 +6034,8 @@
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 216,
-									"top": 2409,
+									"left": 1120,
+									"top": 1729,
 									"width": 786.9404296875,
 									"height": 23
 								},
@@ -6059,8 +6059,8 @@
 												"$ref": "AAAAAAFk/xkIvaKFDEc="
 											},
 											"font": "Arial;13;0",
-											"left": 221,
-											"top": 2437,
+											"left": 1125,
+											"top": 1757,
 											"width": 776.9404296875,
 											"height": 13,
 											"text": "«public void executeConsumeMessageHookBefore(final ConsumeMessageContext context)»+executeConsumeMessageHookBefore()",
@@ -6076,8 +6076,8 @@
 												"$ref": "AAAAAAFk/xkPMaKLtao="
 											},
 											"font": "Arial;13;0",
-											"left": 221,
-											"top": 2452,
+											"left": 1125,
+											"top": 1772,
 											"width": 776.9404296875,
 											"height": 13,
 											"text": "«public void executeRequestWhenWakeup(final Channel channel, final RemotingCommand request)»+executeRequestWhenWakeup()",
@@ -6085,8 +6085,8 @@
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 216,
-									"top": 2432,
+									"left": 1120,
+									"top": 1752,
 									"width": 786.9404296875,
 									"height": 38
 								},
@@ -6101,8 +6101,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 56,
-									"top": -24,
+									"left": 960,
+									"top": -704,
 									"width": 10,
 									"height": 10
 								},
@@ -6117,16 +6117,16 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 56,
-									"top": -24,
+									"left": 960,
+									"top": -704,
 									"width": 10,
 									"height": 10
 								}
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
-							"left": 216,
-							"top": 2384,
+							"left": 1120,
+							"top": 1704,
 							"width": 786.9404296875,
 							"height": 86,
 							"nameCompartment": {
@@ -6166,8 +6166,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 281,
-									"top": 2352,
+									"left": 1185,
+									"top": 1672,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -6187,8 +6187,8 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 266,
-									"top": 2352,
+									"left": 1170,
+									"top": 1672,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -6208,8 +6208,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 310,
-									"top": 2353,
+									"left": 1214,
+									"top": 1673,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -6226,7 +6226,7 @@
 							"tail": {
 								"$ref": "AAAAAAFk/xfSHqJTCSQ="
 							},
-							"points": "296:2384;296:2334",
+							"points": "1200:1704;1200:1654",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFk/xpyFKK1UX8="

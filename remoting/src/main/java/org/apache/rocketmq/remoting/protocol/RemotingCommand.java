@@ -74,8 +74,8 @@ public class RemotingCommand {
     private int opaque = requestId.getAndIncrement();
     private int flag = 0;
     private String remark;
-    private HashMap<String, String> extFields;
-    private transient CommandCustomHeader customHeader;
+    private HashMap<String, String> extFields;                             //用于初始化customHeader中的field
+    private transient CommandCustomHeader customHeader;                    //自定义头部
 
     private SerializeType serializeTypeCurrentRPC = serializeTypeConfigInThisServer;
 
@@ -229,8 +229,7 @@ public class RemotingCommand {
         this.customHeader = customHeader;
     }
 
-    public CommandCustomHeader decodeCommandCustomHeader(
-        Class<? extends CommandCustomHeader> classHeader) throws RemotingCommandException {
+    public CommandCustomHeader decodeCommandCustomHeader(Class<? extends CommandCustomHeader> classHeader) throws RemotingCommandException {
         CommandCustomHeader objectHeader;
         try {
             objectHeader = classHeader.newInstance();
