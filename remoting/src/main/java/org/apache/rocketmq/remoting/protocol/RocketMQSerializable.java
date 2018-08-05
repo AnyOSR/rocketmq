@@ -133,6 +133,7 @@ public class RocketMQSerializable {
         return length;
     }
 
+    //rocketmq序列化方式 code langfuage version opaque flag remark长度 +[remark数据] +额外字段extFields +[额外字段数据]
     public static RemotingCommand rocketMQProtocolDecode(final byte[] headerArray) {
         RemotingCommand cmd = new RemotingCommand();
         ByteBuffer headerBuffer = ByteBuffer.wrap(headerArray);

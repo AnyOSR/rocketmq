@@ -139,17 +139,18 @@ public class RemotingCommand {
         return decode(byteBuffer);
     }
 
+    //序列化方式(1字节)+头部长度(3字节)+头部数据(需要反序列化)+body数据
     public static RemotingCommand decode(final ByteBuffer byteBuffer) {
-        int length = byteBuffer.limit();
-        int oriHeaderLen = byteBuffer.getInt();
-        int headerLength = getHeaderLength(oriHeaderLen);
+        int length = byteBuffer.limit();                                            //总的字节长度
+        int oriHeaderLen = byteBuffer.getInt();                                     //得到oriHeaderLen
+        int headerLength = getHeaderLength(oriHeaderLen);                           //得到oriHeaderLen后三个字节的值 头部长度  第一个字节表示编码方式
 
         byte[] headerData = new byte[headerLength];
-        byteBuffer.get(headerData);
+        byteBuffer.get(headerData);                                                      //取出headerData
 
-        RemotingCommand cmd = headerDecode(headerData, getProtocolType(oriHeaderLen));
+        RemotingCommand cmd = headerDecode(headerData, getProtocolType(oriHeaderLen));   //根据数据以及序列化方式 反序列化出RemotingCommand
 
-        int bodyLength = length - 4 - headerLength;
+        int bodyLength = length - 4 - headerLength;                                      //得到body数据
         byte[] bodyData = null;
         if (bodyLength > 0) {
             bodyData = new byte[bodyLength];
