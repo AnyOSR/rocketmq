@@ -211,9 +211,9 @@ public class RemotingCommand {
         byte[] result = new byte[4];
 
         result[0] = type.getCode();
-        result[1] = (byte) ((source >> 16) & 0xFF);
-        result[2] = (byte) ((source >> 8) & 0xFF);
-        result[3] = (byte) (source & 0xFF);
+        result[1] = (byte) ((source >> 16) & 0xFF);       //得到source的第三个字节值(从右往左 低位)
+        result[2] = (byte) ((source >> 8) & 0xFF);        //得到source的第二个字节值(从右往左)
+        result[3] = (byte) (source & 0xFF);               //得到source的第一个字节值(最右边)
         return result;
     }
 
@@ -230,6 +230,7 @@ public class RemotingCommand {
         this.customHeader = customHeader;
     }
 
+    //根据class对象和extFields里面的数据，创建CommandCustomHeader对象
     public CommandCustomHeader decodeCommandCustomHeader(Class<? extends CommandCustomHeader> classHeader) throws RemotingCommandException {
         CommandCustomHeader objectHeader;
         try {
@@ -289,6 +290,7 @@ public class RemotingCommand {
         return objectHeader;
     }
 
+    //缓存CommandCustomHeader的field
     private Field[] getClazzFields(Class<? extends CommandCustomHeader> classHeader) {
         Field[] field = CLASS_HASH_MAP.get(classHeader);
 
@@ -301,6 +303,7 @@ public class RemotingCommand {
         return field;
     }
 
+    //缓存字段是否为null
     private boolean isFieldNullable(Field field) {
         if (!NULLABLE_FIELD_CACHE.containsKey(field)) {
             Annotation annotation = field.getAnnotation(CFNotNull.class);
@@ -323,6 +326,7 @@ public class RemotingCommand {
         return name;
     }
 
+    //序列化请求数据
     public ByteBuffer encode() {
         // 1> header length size
         int length = 4;
@@ -432,6 +436,7 @@ public class RemotingCommand {
         this.flag |= bits;
     }
 
+    //检测flag倒数第二bit是否为1
     @JSONField(serialize = false)
     public boolean isOnewayRPC() {
         int bits = 1 << RPC_ONEWAY;
@@ -455,6 +460,7 @@ public class RemotingCommand {
         return RemotingCommandType.REQUEST_COMMAND;
     }
 
+    //检测flag最后一位是否为1
     @JSONField(serialize = false)
     public boolean isResponseType() {
         int bits = 1 << RPC_TYPE;
