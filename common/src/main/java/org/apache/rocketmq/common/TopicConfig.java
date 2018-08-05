@@ -27,7 +27,7 @@ public class TopicConfig {
     private int writeQueueNums = defaultWriteQueueNums;
     private int perm = PermName.PERM_READ | PermName.PERM_WRITE;
     private TopicFilterType topicFilterType = TopicFilterType.SINGLE_TAG;
-    private int topicSysFlag = 0;
+    private int topicSysFlag = 0;                                                //标志当前topic是不是系统默认？
     private boolean order = false;
 
     public TopicConfig() {

@@ -257,7 +257,7 @@ public class TopicConfigManager extends ConfigManager {
             } else {
                 topicConfig.setTopicSysFlag(TopicSysFlag.clearUnitFlag(oldTopicSysFlag));
             }
-
+            //有else分支,则unit为true则设置，否则清楚
             log.info("update topic sys flag. oldTopicSysFlag={}, newTopicSysFlag", oldTopicSysFlag, topicConfig.getTopicSysFlag());
 
             this.topicConfigTable.put(topic, topicConfig);
@@ -276,6 +276,8 @@ public class TopicConfigManager extends ConfigManager {
             if (hasUnitSub) {
                 topicConfig.setTopicSysFlag(TopicSysFlag.setUnitSubFlag(oldTopicSysFlag));
             }
+            //这里为什么没有else分支？如果hasUnitSub为true，则设置
+            //如果为false，保留原样。这个topicSysFlag中的FLAG_UNIT_SUB是干嘛的？
 
             log.info("update topic sys flag. oldTopicSysFlag={}, newTopicSysFlag", oldTopicSysFlag, topicConfig.getTopicSysFlag());
 
