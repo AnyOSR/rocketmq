@@ -68,10 +68,10 @@ public class RemotingCommand {
         }
     }
 
-    private int code;
+    private int code;                                                      //用来标注请求和响应的类型 请求类型由RequestCode定义，响应类型由RemotingSysResponseCode定义
     private LanguageCode language = LanguageCode.JAVA;
     private int version = 0;
-    private int opaque = requestId.getAndIncrement();
+    private int opaque = requestId.getAndIncrement();                     //请求和相应里面都包含的，用来一一映射请求和相应,每次新建一个remotingcommand都会有自己的opaque，机器一直运转不会溢出？
     private int flag = 0;
     private String remark;
     private HashMap<String, String> extFields;                             //用于初始化customHeader中的field
@@ -217,6 +217,7 @@ public class RemotingCommand {
         return result;
     }
 
+    //设置flag最后一位为1
     public void markResponseType() {
         int bits = 1 << RPC_TYPE;
         this.flag |= bits;
@@ -290,7 +291,7 @@ public class RemotingCommand {
         return objectHeader;
     }
 
-    //缓存CommandCustomHeader的field
+    //获取并缓存自定义CommandCustomHeader的field
     private Field[] getClazzFields(Class<? extends CommandCustomHeader> classHeader) {
         Field[] field = CLASS_HASH_MAP.get(classHeader);
 
@@ -303,7 +304,7 @@ public class RemotingCommand {
         return field;
     }
 
-    //缓存字段是否为null
+    //获取并缓存字段是否允许为null
     private boolean isFieldNullable(Field field) {
         if (!NULLABLE_FIELD_CACHE.containsKey(field)) {
             Annotation annotation = field.getAnnotation(CFNotNull.class);
@@ -314,6 +315,7 @@ public class RemotingCommand {
         return NULLABLE_FIELD_CACHE.get(field);
     }
 
+    //获取并缓存某个class的CanonicalName
     private String getCanonicalName(Class clazz) {
         String name = CANONICAL_NAME_CACHE.get(clazz);
 
@@ -370,6 +372,7 @@ public class RemotingCommand {
         }
     }
 
+    //根据this.customHeader的值生成this.extFields的值
     public void makeCustomHeaderToNet() {
         if (this.customHeader != null) {
             Field[] fields = getClazzFields(customHeader.getClass());
@@ -431,6 +434,7 @@ public class RemotingCommand {
         return result;
     }
 
+    //设置flag的倒数第二位(低位开始)为1
     public void markOnewayRPC() {
         int bits = 1 << RPC_ONEWAY;
         this.flag |= bits;
