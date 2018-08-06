@@ -36,8 +36,8 @@ public class RemotingCommand {
     public static final String SERIALIZE_TYPE_ENV = "ROCKETMQ_SERIALIZE_TYPE";
     public static final String REMOTING_VERSION_KEY = "rocketmq.remoting.version";
     private static final Logger log = LoggerFactory.getLogger(RemotingHelper.ROCKETMQ_REMOTING);
-    private static final int RPC_TYPE = 0; // 0, REQUEST_COMMAND
-    private static final int RPC_ONEWAY = 1; // 0, RPC
+    private static final int RPC_TYPE = 0; // 0, REQUEST_COMMAND                        //用于标志是request还是response？  1代表RESPONSE_COMMAND
+    private static final int RPC_ONEWAY = 1; // 0, RPC                                  //NettyRemotingAbstract processRequestCommand()
     private static final Map<Class<? extends CommandCustomHeader>, Field[]> CLASS_HASH_MAP = new HashMap<Class<? extends CommandCustomHeader>, Field[]>();
     private static final Map<Class, String> CANONICAL_NAME_CACHE = new HashMap<Class, String>();
     // 1, Oneway
@@ -72,7 +72,7 @@ public class RemotingCommand {
     private LanguageCode language = LanguageCode.JAVA;
     private int version = 0;
     private int opaque = requestId.getAndIncrement();                     //请求和相应里面都包含的，用来一一映射请求和相应,每次新建一个remotingcommand都会有自己的opaque，机器一直运转不会溢出？
-    private int flag = 0;
+    private int flag = 0;                                                 //这个flag是干嘛的？RPC_TYPE(1 REQUEST_COMMAND) RPC_ONEWAY(0 RPC 同步write and flush)
     private String remark;
     private HashMap<String, String> extFields;                             //用于初始化customHeader中的field
     private transient CommandCustomHeader customHeader;                    //自定义头部
@@ -232,6 +232,8 @@ public class RemotingCommand {
     }
 
     //根据class对象和extFields里面的数据，创建CommandCustomHeader对象
+    //map到对象 header解码
+    //对象到map header编码
     public CommandCustomHeader decodeCommandCustomHeader(Class<? extends CommandCustomHeader> classHeader) throws RemotingCommandException {
         CommandCustomHeader objectHeader;
         try {
