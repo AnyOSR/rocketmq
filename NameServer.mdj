@@ -1699,7 +1699,7 @@
 											"top": 711,
 											"width": 340.73583984375,
 											"height": 13,
-											"text": "ServiceThread"
+											"text": "remoting.common.ServiceThread"
 										},
 										{
 											"_type": "LabelView",
@@ -8035,7 +8035,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "ServiceThread",
+					"name": "remoting.common.ServiceThread",
 					"ownedElements": [
 						{
 							"_type": "UMLGeneralization",
