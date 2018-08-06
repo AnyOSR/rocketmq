@@ -185,7 +185,7 @@ public class CountDownLatch2 {
                     return false;
                 int nextc = c - 1;
                 if (compareAndSetState(c, nextc))
-                    return nextc == 0;
+                    return nextc == 0;                         //为了符合tryReleaseShared语义，这个类里面的startCount只能为1？
             }
         }
 

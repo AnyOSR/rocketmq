@@ -31,8 +31,8 @@ import sun.nio.ch.DirectBuffer;
 public class TransientStorePool {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
 
-    private final int poolSize;
-    private final int fileSize;
+    private final int poolSize;         //默认值为5
+    private final int fileSize;         //默认1G
     private final Deque<ByteBuffer> availableBuffers;
     private final MessageStoreConfig storeConfig;
 
@@ -66,12 +66,14 @@ public class TransientStorePool {
         }
     }
 
+    //将position设置为0，并且将limit设置为fileSize，并归还给池子
     public void returnBuffer(ByteBuffer byteBuffer) {
         byteBuffer.position(0);
         byteBuffer.limit(fileSize);
         this.availableBuffers.offerFirst(byteBuffer);
     }
 
+    //将ByteBuffer从池子借出
     public ByteBuffer borrowBuffer() {
         ByteBuffer buffer = availableBuffers.pollFirst();
         if (availableBuffers.size() < poolSize * 0.4) {
@@ -80,6 +82,7 @@ public class TransientStorePool {
         return buffer;
     }
 
+    //返回剩下的池子数
     public int remainBufferNumbs() {
         if (storeConfig.isTransientStorePoolEnable()) {
             return availableBuffers.size();

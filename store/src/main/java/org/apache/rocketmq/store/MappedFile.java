@@ -44,22 +44,21 @@ import sun.nio.ch.DirectBuffer;
 public class MappedFile extends ReferenceResource {
     public static final int OS_PAGE_SIZE = 1024 * 4;
     protected static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
+    private static final AtomicLong TOTAL_MAPPED_VIRTUAL_MEMORY = new AtomicLong(0);                                 //总的映射虚拟内存大小
+    private static final AtomicInteger TOTAL_MAPPED_FILES = new AtomicInteger(0);                                    //总的映射文件数
 
-    private static final AtomicLong TOTAL_MAPPED_VIRTUAL_MEMORY = new AtomicLong(0);
-
-    private static final AtomicInteger TOTAL_MAPPED_FILES = new AtomicInteger(0);
     protected final AtomicInteger wrotePosition = new AtomicInteger(0);
     //ADD BY ChenYang
     protected final AtomicInteger committedPosition = new AtomicInteger(0);
-    private final AtomicInteger flushedPosition = new AtomicInteger(0);
-    protected int fileSize;
+    private final AtomicInteger flushedPosition = new AtomicInteger(0);                                     //刷盘刷到的位置？
+    protected int fileSize;                                                                                             //映射文件大小
     protected FileChannel fileChannel;
     /**
      * Message will put to here first, and then reput to FileChannel if writeBuffer is not null.
      */
-    protected ByteBuffer writeBuffer = null;
-    protected TransientStorePool transientStorePool = null;
-    private String fileName;
+    protected ByteBuffer writeBuffer = null;                                                   //从transientStorePool中获取的ByteBuffer
+    protected TransientStorePool transientStorePool = null;                                    //池对象
+    private String fileName;                                                                   //起始偏移量？
     private long fileFromOffset;
     private File file;
     private MappedByteBuffer mappedByteBuffer;
@@ -73,8 +72,7 @@ public class MappedFile extends ReferenceResource {
         init(fileName, fileSize);
     }
 
-    public MappedFile(final String fileName, final int fileSize,
-        final TransientStorePool transientStorePool) throws IOException {
+    public MappedFile(final String fileName, final int fileSize, final TransientStorePool transientStorePool) throws IOException {
         init(fileName, fileSize, transientStorePool);
     }
 
@@ -91,9 +89,14 @@ public class MappedFile extends ReferenceResource {
     public static void clean(final ByteBuffer buffer) {
         if (buffer == null || !buffer.isDirect() || buffer.capacity() == 0)
             return;
+        //下面的一定是directByteBuffer
+        //获取ByteBuffer
+        //获得directByteBuffer的Cleaner对象 cleaner
+        //调用cleaner.clean方法，进行深度的释放资源
         invoke(invoke(viewed(buffer), "cleaner"), "clean");
     }
 
+    //调用target的methodName方法
     private static Object invoke(final Object target, final String methodName, final Class<?>... args) {
         return AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
@@ -108,8 +111,8 @@ public class MappedFile extends ReferenceResource {
         });
     }
 
-    private static Method method(Object target, String methodName, Class<?>[] args)
-        throws NoSuchMethodException {
+    //根据object和methodName获取Method对象
+    private static Method method(Object target, String methodName, Class<?>[] args) throws NoSuchMethodException {
         try {
             return target.getClass().getMethod(methodName, args);
         } catch (NoSuchMethodException e) {
@@ -117,6 +120,8 @@ public class MappedFile extends ReferenceResource {
         }
     }
 
+    //viewedBuffer？
+    //递归调用，调用buffer的viewedBuffer或者attachment方法，直到方法返回null，返回此时的buffer
     private static ByteBuffer viewed(ByteBuffer buffer) {
         String methodName = "viewedBuffer";
 
@@ -143,10 +148,9 @@ public class MappedFile extends ReferenceResource {
         return TOTAL_MAPPED_VIRTUAL_MEMORY.get();
     }
 
-    public void init(final String fileName, final int fileSize,
-        final TransientStorePool transientStorePool) throws IOException {
+    public void init(final String fileName, final int fileSize, final TransientStorePool transientStorePool) throws IOException {
         init(fileName, fileSize);
-        this.writeBuffer = transientStorePool.borrowBuffer();
+        this.writeBuffer = transientStorePool.borrowBuffer();              //writeBuffer有可能为null，如果池子已空
         this.transientStorePool = transientStorePool;
     }
 
@@ -154,7 +158,7 @@ public class MappedFile extends ReferenceResource {
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.file = new File(fileName);
-        this.fileFromOffset = Long.parseLong(this.file.getName());
+        this.fileFromOffset = Long.parseLong(this.file.getName());              //name代表了起始偏移量？
         boolean ok = false;
 
         ensureDirOK(this.file.getParent());

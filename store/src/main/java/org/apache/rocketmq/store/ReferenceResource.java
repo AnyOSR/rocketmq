@@ -24,6 +24,8 @@ public abstract class ReferenceResource {
     protected volatile boolean cleanupOver = false;
     private volatile long firstShutdownTimestamp = 0;
 
+    //只有在available为true，且之前的refCount大于0的情况下才自增并返回true
+    //否则返回false，refCount的值不变
     public synchronized boolean hold() {
         if (this.isAvailable()) {
             if (this.refCount.getAndIncrement() > 0) {
@@ -53,6 +55,8 @@ public abstract class ReferenceResource {
         }
     }
 
+    //--refCount的值大于0，则返回
+    //否则，调用cleanup(),并设置cleanupOver的值(清除完毕？)
     public void release() {
         long value = this.refCount.decrementAndGet();
         if (value > 0)
@@ -70,6 +74,8 @@ public abstract class ReferenceResource {
 
     public abstract boolean cleanup(final long currentRef);
 
+    //是否已经清除 refCount小于等于0且cleanupOver
+    //只能Realease之后cleanupOver才有可能为true
     public boolean isCleanupOver() {
         return this.refCount.get() <= 0 && this.cleanupOver;
     }

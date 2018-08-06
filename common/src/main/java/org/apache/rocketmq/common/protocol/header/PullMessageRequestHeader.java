@@ -37,7 +37,7 @@ public class PullMessageRequestHeader implements CommandCustomHeader {
     @CFNotNull
     private Integer maxMsgNums;
     @CFNotNull
-    private Integer sysFlag;
+    private Integer sysFlag;                     //PullSysFlag操作相关类
     @CFNotNull
     private Long commitOffset;
     @CFNotNull

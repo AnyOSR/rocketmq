@@ -51,6 +51,7 @@ public abstract class ServiceThread implements Runnable {
         this.stopped = true;
         log.info("shutdown thread " + this.getServiceName() + " interrupt " + interrupt);
 
+        //通知await的线程
         if (hasNotified.compareAndSet(false, true)) {
             waitPoint.countDown(); // notify
         }
@@ -107,7 +108,7 @@ public abstract class ServiceThread implements Runnable {
     //如果之前有被shutdown或者stop,则直接调用onWaitEnd()方法
     //此方法调用完后，hasNotified的值一定为false
     protected void waitForRunning(long interval) {
-        // 如果hasNotified的值为true，且原子的更新为false，则直接调用hasNotified()方法，并返回
+        // 如果hasNotified的值为true，且原子的更新为false，则直接调用onWaitEnd()方法，并返回
         if (hasNotified.compareAndSet(true, false)) {
             this.onWaitEnd();
             return;
@@ -127,6 +128,7 @@ public abstract class ServiceThread implements Runnable {
         }
     }
 
+    //类似于一个回调，由子类实现，模板方法
     protected void onWaitEnd() {
     }
 
