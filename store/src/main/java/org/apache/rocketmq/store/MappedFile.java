@@ -41,6 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.nio.ch.DirectBuffer;
 
+
+// flushedPosition <= committedPosition <= wrotePosition <= fileSize
 public class MappedFile extends ReferenceResource {
     public static final int OS_PAGE_SIZE = 1024 * 4;
     protected static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
@@ -49,7 +51,7 @@ public class MappedFile extends ReferenceResource {
 
     protected final AtomicInteger wrotePosition = new AtomicInteger(0);                                     //写入位置
     //ADD BY ChenYang
-    protected final AtomicInteger committedPosition = new AtomicInteger(0);
+    protected final AtomicInteger committedPosition = new AtomicInteger(0);                                 //对于MappedByteBuffer，wrotePosition代表了committedPosition
     private final AtomicInteger flushedPosition = new AtomicInteger(0);                                     //刷盘位置
     protected int fileSize;                                                                                             //映射文件大小
     protected FileChannel fileChannel;
@@ -208,7 +210,7 @@ public class MappedFile extends ReferenceResource {
 
         int currentPos = this.wrotePosition.get();
 
-        //只会向一个buffer写入数据，或者是writeBuffer，或者是mappedByteBuffer
+        //只会向一个buffer写入数据，或者writeBuffer，或者mappedByteBuffer
         //优先writeBuffer，如果writeBuffer为null，则为mappedByteBuffer
         if (currentPos < this.fileSize) {
             ByteBuffer byteBuffer = writeBuffer != null ? writeBuffer.slice() : this.mappedByteBuffer.slice();
@@ -224,7 +226,7 @@ public class MappedFile extends ReferenceResource {
             } else {
                 return new AppendMessageResult(AppendMessageStatus.UNKNOWN_ERROR);
             }
-            this.wrotePosition.addAndGet(result.getWroteBytes());
+            this.wrotePosition.addAndGet(result.getWroteBytes());                      //更改写入位置，buffer
             this.storeTimestamp = result.getStoreTimestamp();
             return result;
         }
@@ -247,7 +249,7 @@ public class MappedFile extends ReferenceResource {
             } catch (Throwable e) {
                 log.error("Error occurred when append message to mappedFile.", e);
             }
-            this.wrotePosition.addAndGet(data.length);
+            this.wrotePosition.addAndGet(data.length);                   //？
             return true;
         }
 
@@ -281,6 +283,8 @@ public class MappedFile extends ReferenceResource {
     /**
      * @return The current flushed position
      */
+    //flush的时候，将channel里面所有的数据flush到磁盘
+    //channel里面的数据只到committedPosition，flush后将flushedPosition设置为committedPosition   上次flush到committedPosition之间的数据
     public int flush(final int flushLeastPages) {
         if (this.isAbleToFlush(flushLeastPages)) {
             if (this.hold()) {
@@ -296,7 +300,7 @@ public class MappedFile extends ReferenceResource {
                 } catch (Throwable e) {
                     log.error("Error occurred when force data to disk.", e);
                 }
-
+                //更新刷到的位置
                 this.flushedPosition.set(value);
                 this.release();
             } else {
@@ -333,6 +337,8 @@ public class MappedFile extends ReferenceResource {
     }
 
     //只有writeBuffer不为null才会调用，然后将writeBuffer里面的数据刷新到channel，并更新committedPosition的值
+    //上一次committedPosition ----->wrotePosition的数据  刷入到channel
+    //并将committedPosition设置为wrotePosition
     protected void commit0(final int commitLeastPages) {
         int writePos = this.wrotePosition.get();
         int lastCommittedPosition = this.committedPosition.get();
@@ -489,7 +495,7 @@ public class MappedFile extends ReferenceResource {
     /**
      * @return The max position which have valid data
      */
-    //如果writeBuffer为null，则对于mappedByteBuffer来说，wrotePosition即为提交位置,
+    //如果writeBuffer为null，则对于mappedByteBuffer来说，wrotePosition即为提交位置
     //否则writeBuffer不为null，则返回committedPosition
     public int getReadPosition() {
         return this.writeBuffer == null ? this.wrotePosition.get() : this.committedPosition.get();
