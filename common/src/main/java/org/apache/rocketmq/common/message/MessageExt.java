@@ -56,6 +56,9 @@ public class MessageExt extends Message {
         this.msgId = msgId;
     }
 
+    //sysFlag topic过滤方式
+    //倒数第二位
+    //1为MULTI_TAG 0为SINGLE_TAG方式
     public static TopicFilterType parseTopicFilterType(final int sysFlag) {
         if ((sysFlag & MessageSysFlag.MULTI_TAGS_FLAG) == MessageSysFlag.MULTI_TAGS_FLAG) {
             return TopicFilterType.MULTI_TAG;
@@ -64,6 +67,7 @@ public class MessageExt extends Message {
         return TopicFilterType.SINGLE_TAG;
     }
 
+    //将socketAddress信息存储至byteBuffer
     public static ByteBuffer socketAddress2ByteBuffer(final SocketAddress socketAddress, final ByteBuffer byteBuffer) {
         InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
         byteBuffer.put(inetSocketAddress.getAddress().getAddress(), 0, 4);
@@ -76,6 +80,7 @@ public class MessageExt extends Message {
         ByteBuffer byteBuffer = ByteBuffer.allocate(8);
         return socketAddress2ByteBuffer(socketAddress, byteBuffer);
     }
+
 
     public ByteBuffer getBornHostBytes() {
         return socketAddress2ByteBuffer(this.bornHost);

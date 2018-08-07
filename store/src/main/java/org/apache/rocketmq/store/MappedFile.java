@@ -47,10 +47,10 @@ public class MappedFile extends ReferenceResource {
     private static final AtomicLong TOTAL_MAPPED_VIRTUAL_MEMORY = new AtomicLong(0);                                 //总的映射虚拟内存大小
     private static final AtomicInteger TOTAL_MAPPED_FILES = new AtomicInteger(0);                                    //总的映射文件数
 
-    protected final AtomicInteger wrotePosition = new AtomicInteger(0);
+    protected final AtomicInteger wrotePosition = new AtomicInteger(0);                                     //写入位置
     //ADD BY ChenYang
     protected final AtomicInteger committedPosition = new AtomicInteger(0);
-    private final AtomicInteger flushedPosition = new AtomicInteger(0);                                     //刷盘刷到的位置？
+    private final AtomicInteger flushedPosition = new AtomicInteger(0);                                     //刷盘位置
     protected int fileSize;                                                                                             //映射文件大小
     protected FileChannel fileChannel;
     /**
@@ -58,8 +58,8 @@ public class MappedFile extends ReferenceResource {
      */
     protected ByteBuffer writeBuffer = null;                                                   //从transientStorePool中获取的ByteBuffer
     protected TransientStorePool transientStorePool = null;                                    //池对象
-    private String fileName;                                                                   //起始偏移量？
-    private long fileFromOffset;
+    private String fileName;                                                                   //包括路径的文件名
+    private long fileFromOffset;                                                               //其实偏移量
     private File file;
     private MappedByteBuffer mappedByteBuffer;
     private volatile long storeTimestamp = 0;
@@ -158,7 +158,7 @@ public class MappedFile extends ReferenceResource {
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.file = new File(fileName);
-        this.fileFromOffset = Long.parseLong(this.file.getName());              //name代表了起始偏移量？
+        this.fileFromOffset = Long.parseLong(this.file.getName());              //name代表了起始偏移量
         boolean ok = false;
 
         ensureDirOK(this.file.getParent());
@@ -208,8 +208,13 @@ public class MappedFile extends ReferenceResource {
 
         int currentPos = this.wrotePosition.get();
 
+        //只会向一个buffer写入数据，或者是writeBuffer，或者是mappedByteBuffer
+        //优先writeBuffer，如果writeBuffer为null，则为mappedByteBuffer
         if (currentPos < this.fileSize) {
             ByteBuffer byteBuffer = writeBuffer != null ? writeBuffer.slice() : this.mappedByteBuffer.slice();
+
+            //由于操作的都是slice出来的buffer，所以writeBuffer或者mappedByteBuffer的position永远为0，slice出来的buffer永远都是writeBuffer或者mappedByteBuffer的一个完全副本
+            //对slice出来的byteBuffer的改变会影响到writeBuffer或者mappedByteBuffer
             byteBuffer.position(currentPos);
             AppendMessageResult result = null;
             if (messageExt instanceof MessageExtBrokerInner) {
@@ -231,6 +236,7 @@ public class MappedFile extends ReferenceResource {
         return this.fileFromOffset;
     }
 
+    //将数据写入到通道
     public boolean appendMessage(final byte[] data) {
         int currentPos = this.wrotePosition.get();
 
@@ -254,6 +260,7 @@ public class MappedFile extends ReferenceResource {
      * @param offset The offset of the subarray to be used.
      * @param length The length of the subarray to be used.
      */
+    //写一部分数据到channel
     public boolean appendMessage(final byte[] data, final int offset, final int length) {
         int currentPos = this.wrotePosition.get();
 
@@ -300,7 +307,9 @@ public class MappedFile extends ReferenceResource {
         return this.getFlushedPosition();
     }
 
+    //将数据commit到file channel
     public int commit(final int commitLeastPages) {
+        //如果writeBuffer == null，则是mappedByteBuffer，不用commit，直接返回写的位置
         if (writeBuffer == null) {
             //no need to commit data to file channel, so just regard wrotePosition as committedPosition.
             return this.wrotePosition.get();
@@ -323,6 +332,7 @@ public class MappedFile extends ReferenceResource {
         return this.committedPosition.get();
     }
 
+    //只有writeBuffer不为null才会调用，然后将writeBuffer里面的数据刷新到channel，并更新committedPosition的值
     protected void commit0(final int commitLeastPages) {
         int writePos = this.wrotePosition.get();
         int lastCommittedPosition = this.committedPosition.get();
@@ -394,8 +404,7 @@ public class MappedFile extends ReferenceResource {
                 byteBufferNew.limit(size);
                 return new SelectMappedBufferResult(this.fileFromOffset + pos, byteBufferNew, size, this);
             } else {
-                log.warn("matched, but hold failed, request pos: " + pos + ", fileFromOffset: "
-                    + this.fileFromOffset);
+                log.warn("matched, but hold failed, request pos: " + pos + ", fileFromOffset: " + this.fileFromOffset);
             }
         } else {
             log.warn("selectMappedBuffer request pos invalid, request pos: " + pos + ", size: " + size
@@ -480,6 +489,8 @@ public class MappedFile extends ReferenceResource {
     /**
      * @return The max position which have valid data
      */
+    //如果writeBuffer为null，则对于mappedByteBuffer来说，wrotePosition即为提交位置,
+    //否则writeBuffer不为null，则返回committedPosition
     public int getReadPosition() {
         return this.writeBuffer == null ? this.wrotePosition.get() : this.committedPosition.get();
     }
