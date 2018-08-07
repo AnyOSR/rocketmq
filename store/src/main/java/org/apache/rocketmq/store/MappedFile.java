@@ -43,6 +43,8 @@ import sun.nio.ch.DirectBuffer;
 
 
 // flushedPosition <= committedPosition <= wrotePosition <= fileSize
+//flush  lastflushedPosition  ------>committedPosition
+//commit lastcommittedPosition ------>wrotePosition
 public class MappedFile extends ReferenceResource {
     public static final int OS_PAGE_SIZE = 1024 * 4;
     protected static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
