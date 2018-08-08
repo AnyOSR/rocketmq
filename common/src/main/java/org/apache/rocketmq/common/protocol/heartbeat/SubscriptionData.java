@@ -24,6 +24,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import java.util.HashSet;
 import java.util.Set;
 
+//订阅元数据
 public class SubscriptionData implements Comparable<SubscriptionData> {
     public final static String SUB_ALL = "*";
     private boolean classFilterMode = false;

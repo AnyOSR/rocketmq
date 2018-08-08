@@ -96,8 +96,7 @@ public class Broker2Client {
 
         NotifyConsumerIdsChangedRequestHeader requestHeader = new NotifyConsumerIdsChangedRequestHeader();
         requestHeader.setConsumerGroup(consumerGroup);
-        RemotingCommand request =
-            RemotingCommand.createRequestCommand(RequestCode.NOTIFY_CONSUMER_IDS_CHANGED, requestHeader);
+        RemotingCommand request = RemotingCommand.createRequestCommand(RequestCode.NOTIFY_CONSUMER_IDS_CHANGED, requestHeader);
 
         try {
             this.brokerController.getRemotingServer().invokeOneway(channel, request, 10);

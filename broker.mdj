@@ -15106,8 +15106,8 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 3360,
-											"top": -1360,
+											"left": 2992,
+											"top": -896,
 											"height": 13
 										},
 										{
@@ -15117,9 +15117,9 @@
 												"$ref": "AAAAAAFlGJvwhYORULI="
 											},
 											"font": "Arial;13;1",
-											"left": 2501,
-											"top": 207,
-											"width": 427.4130859375,
+											"left": 2317,
+											"top": 439,
+											"width": 1805.38134765625,
 											"height": 13,
 											"text": "ConsumerManager"
 										},
@@ -15131,8 +15131,8 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 3360,
-											"top": -1360,
+											"left": 2992,
+											"top": -896,
 											"width": 73.67724609375,
 											"height": 13,
 											"text": "(from Model)"
@@ -15145,16 +15145,16 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 3360,
-											"top": -1360,
+											"left": 2992,
+											"top": -896,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 2496,
-									"top": 200,
-									"width": 437.4130859375,
+									"left": 2312,
+									"top": 432,
+									"width": 1815.38134765625,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFlGJvwhYOSFhQ="
@@ -15189,9 +15189,9 @@
 												"$ref": "AAAAAAFlGKCJFYSHS4g="
 											},
 											"font": "Arial;13;0",
-											"left": 2501,
-											"top": 230,
-											"width": 427.4130859375,
+											"left": 2317,
+											"top": 462,
+											"width": 1805.38134765625,
 											"height": 13,
 											"underline": true,
 											"text": "+CHANNEL_EXPIRED_TIMEOUT: long",
@@ -15207,9 +15207,9 @@
 												"$ref": "AAAAAAFlGJ39xoP4w4Y="
 											},
 											"font": "Arial;13;0",
-											"left": 2501,
-											"top": 245,
-											"width": 427.4130859375,
+											"left": 2317,
+											"top": 477,
+											"width": 1805.38134765625,
 											"height": 13,
 											"text": "+consumerIdsChangeListener: ConsumerIdsChangeListener",
 											"horizontalAlignment": 0
@@ -15224,18 +15224,18 @@
 												"$ref": "AAAAAAFlGJ6lWIRVtn8="
 											},
 											"font": "Arial;13;0",
-											"left": 2501,
-											"top": 260,
-											"width": 427.4130859375,
+											"left": 2317,
+											"top": 492,
+											"width": 1805.38134765625,
 											"height": 13,
 											"text": "+consumerTable: ConcurrentMap<String/* Group */, ConsumerGroupInfo>",
 											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 2496,
-									"top": 225,
-									"width": 437.4130859375,
+									"left": 2312,
+									"top": 457,
+									"width": 1815.38134765625,
 									"height": 53
 								},
 								{
@@ -15247,11 +15247,132 @@
 									"model": {
 										"$ref": "AAAAAAFlGJvwhIOOnGI="
 									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGZQbrqJZDC8=",
+											"_parent": {
+												"$ref": "AAAAAAFlGJvwhYOXN/U="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGZQbWaJTbcQ="
+											},
+											"font": "Arial;13;0",
+											"left": 2317,
+											"top": 515,
+											"width": 1805.38134765625,
+											"height": 13,
+											"text": "«public ClientChannelInfo findChannel(final String group, final String clientId)»+findChannel()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGZU+p6MvQaQ=",
+											"_parent": {
+												"$ref": "AAAAAAFlGJvwhYOXN/U="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGZU+WaMpVNw="
+											},
+											"font": "Arial;13;0",
+											"left": 2317,
+											"top": 530,
+											"width": 1805.38134765625,
+											"height": 13,
+											"text": "«public SubscriptionData findSubscriptionData(final String group, final String topic)»+findSubscriptionData()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGbbjuKPlfF0=",
+											"_parent": {
+												"$ref": "AAAAAAFlGJvwhYOXN/U="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGbbjaKPfbFk="
+											},
+											"font": "Arial;13;0",
+											"left": 2317,
+											"top": 545,
+											"width": 1805.38134765625,
+											"height": 13,
+											"text": "«public void doChannelCloseEvent(final String remoteAddr, final Channel channel)»+doChannelCloseEvent()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGcFUqKQXEMs=",
+											"_parent": {
+												"$ref": "AAAAAAFlGJvwhYOXN/U="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGcFUW6QRHrA="
+											},
+											"font": "Arial;13;0",
+											"left": 2317,
+											"top": 560,
+											"width": 1805.38134765625,
+											"height": 13,
+											"text": "«public boolean registerConsumer(final String group, final ClientChannelInfo clientChannelInfo, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere, final Set<SubscriptionData> subList, boolean isNotifyConsumerIdsChangedEnable)»+registerConsumer()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGcNfSqXIV4U=",
+											"_parent": {
+												"$ref": "AAAAAAFlGJvwhYOXN/U="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGcNe+KXCs7Y="
+											},
+											"font": "Arial;13;0",
+											"left": 2317,
+											"top": 575,
+											"width": 1805.38134765625,
+											"height": 13,
+											"text": "«public void unregisterConsumer(final String group, final ClientChannelInfo clientChannelInfo, boolean isNotifyConsumerIdsChangedEnable)»+unregisterConsumer()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGcUd86YD2pg=",
+											"_parent": {
+												"$ref": "AAAAAAFlGJvwhYOXN/U="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGcUdp6X9RzY="
+											},
+											"font": "Arial;13;0",
+											"left": 2317,
+											"top": 590,
+											"width": 1805.38134765625,
+											"height": 13,
+											"text": "«public void scanNotActiveChannel()»+scanNotActiveChannel()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGcVrg6Y1qdM=",
+											"_parent": {
+												"$ref": "AAAAAAFlGJvwhYOXN/U="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGcVrL6Yvdkk="
+											},
+											"font": "Arial;13;0",
+											"left": 2317,
+											"top": 605,
+											"width": 1805.38134765625,
+											"height": 13,
+											"text": "«public HashSet<String> queryTopicConsumeByWho(final String topic)»+queryTopicConsumeByWho()",
+											"horizontalAlignment": 0
+										}
+									],
 									"font": "Arial;13;0",
-									"left": 2496,
-									"top": 278,
-									"width": 437.4130859375,
-									"height": 10
+									"left": 2312,
+									"top": 510,
+									"width": 1815.38134765625,
+									"height": 113
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -15264,8 +15385,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 1680,
-									"top": -680,
+									"left": 1496,
+									"top": -448,
 									"width": 10,
 									"height": 10
 								},
@@ -15280,18 +15401,18 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 1680,
-									"top": -680,
+									"left": 1496,
+									"top": -448,
 									"width": 10,
 									"height": 10
 								}
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
-							"left": 2496,
-							"top": 200,
-							"width": 437.4130859375,
-							"height": 88,
+							"left": 2312,
+							"top": 432,
+							"width": 1815.38134765625,
+							"height": 191,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlGJvwhYORULI="
 							},
@@ -15679,8 +15800,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 2966,
-									"top": 219,
+									"left": 3513,
+									"top": 388,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -15700,8 +15821,8 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 2966,
-									"top": 204,
+									"left": 3498,
+									"top": 388,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -15721,8 +15842,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 2966,
-									"top": 249,
+									"left": 3542,
+									"top": 389,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -15739,7 +15860,7 @@
 							"tail": {
 								"$ref": "AAAAAAFlGJvwhIOQCY4="
 							},
-							"points": "2932:240;3000:240",
+							"points": "3528:432;3528:358",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFlGKqyVIWL6G4="
@@ -20341,6 +20462,71 @@
 							},
 							"name": "consumerTable",
 							"type": "ConcurrentMap<String/* Group */, ConsumerGroupInfo>"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGZQbWaJTbcQ=",
+							"_parent": {
+								"$ref": "AAAAAAFlGJvwhIOOnGI="
+							},
+							"name": "findChannel",
+							"stereotype": "public ClientChannelInfo findChannel(final String group, final String clientId)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGZU+WaMpVNw=",
+							"_parent": {
+								"$ref": "AAAAAAFlGJvwhIOOnGI="
+							},
+							"name": "findSubscriptionData",
+							"stereotype": "public SubscriptionData findSubscriptionData(final String group, final String topic)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGbbjaKPfbFk=",
+							"_parent": {
+								"$ref": "AAAAAAFlGJvwhIOOnGI="
+							},
+							"name": "doChannelCloseEvent",
+							"stereotype": "public void doChannelCloseEvent(final String remoteAddr, final Channel channel)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGcFUW6QRHrA=",
+							"_parent": {
+								"$ref": "AAAAAAFlGJvwhIOOnGI="
+							},
+							"name": "registerConsumer",
+							"stereotype": "public boolean registerConsumer(final String group, final ClientChannelInfo clientChannelInfo, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere, final Set<SubscriptionData> subList, boolean isNotifyConsumerIdsChangedEnable)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGcNe+KXCs7Y=",
+							"_parent": {
+								"$ref": "AAAAAAFlGJvwhIOOnGI="
+							},
+							"name": "unregisterConsumer",
+							"stereotype": "public void unregisterConsumer(final String group, final ClientChannelInfo clientChannelInfo, boolean isNotifyConsumerIdsChangedEnable)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGcUdp6X9RzY=",
+							"_parent": {
+								"$ref": "AAAAAAFlGJvwhIOOnGI="
+							},
+							"name": "scanNotActiveChannel",
+							"stereotype": "public void scanNotActiveChannel()"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGcVrL6Yvdkk=",
+							"_parent": {
+								"$ref": "AAAAAAFlGJvwhIOOnGI="
+							},
+							"name": "queryTopicConsumeByWho",
+							"stereotype": "public HashSet<String> queryTopicConsumeByWho(final String topic)"
 						}
 					]
 				},
