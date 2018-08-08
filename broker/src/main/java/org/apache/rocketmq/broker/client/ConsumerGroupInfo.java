@@ -111,6 +111,7 @@ public class ConsumerGroupInfo {
         return false;
     }
 
+    //返回是否是插入，而不是更新
     public boolean updateChannel(final ClientChannelInfo infoNew, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere) {
         boolean updated = false;
         this.consumeType = consumeType;
@@ -118,25 +119,27 @@ public class ConsumerGroupInfo {
         this.consumeFromWhere = consumeFromWhere;
 
         ClientChannelInfo infoOld = this.channelInfoTable.get(infoNew.getChannel());
+        //如果之前不存在
         if (null == infoOld) {
             ClientChannelInfo prev = this.channelInfoTable.put(infoNew.getChannel(), infoNew);
+            //如果不存在，则更新成功(多线程竞争插入)
             if (null == prev) {
                 log.info("new consumer connected, group: {} {} {} channel: {}", this.groupName, consumeType, messageModel, infoNew.toString());
                 updated = true;
             }
-
             infoOld = infoNew;
         } else {
+            //infoOld已经存在，则infoNew.getChannel()已经存在，
+            //infoOld和infoNew的channel一样，clientID不一样
             if (!infoOld.getClientId().equals(infoNew.getClientId())) {
-                log.error("[BUG] consumer channel exist in broker, but clientId not equal. GROUP: {} OLD: {} NEW: {} ",
-                    this.groupName,
-                    infoOld.toString(),
-                    infoNew.toString());
+                log.error("[BUG] consumer channel exist in broker, but clientId not equal. GROUP: {} OLD: {} NEW: {} ", this.groupName, infoOld.toString(), infoNew.toString());
                 this.channelInfoTable.put(infoNew.getChannel(), infoNew);
             }
         }
 
         this.lastUpdateTimestamp = System.currentTimeMillis();
+        //在 null != infoOld且clientId不同的时候，更新这个还有必要？不过更新了也没毛病
+        //否则需要更新时间(虽然实际上可能没有更新)
         infoOld.setLastUpdateTimestamp(this.lastUpdateTimestamp);
 
         return updated;
