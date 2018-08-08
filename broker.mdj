@@ -15578,13 +15578,30 @@
 											"height": 13,
 											"text": "«public boolean updateChannel(final ClientChannelInfo infoNew, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere)»+updateChannel()",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlGX0A5KGu+xw=",
+											"_parent": {
+												"$ref": "AAAAAAFlGKNqyoU/uVs="
+											},
+											"model": {
+												"$ref": "AAAAAAFlGX0AjaGoFSA="
+											},
+											"font": "Arial;13;0",
+											"left": 3005,
+											"top": 341,
+											"width": 1103.06396484375,
+											"height": 13,
+											"text": "«public boolean updateSubscription(final Set<SubscriptionData> subList)»+updateSubscription()",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 3000,
 									"top": 306,
 									"width": 1113.06396484375,
-									"height": 38
+									"height": 53
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -15624,7 +15641,7 @@
 							"left": 3000,
 							"top": 168,
 							"width": 1113.06396484375,
-							"height": 176,
+							"height": 191,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlGKNqyoU5XZM="
 							},
@@ -20471,6 +20488,15 @@
 							},
 							"name": "updateChannel",
 							"stereotype": "public boolean updateChannel(final ClientChannelInfo infoNew, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlGX0AjaGoFSA=",
+							"_parent": {
+								"$ref": "AAAAAAFlGKNqyYU2TPY="
+							},
+							"name": "updateSubscription",
+							"stereotype": "public boolean updateSubscription(final Set<SubscriptionData> subList)"
 						}
 					]
 				},

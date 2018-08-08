@@ -112,6 +112,9 @@ public class ConsumerGroupInfo {
     }
 
     //返回是否是插入，而不是更新
+    //如果之前不存在
+    //存在，但是clientId不一样，都会更新/插入数据
+    //否则，do nothing
     public boolean updateChannel(final ClientChannelInfo infoNew, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere) {
         boolean updated = false;
         this.consumeType = consumeType;
@@ -119,18 +122,17 @@ public class ConsumerGroupInfo {
         this.consumeFromWhere = consumeFromWhere;
 
         ClientChannelInfo infoOld = this.channelInfoTable.get(infoNew.getChannel());
-        //如果之前不存在
+
         if (null == infoOld) {
             ClientChannelInfo prev = this.channelInfoTable.put(infoNew.getChannel(), infoNew);
-            //如果不存在，则更新成功(多线程竞争插入)
+            // prev==null,则是insert而不是update
             if (null == prev) {
                 log.info("new consumer connected, group: {} {} {} channel: {}", this.groupName, consumeType, messageModel, infoNew.toString());
                 updated = true;
             }
             infoOld = infoNew;
         } else {
-            //infoOld已经存在，则infoNew.getChannel()已经存在于channelInfoTable
-            //infoOld和infoNew的channel一样，clientID不一样
+            //clientId不一样
             if (!infoOld.getClientId().equals(infoNew.getClientId())) {
                 log.error("[BUG] consumer channel exist in broker, but clientId not equal. GROUP: {} OLD: {} NEW: {} ", this.groupName, infoOld.toString(), infoNew.toString());
                 this.channelInfoTable.put(infoNew.getChannel(), infoNew);              //此时，infoOld已经无用了，因为没有逃逸
@@ -139,13 +141,13 @@ public class ConsumerGroupInfo {
         }
 
         this.lastUpdateTimestamp = System.currentTimeMillis();
-        //在 null != infoOld且clientId不同的时候，更新这个还有必要？不过更新了也没毛病
-        //否则需要更新时间(虽然实际上可能没有更新)
         infoOld.setLastUpdateTimestamp(this.lastUpdateTimestamp);
 
         return updated;
     }
 
+    //有insert或者delete操作，都会返回true
+    //否则返回false
     public boolean updateSubscription(final Set<SubscriptionData> subList) {
         boolean updated = false;
 
@@ -153,25 +155,24 @@ public class ConsumerGroupInfo {
             SubscriptionData old = this.subscriptionTable.get(sub.getTopic());
             if (old == null) {
                 SubscriptionData prev = this.subscriptionTable.putIfAbsent(sub.getTopic(), sub);
+                //竞争插入成功
                 if (null == prev) {
                     updated = true;
                     log.info("subscription changed, add new topic, group: {} {}",
                         this.groupName,
                         sub.toString());
                 }
+                //竞争插入失败则不更新，此时subscriptionTable中已然存在key为sub.getTopic()的数据
             } else if (sub.getSubVersion() > old.getSubVersion()) {
                 if (this.consumeType == ConsumeType.CONSUME_PASSIVELY) {
-                    log.info("subscription changed, group: {} OLD: {} NEW: {}",
-                        this.groupName,
-                        old.toString(),
-                        sub.toString()
-                    );
+                    log.info("subscription changed, group: {} OLD: {} NEW: {}", this.groupName, old.toString(), sub.toString());
                 }
-
+                //如果sub版本大于之前版本
                 this.subscriptionTable.put(sub.getTopic(), sub);
             }
         }
-
+        //此时，subList中的所有topic都已经存在于subscriptionTable中了
+        //删除掉所有不存在于subList中的topic
         Iterator<Entry<String, SubscriptionData>> it = this.subscriptionTable.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, SubscriptionData> next = it.next();
@@ -186,12 +187,7 @@ public class ConsumerGroupInfo {
             }
 
             if (!exist) {
-                log.warn("subscription changed, group: {} remove topic {} {}",
-                    this.groupName,
-                    oldTopic,
-                    next.getValue().toString()
-                );
-
+                log.warn("subscription changed, group: {} remove topic {} {}", this.groupName, oldTopic, next.getValue().toString());
                 it.remove();
                 updated = true;
             }
