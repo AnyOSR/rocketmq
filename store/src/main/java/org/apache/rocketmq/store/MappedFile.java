@@ -513,6 +513,7 @@ public class MappedFile extends ReferenceResource {
         this.committedPosition.set(pos);
     }
 
+
     public void warmMappedFile(FlushDiskType type, int pages) {
         long beginTime = System.currentTimeMillis();
         ByteBuffer byteBuffer = this.mappedByteBuffer.slice();
@@ -542,12 +543,10 @@ public class MappedFile extends ReferenceResource {
 
         // force flush when prepare load finished
         if (type == FlushDiskType.SYNC_FLUSH) {
-            log.info("mapped file warm-up done, force to disk, mappedFile={}, costTime={}",
-                this.getFileName(), System.currentTimeMillis() - beginTime);
+            log.info("mapped file warm-up done, force to disk, mappedFile={}, costTime={}", this.getFileName(), System.currentTimeMillis() - beginTime);
             mappedByteBuffer.force();
         }
-        log.info("mapped file warm-up done. mappedFile={}, costTime={}", this.getFileName(),
-            System.currentTimeMillis() - beginTime);
+        log.info("mapped file warm-up done. mappedFile={}, costTime={}", this.getFileName(), System.currentTimeMillis() - beginTime);
 
         this.mlock();
     }

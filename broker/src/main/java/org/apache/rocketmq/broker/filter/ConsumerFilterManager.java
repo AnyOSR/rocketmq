@@ -319,8 +319,7 @@ public class ConsumerFilterManager extends ConfigManager {
 
     public static class FilterDataMapByTopic {
 
-        private ConcurrentMap<String/*consumer group*/, ConsumerFilterData>
-            groupFilterData = new ConcurrentHashMap<String, ConsumerFilterData>();
+        private ConcurrentMap<String/*consumer group*/, ConsumerFilterData> groupFilterData = new ConcurrentHashMap<String, ConsumerFilterData>();
 
         private String topic;
 

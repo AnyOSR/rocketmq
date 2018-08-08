@@ -39,17 +39,19 @@ public class ConsumerGroupInfo {
     private volatile MessageModel messageModel;
     private volatile ConsumeFromWhere consumeFromWhere;
 
+    //一个ConsumerGroup里面的consumer可以订阅多个topic？
     private final ConcurrentMap<String/* Topic */, SubscriptionData> subscriptionTable = new ConcurrentHashMap<String, SubscriptionData>();
+    //一个ConsumerGroup里面所有的consumer连接？
     private final ConcurrentMap<Channel, ClientChannelInfo> channelInfoTable = new ConcurrentHashMap<Channel, ClientChannelInfo>(16);
     private volatile long lastUpdateTimestamp = System.currentTimeMillis();
-    public ConsumerGroupInfo(String groupName, ConsumeType consumeType, MessageModel messageModel,
-        ConsumeFromWhere consumeFromWhere) {
+    public ConsumerGroupInfo(String groupName, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere) {
         this.groupName = groupName;
         this.consumeType = consumeType;
         this.messageModel = messageModel;
         this.consumeFromWhere = consumeFromWhere;
     }
 
+    //找到特定的ClientChannelInfo
     public ClientChannelInfo findChannel(final String clientId) {
         Iterator<Entry<Channel, ClientChannelInfo>> it = this.channelInfoTable.entrySet().iterator();
         while (it.hasNext()) {
@@ -92,6 +94,7 @@ public class ConsumerGroupInfo {
         return result;
     }
 
+    //去除掉某一个consumer连接
     public void unregisterChannel(final ClientChannelInfo clientChannelInfo) {
         ClientChannelInfo old = this.channelInfoTable.remove(clientChannelInfo.getChannel());
         if (old != null) {
@@ -102,17 +105,13 @@ public class ConsumerGroupInfo {
     public boolean doChannelCloseEvent(final String remoteAddr, final Channel channel) {
         final ClientChannelInfo info = this.channelInfoTable.remove(channel);
         if (info != null) {
-            log.warn(
-                "NETTY EVENT: remove not active channel[{}] from ConsumerGroupInfo groupChannelTable, consumer group: {}",
-                info.toString(), groupName);
+            log.warn("NETTY EVENT: remove not active channel[{}] from ConsumerGroupInfo groupChannelTable, consumer group: {}", info.toString(), groupName);
             return true;
         }
-
         return false;
     }
 
-    public boolean updateChannel(final ClientChannelInfo infoNew, ConsumeType consumeType,
-        MessageModel messageModel, ConsumeFromWhere consumeFromWhere) {
+    public boolean updateChannel(final ClientChannelInfo infoNew, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere) {
         boolean updated = false;
         this.consumeType = consumeType;
         this.messageModel = messageModel;
@@ -122,8 +121,7 @@ public class ConsumerGroupInfo {
         if (null == infoOld) {
             ClientChannelInfo prev = this.channelInfoTable.put(infoNew.getChannel(), infoNew);
             if (null == prev) {
-                log.info("new consumer connected, group: {} {} {} channel: {}", this.groupName, consumeType,
-                    messageModel, infoNew.toString());
+                log.info("new consumer connected, group: {} {} {} channel: {}", this.groupName, consumeType, messageModel, infoNew.toString());
                 updated = true;
             }
 
