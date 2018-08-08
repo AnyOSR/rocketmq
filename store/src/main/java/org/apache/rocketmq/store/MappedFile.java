@@ -42,9 +42,11 @@ import org.slf4j.LoggerFactory;
 import sun.nio.ch.DirectBuffer;
 
 
-// flushedPosition <= committedPosition <= wrotePosition <= fileSize
-//flush  lastflushedPosition  ------>committedPosition
-//commit lastcommittedPosition ------>wrotePosition
+//flushedPosition <= committedPosition <= wrotePosition <= fileSize
+
+//flush  lastflushedPosition  ------>committedPosition  flush是将lastflushedPosition到committedPosition之间的数据force到磁盘，然后将flushedPosition设置为committedPosition
+//commit lastcommittedPosition ------>wrotePosition   commit是提交lastcommittedPosition到wrotePosition之间的数据到channel，然后将committedPosition设置为当前的wrotePosition，对于mappedByteBuffer来说，没有真正的commit操作
+//append wrotePosition  ------->fileSize              append是往wrotePosition之后append数据
 public class MappedFile extends ReferenceResource {
     public static final int OS_PAGE_SIZE = 1024 * 4;
     protected static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
@@ -206,6 +208,8 @@ public class MappedFile extends ReferenceResource {
         return appendMessagesInner(messageExtBatch, cb);
     }
 
+    //对于mappedByteBuffer来说    append即为commit,同步发生    只有append flush  wrotePosition即为committedPosition
+    //对于writeBuffer来说   有append，commit，flush
     public AppendMessageResult appendMessagesInner(final MessageExt messageExt, final AppendMessageCallback cb) {
         assert messageExt != null;
         assert cb != null;
@@ -251,7 +255,7 @@ public class MappedFile extends ReferenceResource {
             } catch (Throwable e) {
                 log.error("Error occurred when append message to mappedFile.", e);
             }
-            this.wrotePosition.addAndGet(data.length);                   //？
+            this.wrotePosition.addAndGet(data.length);                   //？下次commit数据会不会commit多一部分数据？
             return true;
         }
 
@@ -290,7 +294,7 @@ public class MappedFile extends ReferenceResource {
     public int flush(final int flushLeastPages) {
         if (this.isAbleToFlush(flushLeastPages)) {
             if (this.hold()) {
-                int value = getReadPosition();
+                int value = getReadPosition();           //已经提交到的位置
 
                 try {
                     //We only append data to fileChannel or mappedByteBuffer, never both.
@@ -303,7 +307,7 @@ public class MappedFile extends ReferenceResource {
                     log.error("Error occurred when force data to disk.", e);
                 }
                 //更新刷到的位置
-                this.flushedPosition.set(value);
+                this.flushedPosition.set(value);                        //将flushedPosition设置为committedPosition，刷新的数据为上次flushedPosition到committedPosition之间的数据，只能刷新到committedPosition这个位置
                 this.release();
             } else {
                 log.warn("in flush, hold failed, flush offset = " + this.flushedPosition.get());
@@ -314,6 +318,7 @@ public class MappedFile extends ReferenceResource {
     }
 
     //将数据commit到file channel
+    //对于mappedByteBuffer来说，commit没有实际操作，直接返回提交位置wrotePosition
     public int commit(final int commitLeastPages) {
         //如果writeBuffer == null，则是mappedByteBuffer，不用commit，直接返回写的位置
         if (writeBuffer == null) {
@@ -497,8 +502,8 @@ public class MappedFile extends ReferenceResource {
     /**
      * @return The max position which have valid data
      */
-    //如果writeBuffer为null，则对于mappedByteBuffer来说，wrotePosition即为提交位置
-    //否则writeBuffer不为null，则返回committedPosition
+    //如果writeBuffer为null，则对于mappedByteBuffer来说，wrotePosition即为提交位置committedPosition
+    //否则writeBuffer不为null，则返回committedPosition，已经提交到的位置
     public int getReadPosition() {
         return this.writeBuffer == null ? this.wrotePosition.get() : this.committedPosition.get();
     }
