@@ -129,12 +129,13 @@ public class ConsumerGroupInfo {
             }
             infoOld = infoNew;
         } else {
-            //infoOld已经存在，则infoNew.getChannel()已经存在，
+            //infoOld已经存在，则infoNew.getChannel()已经存在于channelInfoTable
             //infoOld和infoNew的channel一样，clientID不一样
             if (!infoOld.getClientId().equals(infoNew.getClientId())) {
                 log.error("[BUG] consumer channel exist in broker, but clientId not equal. GROUP: {} OLD: {} NEW: {} ", this.groupName, infoOld.toString(), infoNew.toString());
-                this.channelInfoTable.put(infoNew.getChannel(), infoNew);
+                this.channelInfoTable.put(infoNew.getChannel(), infoNew);              //此时，infoOld已经无用了，因为没有逃逸
             }
+            //clientId和channel一样的话，就什么都不做，不更新，infoNew里面的其余信息不重要？
         }
 
         this.lastUpdateTimestamp = System.currentTimeMillis();
