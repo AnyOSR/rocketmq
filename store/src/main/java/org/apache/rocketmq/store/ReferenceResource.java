@@ -18,6 +18,7 @@ package org.apache.rocketmq.store;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+//管理资源清理基类
 public abstract class ReferenceResource {
     protected final AtomicLong refCount = new AtomicLong(1);
     protected volatile boolean available = true;
@@ -26,6 +27,7 @@ public abstract class ReferenceResource {
 
     //只有在available为true，且之前的refCount大于0的情况下才自增并返回true
     //否则返回false，refCount的值不变
+    //引用计数加一
     public synchronized boolean hold() {
         if (this.isAvailable()) {
             if (this.refCount.getAndIncrement() > 0) {
@@ -42,6 +44,8 @@ public abstract class ReferenceResource {
         return this.available;
     }
 
+    //如果可用，直接调用Realease
+    //如果不可用，但是当前的引用计数大于0，如果当前时间距离创建时间大于某一个值，则设置refCount并release
     public void shutdown(final long intervalForcibly) {
         if (this.available) {
             this.available = false;
@@ -56,7 +60,7 @@ public abstract class ReferenceResource {
     }
 
     //--refCount的值大于0，则返回
-    //否则，调用cleanup(),并设置cleanupOver的值(清除完毕？)
+    //否则，调用cleanup(),并设置cleanupOver的值(清除成功？)
     public void release() {
         long value = this.refCount.decrementAndGet();
         if (value > 0)

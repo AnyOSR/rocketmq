@@ -406,6 +406,7 @@ public class MappedFile extends ReferenceResource {
         return this.fileSize == this.wrotePosition.get();
     }
 
+    //获取的数据必须是已经commit到channel的
     public SelectMappedBufferResult selectMappedBuffer(int pos, int size) {
         int readPosition = getReadPosition();
         if ((pos + size) <= readPosition) {
@@ -428,12 +429,12 @@ public class MappedFile extends ReferenceResource {
     }
 
     public SelectMappedBufferResult selectMappedBuffer(int pos) {
-        int readPosition = getReadPosition();
+        int readPosition = getReadPosition();         //committedPosition
         if (pos < readPosition && pos >= 0) {
-            if (this.hold()) {
+            if (this.hold()) {   //应用计数加一
                 ByteBuffer byteBuffer = this.mappedByteBuffer.slice();
                 byteBuffer.position(pos);
-                int size = readPosition - pos;
+                int size = readPosition - pos;          //pos到committedPosition之间的size
                 ByteBuffer byteBufferNew = byteBuffer.slice();
                 byteBufferNew.limit(size);
                 return new SelectMappedBufferResult(this.fileFromOffset + pos, byteBufferNew, size, this);
