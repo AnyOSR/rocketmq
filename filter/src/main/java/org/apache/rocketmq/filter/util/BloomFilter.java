@@ -33,7 +33,7 @@ public class BloomFilter {
     private int n = 128;
 
     // hash function num, by calculation.
-    private int k;                       //k为数组长度
+    private int k;                       //k为数组长度           k个position
     // bit count, by calculation.
     private int m;                       //m为position最大值  不包括  <           则在BitsArray里面，bitLength
 
@@ -113,7 +113,7 @@ public class BloomFilter {
      * Calculate bit positions of {@code str} to construct {@code BloomFilterData}
      */
     public BloomFilterData generate(String str) {
-        int[] bitPositions = calcBitPositions(str);
+        int[] bitPositions = calcBitPositions(str);          //bitPositions的长度为k,元素的最大值<m
 
         return new BloomFilterData(bitPositions, this.m);
     }

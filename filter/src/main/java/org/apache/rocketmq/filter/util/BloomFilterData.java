@@ -25,6 +25,7 @@ import java.util.Arrays;
  * <li>2. Total bit num when allocating;</li>
  */
 //BitsArray里面bit的位置信息
+//BloomFilterData保存了位置信息
 public class BloomFilterData {
 
     private int[] bitPos;

@@ -17211,13 +17211,47 @@
 											"height": 13,
 											"text": "«public void register(final String consumerGroup, final Collection<SubscriptionData> subList)»+register()",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlHsAkMaqC9ew=",
+											"_parent": {
+												"$ref": "AAAAAAFlGdvTCaZt8ew="
+											},
+											"model": {
+												"$ref": "AAAAAAFlHsAj1Kp/P5Y="
+											},
+											"font": "Arial;13;0",
+											"left": 21,
+											"top": 1337,
+											"width": 912.2470703125,
+											"height": 13,
+											"text": "«public void decode(final String jsonString)»+decode()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlHsBz3arJXls=",
+											"_parent": {
+												"$ref": "AAAAAAFlGdvTCaZt8ew="
+											},
+											"model": {
+												"$ref": "AAAAAAFlHsBzhKrG5rA="
+											},
+											"font": "Arial;13;0",
+											"left": 21,
+											"top": 1352,
+											"width": 912.2470703125,
+											"height": 13,
+											"text": "«public void clean()»+clean()",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 16,
 									"top": 1302,
 									"width": 922.2470703125,
-									"height": 38
+									"height": 68
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -17257,7 +17291,7 @@
 							"left": 16,
 							"top": 1224,
 							"width": 922.2470703125,
-							"height": 116,
+							"height": 146,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlGdvTCaZnPKM="
 							},
@@ -17296,7 +17330,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 270,
-									"top": 1370,
+									"top": 1385,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -17317,7 +17351,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 285,
-									"top": 1370,
+									"top": 1385,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -17338,7 +17372,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 241,
-									"top": 1371,
+									"top": 1386,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -17355,7 +17389,7 @@
 							"tail": {
 								"$ref": "AAAAAAFlGdvTCKZmkco="
 							},
-							"points": "256:1339;256:1416",
+							"points": "256:1369;256:1416",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFlGd2M/qaj7Uk="
@@ -23137,6 +23171,24 @@
 							},
 							"name": "register",
 							"stereotype": "public void register(final String consumerGroup, final Collection<SubscriptionData> subList)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlHsAj1Kp/P5Y=",
+							"_parent": {
+								"$ref": "AAAAAAFlGdvTCKZk+ss="
+							},
+							"name": "decode",
+							"stereotype": "public void decode(final String jsonString)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlHsBzhKrG5rA=",
+							"_parent": {
+								"$ref": "AAAAAAFlGdvTCKZk+ss="
+							},
+							"name": "clean",
+							"stereotype": "public void clean()"
 						}
 					]
 				},

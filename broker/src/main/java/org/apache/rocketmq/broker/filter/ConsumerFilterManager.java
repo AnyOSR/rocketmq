@@ -124,6 +124,7 @@ public class ConsumerFilterManager extends ConfigManager {
         }
     }
 
+    //注册
     public boolean register(final String topic, final String consumerGroup, final String expression, final String type, final long clientVersion) {
         if (ExpressionType.isTagType(type)) {
             return false;
@@ -140,7 +141,7 @@ public class ConsumerFilterManager extends ConfigManager {
             FilterDataMapByTopic prev = this.filterDataByTopic.putIfAbsent(topic, temp);
             filterDataMapByTopic = prev != null ? prev : temp;
         }
-
+        //根据 consumerGroup + "#" + topic生成BloomFilterData信息
         BloomFilterData bloomFilterData = bloomFilter.generate(consumerGroup + "#" + topic);
 
         return filterDataMapByTopic.register(consumerGroup, expression, type, bloomFilterData, clientVersion);
@@ -152,6 +153,7 @@ public class ConsumerFilterManager extends ConfigManager {
         }
     }
 
+    //找到特定topic和consumerGroup的元ConsumerFilterData信息
     public ConsumerFilterData get(final String topic, final String consumerGroup) {
         if (!this.filterDataByTopic.containsKey(topic)) {
             return null;
@@ -208,8 +210,7 @@ public class ConsumerFilterManager extends ConfigManager {
     @Override
     public String configFilePath() {
         if (this.brokerController != null) {
-            return BrokerPathConfigHelper.getConsumerFilterPath(
-                this.brokerController.getMessageStoreConfig().getStorePathRootDir()
+            return BrokerPathConfigHelper.getConsumerFilterPath(this.brokerController.getMessageStoreConfig().getStorePathRootDir()
             );
         }
         return BrokerPathConfigHelper.getConsumerFilterPath("./unit_test");
@@ -221,22 +222,21 @@ public class ConsumerFilterManager extends ConfigManager {
         if (load != null && load.filterDataByTopic != null) {
             boolean bloomChanged = false;
             for (String topic : load.filterDataByTopic.keySet()) {
-                FilterDataMapByTopic dataMapByTopic = load.filterDataByTopic.get(topic);
+                FilterDataMapByTopic dataMapByTopic = load.filterDataByTopic.get(topic);        //针对每个topic
                 if (dataMapByTopic == null) {
                     continue;
                 }
 
-                for (String group : dataMapByTopic.getGroupFilterData().keySet()) {
+                for (String group : dataMapByTopic.getGroupFilterData().keySet()) {            //针对每个consumerGroup
 
-                    ConsumerFilterData filterData = dataMapByTopic.getGroupFilterData().get(group);
+                    ConsumerFilterData filterData = dataMapByTopic.getGroupFilterData().get(group);     //每个topic group 过滤元信息
 
                     if (filterData == null) {
                         continue;
                     }
 
                     try {
-                        filterData.setCompiledExpression(
-                            FilterFactory.INSTANCE.get(filterData.getExpressionType()).compile(filterData.getExpression())
+                        filterData.setCompiledExpression(FilterFactory.INSTANCE.get(filterData.getExpressionType()).compile(filterData.getExpression())
                         );
                     } catch (Exception e) {
                         log.error("load filter data error, " + filterData, e);
@@ -255,9 +255,7 @@ public class ConsumerFilterManager extends ConfigManager {
                     if (filterData.getDeadTime() == 0) {
                         // we think all consumers are dead when load
                         long deadTime = System.currentTimeMillis() - 30 * 1000;
-                        filterData.setDeadTime(
-                            deadTime <= filterData.getBornTime() ? filterData.getBornTime() : deadTime
-                        );
+                        filterData.setDeadTime(deadTime <= filterData.getBornTime() ? filterData.getBornTime() : deadTime);
                     }
                 }
             }
@@ -277,15 +275,17 @@ public class ConsumerFilterManager extends ConfigManager {
         return RemotingSerializable.toJson(this, prettyFormat);
     }
 
+    //clean掉不必要的数据
     public void clean() {
         Iterator<Map.Entry<String, FilterDataMapByTopic>> topicIterator = this.filterDataByTopic.entrySet().iterator();
         while (topicIterator.hasNext()) {
+            // topic FilterDataMapByTopic
             Map.Entry<String, FilterDataMapByTopic> filterDataMapByTopic = topicIterator.next();
 
-            Iterator<Map.Entry<String, ConsumerFilterData>> filterDataIterator
-                = filterDataMapByTopic.getValue().getGroupFilterData().entrySet().iterator();
+            Iterator<Map.Entry<String, ConsumerFilterData>> filterDataIterator = filterDataMapByTopic.getValue().getGroupFilterData().entrySet().iterator();
 
             while (filterDataIterator.hasNext()) {
+                //group ConsumerFilterData
                 Map.Entry<String, ConsumerFilterData> filterDataByGroup = filterDataIterator.next();
 
                 ConsumerFilterData filterData = filterDataByGroup.getValue();
