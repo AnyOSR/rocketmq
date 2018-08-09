@@ -18389,7 +18389,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -320,
-											"top": 256,
+											"top": 224,
 											"height": 13
 										},
 										{
@@ -18400,8 +18400,8 @@
 											},
 											"font": "Arial;13;1",
 											"left": 53,
-											"top": 1047,
-											"width": 335.6005859375,
+											"top": 1031,
+											"width": 363.0859375,
 											"height": 13,
 											"text": "BloomFilter"
 										},
@@ -18414,7 +18414,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -320,
-											"top": 256,
+											"top": 224,
 											"width": 73.67724609375,
 											"height": 13,
 											"text": "(from Model)"
@@ -18428,15 +18428,15 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -320,
-											"top": 256,
+											"top": 224,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 48,
-									"top": 1040,
-									"width": 345.6005859375,
+									"top": 1024,
+									"width": 373.0859375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFlHLZUm56BCL8="
@@ -18472,8 +18472,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 53,
-											"top": 1070,
-											"width": 335.6005859375,
+											"top": 1054,
+											"width": 363.0859375,
 											"height": 13,
 											"text": "+f: int",
 											"horizontalAlignment": 0
@@ -18489,8 +18489,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 53,
-											"top": 1085,
-											"width": 335.6005859375,
+											"top": 1069,
+											"width": 363.0859375,
 											"height": 13,
 											"text": "+n: int",
 											"horizontalAlignment": 0
@@ -18506,8 +18506,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 53,
-											"top": 1100,
-											"width": 335.6005859375,
+											"top": 1084,
+											"width": 363.0859375,
 											"height": 13,
 											"text": "+k: int",
 											"horizontalAlignment": 0
@@ -18523,8 +18523,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 53,
-											"top": 1115,
-											"width": 335.6005859375,
+											"top": 1099,
+											"width": 363.0859375,
 											"height": 13,
 											"text": "+m: int",
 											"horizontalAlignment": 0
@@ -18532,8 +18532,8 @@
 									],
 									"font": "Arial;13;0",
 									"left": 48,
-									"top": 1065,
-									"width": 345.6005859375,
+									"top": 1049,
+									"width": 373.0859375,
 									"height": 68
 								},
 								{
@@ -18557,8 +18557,8 @@
 											},
 											"font": "Arial;13;0",
 											"left": 53,
-											"top": 1138,
-											"width": 335.6005859375,
+											"top": 1122,
+											"width": 363.0859375,
 											"height": 13,
 											"text": "«public int[] calcBitPositions(String str)»+calcBitPositions()",
 											"horizontalAlignment": 0
@@ -18574,18 +18574,52 @@
 											},
 											"font": "Arial;13;0",
 											"left": 53,
-											"top": 1153,
-											"width": 335.6005859375,
+											"top": 1137,
+											"width": 363.0859375,
 											"height": 13,
 											"text": "«public BloomFilterData generate(String str)»+generate()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlHdmc85tIAxs=",
+											"_parent": {
+												"$ref": "AAAAAAFlHLZUm56GVIY="
+											},
+											"model": {
+												"$ref": "AAAAAAFlHdmck5tFKdc="
+											},
+											"font": "Arial;13;0",
+											"left": 53,
+											"top": 1152,
+											"width": 363.0859375,
+											"height": 13,
+											"text": "«public void hashTo(int[] bitPositions, BitsArray bits)»+hashTo()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlHeQIC5vnKiI=",
+											"_parent": {
+												"$ref": "AAAAAAFlHLZUm56GVIY="
+											},
+											"model": {
+												"$ref": "AAAAAAFlHeQHs5vkFBA="
+											},
+											"font": "Arial;13;0",
+											"left": 53,
+											"top": 1167,
+											"width": 363.0859375,
+											"height": 13,
+											"text": "«public boolean isHit(int[] bitPositions, BitsArray bits)»+isHit()",
 											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 48,
-									"top": 1133,
-									"width": 345.6005859375,
-									"height": 38
+									"top": 1117,
+									"width": 373.0859375,
+									"height": 68
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -18599,7 +18633,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -160,
-									"top": 128,
+									"top": 112,
 									"width": 10,
 									"height": 10
 								},
@@ -18615,7 +18649,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -160,
-									"top": 128,
+									"top": 112,
 									"width": 10,
 									"height": 10
 								}
@@ -18623,9 +18657,9 @@
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 48,
-							"top": 1040,
-							"width": 345.6005859375,
-							"height": 131,
+							"top": 1024,
+							"width": 373.0859375,
+							"height": 161,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlHLZUm56AxnY="
 							},
@@ -18664,7 +18698,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 278,
-									"top": 1198,
+									"top": 1205,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -18685,7 +18719,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 293,
-									"top": 1198,
+									"top": 1205,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -18706,7 +18740,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 249,
-									"top": 1199,
+									"top": 1206,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -18727,7 +18761,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 279,
-									"top": 1189,
+									"top": 1203,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -18748,7 +18782,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 292,
-									"top": 1192,
+									"top": 1206,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -18769,7 +18803,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 251,
-									"top": 1185,
+									"top": 1199,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -18878,7 +18912,7 @@
 							"tail": {
 								"$ref": "AAAAAAFlHLZUm55/Z1U="
 							},
-							"points": "264:1170;264:1240",
+							"points": "264:1184;264:1240",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFlHLdnkp+zkYs="
@@ -19270,7 +19304,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 205,
-									"top": 1004,
+									"top": 996,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -19291,7 +19325,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 190,
-									"top": 1004,
+									"top": 996,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -19312,7 +19346,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 234,
-									"top": 1005,
+									"top": 997,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -19329,7 +19363,7 @@
 							"tail": {
 								"$ref": "AAAAAAFlHLZUm55/Z1U="
 							},
-							"points": "220:1040;220:983",
+							"points": "220:1024;220:983",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFlHXxgKpjEaqg="
@@ -23027,6 +23061,7 @@
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
 					"name": "BloomFilterData",
+					"documentation": "位置信息\n位置是BitsArray里面bit的位置",
 					"attributes": [
 						{
 							"_type": "UMLAttribute",
@@ -23247,6 +23282,24 @@
 							},
 							"name": "generate",
 							"stereotype": "public BloomFilterData generate(String str)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlHdmck5tFKdc=",
+							"_parent": {
+								"$ref": "AAAAAAFlHLZUm559KEo="
+							},
+							"name": "hashTo",
+							"stereotype": "public void hashTo(int[] bitPositions, BitsArray bits)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlHeQHs5vkFBA=",
+							"_parent": {
+								"$ref": "AAAAAAFlHLZUm559KEo="
+							},
+							"name": "isHit",
+							"stereotype": "public boolean isHit(int[] bitPositions, BitsArray bits)"
 						}
 					]
 				},

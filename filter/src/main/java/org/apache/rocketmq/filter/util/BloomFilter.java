@@ -35,7 +35,7 @@ public class BloomFilter {
     // hash function num, by calculation.
     private int k;                       //k为数组长度
     // bit count, by calculation.
-    private int m;                       //m为position最大值  不包括  <
+    private int m;                       //m为position最大值  不包括  <           则在BitsArray里面，bitLength
 
     /**
      * Create bloom filter by error rate and mapping num.
@@ -97,7 +97,7 @@ public class BloomFilter {
         int hash1 = (int) hash64;
         int hash2 = (int) (hash64 >>> 32);
 
-        for (int i = 1; i <= this.k; i++) {                          //k为数组长度    m为position最大值
+        for (int i = 1; i <= this.k; i++) {                          //k为数组长度
             int combinedHash = hash1 + (i * hash2);
             // Flip all the bits if it's negative (guaranteed positive number)
             if (combinedHash < 0) {
@@ -121,7 +121,7 @@ public class BloomFilter {
     /**
      * Calculate bit positions of {@code str}, then set the related {@code bits} positions to 1.
      */
-    //
+    //计算str的bit位置，并将bits的相应位置设置为1
     public void hashTo(String str, BitsArray bits) {
         hashTo(calcBitPositions(str), bits);
     }
@@ -158,6 +158,7 @@ public class BloomFilter {
      *
      * @return true: all the related {@code bits} positions is 1
      */
+
     public boolean isHit(String str, BitsArray bits) {
         return isHit(calcBitPositions(str), bits);
     }
@@ -167,6 +168,7 @@ public class BloomFilter {
      *
      * @return true: all the related {@code bits} positions is 1
      */
+    //所有位置处的bit是否都为1，是则返回true，否则返回false
     public boolean isHit(int[] bitPositions, BitsArray bits) {
         check(bits);
         boolean ret = bits.getBit(bitPositions[0]);
@@ -196,6 +198,8 @@ public class BloomFilter {
      *
      * @return true: if all positions have been occupied.
      */
+    //检查所有的位置，如果有一个bit为0，返回false
+    //否则全为1，返回true
     public boolean checkFalseHit(int[] bitPositions, BitsArray bits) {
         for (int j = 0; j < bitPositions.length; j++) {
             int pos = bitPositions[j];
@@ -226,10 +230,7 @@ public class BloomFilter {
      * <li>4. {@link org.apache.rocketmq.filter.util.BloomFilterData#getBitPos}'s length is equal to {@code k}</li>
      */
     public boolean isValid(BloomFilterData filterData) {
-        if (filterData == null
-            || filterData.getBitNum() != this.m
-            || filterData.getBitPos() == null
-            || filterData.getBitPos().length != this.k) {
+        if (filterData == null || filterData.getBitNum() != this.m || filterData.getBitPos() == null || filterData.getBitPos().length != this.k) {
             return false;
         }
 

@@ -24,6 +24,7 @@ import java.util.Arrays;
  * <li>1. Bit positions allocated to requester;</li>
  * <li>2. Total bit num when allocating;</li>
  */
+//BitsArray里面bit的位置信息
 public class BloomFilterData {
 
     private int[] bitPos;

@@ -21,6 +21,7 @@ package org.apache.rocketmq.filter.util;
  * Wrapper of bytes array, in order to operate single bit easily.
  */
 //bitPos bytePos
+//bloom过滤器 具体信息
 public class BitsArray implements Cloneable {
 
     private byte[] bytes;
