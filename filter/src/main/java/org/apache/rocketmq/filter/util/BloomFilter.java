@@ -33,9 +33,9 @@ public class BloomFilter {
     private int n = 128;
 
     // hash function num, by calculation.
-    private int k;
+    private int k;                       //k为数组长度
     // bit count, by calculation.
-    private int m;
+    private int m;                       //m为position最大值  不包括  <
 
     /**
      * Create bloom filter by error rate and mapping num.
@@ -78,6 +78,7 @@ public class BloomFilter {
         this.m = (int) Math.ceil(this.n * logMN(2, 1 / errorRate) * logMN(2, Math.E));
         // m%8 = 0
         this.m = (int) (Byte.SIZE * Math.ceil(this.m / (Byte.SIZE * 1.0)));
+
     }
 
     /**
@@ -87,6 +88,7 @@ public class BloomFilter {
      * Mitzenmacher.
      * </p>
      */
+    //计算某一个string的bit位置
     public int[] calcBitPositions(String str) {
         int[] bitPositions = new int[this.k];
 
@@ -95,7 +97,7 @@ public class BloomFilter {
         int hash1 = (int) hash64;
         int hash2 = (int) (hash64 >>> 32);
 
-        for (int i = 1; i <= this.k; i++) {
+        for (int i = 1; i <= this.k; i++) {                          //k为数组长度    m为position最大值
             int combinedHash = hash1 + (i * hash2);
             // Flip all the bits if it's negative (guaranteed positive number)
             if (combinedHash < 0) {
