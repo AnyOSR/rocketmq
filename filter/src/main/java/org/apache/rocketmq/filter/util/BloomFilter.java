@@ -121,6 +121,7 @@ public class BloomFilter {
     /**
      * Calculate bit positions of {@code str}, then set the related {@code bits} positions to 1.
      */
+    //
     public void hashTo(String str, BitsArray bits) {
         hashTo(calcBitPositions(str), bits);
     }
@@ -146,8 +147,7 @@ public class BloomFilter {
     public void hashTo(BloomFilterData filterData, BitsArray bits) {
         if (!isValid(filterData)) {
             throw new IllegalArgumentException(
-                String.format("Bloom filter data may not belong to this filter! %s, %s",
-                    filterData, this.toString())
+                String.format("Bloom filter data may not belong to this filter! %s, %s", filterData, this.toString())
             );
         }
         hashTo(filterData.getBitPos(), bits);

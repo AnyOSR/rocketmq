@@ -20,6 +20,7 @@ package org.apache.rocketmq.filter.util;
 /**
  * Wrapper of bytes array, in order to operate single bit easily.
  */
+//bitPos bytePos
 public class BitsArray implements Cloneable {
 
     private byte[] bytes;
@@ -37,6 +38,7 @@ public class BitsArray implements Cloneable {
         return new BitsArray(bytes);
     }
 
+    //分配一个能至少容纳bitLength个bit的字节数组
     private BitsArray(int bitLength) {
         this.bitLength = bitLength;
         // init bytes
@@ -90,6 +92,7 @@ public class BitsArray implements Cloneable {
         return this.bytes;
     }
 
+    //异或
     public void xor(final BitsArray other) {
         checkInitialized(this);
         checkInitialized(other);
@@ -101,6 +104,8 @@ public class BitsArray implements Cloneable {
         }
     }
 
+    //传入true，则将bitPos处的bit置反
+    //传入false，则不变
     public void xor(int bitPos, boolean set) {
         checkBitPosition(bitPos, this);
 
@@ -123,6 +128,8 @@ public class BitsArray implements Cloneable {
         }
     }
 
+    //true则将bitPos处的bit置1
+    //false则do nothing
     public void or(int bitPos, boolean set) {
         checkBitPosition(bitPos, this);
 
@@ -142,6 +149,8 @@ public class BitsArray implements Cloneable {
         }
     }
 
+    //true则保持原样
+    //false则将bitPos处的bit位置0
     public void and(int bitPos, boolean set) {
         checkBitPosition(bitPos, this);
 
@@ -150,12 +159,14 @@ public class BitsArray implements Cloneable {
         }
     }
 
+    //将bitPos处的bit位取反
     public void not(int bitPos) {
         checkBitPosition(bitPos, this);
 
         setBit(bitPos, !getBit(bitPos));
     }
 
+    //将bitPos处的bit位置1或者置0
     public void setBit(int bitPos, boolean set) {
         checkBitPosition(bitPos, this);
         int sub = subscript(bitPos);
@@ -173,6 +184,7 @@ public class BitsArray implements Cloneable {
         this.bytes[bytePos] = set;
     }
 
+    //bitPos位置处的bit是否为1，是则true，否则false
     public boolean getBit(int bitPos) {
         checkBitPosition(bitPos, this);
 
@@ -185,10 +197,12 @@ public class BitsArray implements Cloneable {
         return this.bytes[bytePos];
     }
 
+    //数组下标
     protected int subscript(int bitPos) {
         return bitPos / Byte.SIZE;
     }
 
+    //返回一个int，其中bit为1的位置即为bitpos的位置
     protected int position(int bitPos) {
         return 1 << bitPos % Byte.SIZE;
     }
