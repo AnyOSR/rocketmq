@@ -68,6 +68,7 @@ import org.apache.rocketmq.remoting.protocol.RemotingCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//客户端，netty客户端 用锁保护临界区
 public class NettyRemotingClient extends NettyRemotingAbstract implements RemotingClient {
     private static final Logger log = LoggerFactory.getLogger(RemotingHelper.ROCKETMQ_REMOTING);
 
@@ -236,6 +237,7 @@ public class NettyRemotingClient extends NettyRemotingAbstract implements Remoti
         }
     }
 
+    //销毁通道
     public void closeChannel(final String addr, final Channel channel) {
         if (null == channel)
             return;
@@ -253,9 +255,8 @@ public class NettyRemotingClient extends NettyRemotingAbstract implements Remoti
                     if (null == prevCW) {
                         log.info("closeChannel: the channel[{}] has been removed from the channel table before", addrRemote);
                         removeItemFromTable = false;
-                    } else if (prevCW.getChannel() != channel) {
-                        log.info("closeChannel: the channel[{}] has been closed before, and has been created again, nothing to do.",
-                            addrRemote);
+                    } else if (prevCW.getChannel() != channel) { //addrRemote一样，channel不一样，说明重新创建过
+                        log.info("closeChannel: the channel[{}] has been closed before, and has been created again, nothing to do.", addrRemote);
                         removeItemFromTable = false;
                     }
 
@@ -283,6 +284,7 @@ public class NettyRemotingClient extends NettyRemotingAbstract implements Remoti
         this.rpcHook = rpcHook;
     }
 
+    //销毁通道
     public void closeChannel(final Channel channel) {
         if (null == channel)
             return;
@@ -398,6 +400,7 @@ public class NettyRemotingClient extends NettyRemotingAbstract implements Remoti
         return this.createChannel(addr);
     }
 
+    //获取或者重新创建连接
     private Channel getAndCreateNameserverChannel() throws InterruptedException {
         String addr = this.namesrvAddrChoosed.get();
         if (addr != null) {
@@ -408,6 +411,7 @@ public class NettyRemotingClient extends NettyRemotingAbstract implements Remoti
         }
 
         final List<String> addrList = this.namesrvAddrList.get();
+        //获取锁，并重试之前的动作
         if (this.lockNamesrvChannel.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
             try {
                 addr = this.namesrvAddrChoosed.get();
@@ -444,6 +448,7 @@ public class NettyRemotingClient extends NettyRemotingAbstract implements Remoti
         return null;
     }
 
+    //创建连接
     private Channel createChannel(final String addr) throws InterruptedException {
         ChannelWrapper cw = this.channelTables.get(addr);
         if (cw != null && cw.isOK()) {
