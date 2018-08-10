@@ -19502,6 +19502,341 @@
 							"propertyLabel": {
 								"$ref": "AAAAAAFlHXxgK5jG9Z8="
 							}
+						},
+						{
+							"_type": "UMLClassView",
+							"_id": "AAAAAAFlIYbc68+dqjc=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"model": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"subViews": [
+								{
+									"_type": "UMLNameCompartmentView",
+									"_id": "AAAAAAFlIYbc68+ekxg=",
+									"_parent": {
+										"$ref": "AAAAAAFlIYbc68+dqjc="
+									},
+									"model": {
+										"$ref": "AAAAAAFlIYbc6s+bKcE="
+									},
+									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlIYbc68+flGI=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc68+ekxg="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -1168,
+											"top": -336,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlIYbc68+g4f0=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc68+ekxg="
+											},
+											"font": "Arial;13;1",
+											"left": 2829,
+											"top": 751,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "ProducerManager"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlIYbc68+hgcY=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc68+ekxg="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -1168,
+											"top": -336,
+											"width": 73.67724609375,
+											"height": 13,
+											"text": "(from Model)"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlIYbc68+ibic=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc68+ekxg="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -1168,
+											"top": -336,
+											"height": 13,
+											"horizontalAlignment": 1
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2824,
+									"top": 744,
+									"width": 699.79345703125,
+									"height": 25,
+									"stereotypeLabel": {
+										"$ref": "AAAAAAFlIYbc68+flGI="
+									},
+									"nameLabel": {
+										"$ref": "AAAAAAFlIYbc68+g4f0="
+									},
+									"namespaceLabel": {
+										"$ref": "AAAAAAFlIYbc68+hgcY="
+									},
+									"propertyLabel": {
+										"$ref": "AAAAAAFlIYbc68+ibic="
+									}
+								},
+								{
+									"_type": "UMLAttributeCompartmentView",
+									"_id": "AAAAAAFlIYbc7M+jQdQ=",
+									"_parent": {
+										"$ref": "AAAAAAFlIYbc68+dqjc="
+									},
+									"model": {
+										"$ref": "AAAAAAFlIYbc6s+bKcE="
+									},
+									"subViews": [
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFlIYdHjc/yfow=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+jQdQ="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIYdHM8/sfIk="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 774,
+											"width": 689.79345703125,
+											"height": 13,
+											"underline": true,
+											"text": "+LOCK_TIMEOUT_MILLIS: long",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFlIYdLVtAHtAo=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+jQdQ="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIYdK+9ABGH4="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 789,
+											"width": 689.79345703125,
+											"height": 13,
+											"underline": true,
+											"text": "+CHANNEL_EXPIRED_TIMEOUT: long",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFlIYdOUNAcg28=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+jQdQ="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIYdN+9AWs/s="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 804,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "+groupChannelLock: Lock",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFlIYdRQNAxYiA=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+jQdQ="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIYdQ69Arr28="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 819,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "+groupChannelTable: HashMap<String /* group name */, HashMap<Channel, ClientChannelInfo>>",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2824,
+									"top": 769,
+									"width": 699.79345703125,
+									"height": 68
+								},
+								{
+									"_type": "UMLOperationCompartmentView",
+									"_id": "AAAAAAFlIYbc7M+kLbY=",
+									"_parent": {
+										"$ref": "AAAAAAFlIYbc68+dqjc="
+									},
+									"model": {
+										"$ref": "AAAAAAFlIYbc6s+bKcE="
+									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlIYoEgdGtbuY=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+kLbY="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIYoEJNGns8U="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 842,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "«public HashMap<String, HashMap<Channel, ClientChannelInfo>> getGroupChannelTable()»+getGroupChannelTable()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlIYqUQ9IQpQM=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+kLbY="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIYqT7NIKMDQ="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 857,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "«public void scanNotActiveChannel()»+scanNotActiveChannel()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlIZMYjtJm1F0=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+kLbY="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIZMYONJgMP4="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 872,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "«public void doChannelCloseEvent(final String remoteAddr, final Channel channel)»+doChannelCloseEvent()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlIZOQXtK/yAk=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+kLbY="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIZOQCtK5EB8="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 887,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "«public void registerProducer(final String group, final ClientChannelInfo clientChannelInfo)»+registerProducer()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlIZPiv9MPHGU=",
+											"_parent": {
+												"$ref": "AAAAAAFlIYbc7M+kLbY="
+											},
+											"model": {
+												"$ref": "AAAAAAFlIZPiaNMJxqU="
+											},
+											"font": "Arial;13;0",
+											"left": 2829,
+											"top": 902,
+											"width": 689.79345703125,
+											"height": 13,
+											"text": "«public void unregisterProducer(final String group, final ClientChannelInfo clientChannelInfo)»+unregisterProducer()",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2824,
+									"top": 837,
+									"width": 699.79345703125,
+									"height": 83
+								},
+								{
+									"_type": "UMLReceptionCompartmentView",
+									"_id": "AAAAAAFlIYbc7M+lLIU=",
+									"_parent": {
+										"$ref": "AAAAAAFlIYbc68+dqjc="
+									},
+									"model": {
+										"$ref": "AAAAAAFlIYbc6s+bKcE="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": -584,
+									"top": -168,
+									"width": 10,
+									"height": 10
+								},
+								{
+									"_type": "UMLTemplateParameterCompartmentView",
+									"_id": "AAAAAAFlIYbc7M+mE4I=",
+									"_parent": {
+										"$ref": "AAAAAAFlIYbc68+dqjc="
+									},
+									"model": {
+										"$ref": "AAAAAAFlIYbc6s+bKcE="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": -584,
+									"top": -168,
+									"width": 10,
+									"height": 10
+								}
+							],
+							"font": "Arial;13;0",
+							"containerChangeable": true,
+							"left": 2824,
+							"top": 744,
+							"width": 699.79345703125,
+							"height": 176,
+							"nameCompartment": {
+								"$ref": "AAAAAAFlIYbc68+ekxg="
+							},
+							"attributeCompartment": {
+								"$ref": "AAAAAAFlIYbc7M+jQdQ="
+							},
+							"operationCompartment": {
+								"$ref": "AAAAAAFlIYbc7M+kLbY="
+							},
+							"receptionCompartment": {
+								"$ref": "AAAAAAFlIYbc7M+lLIU="
+							},
+							"templateParameterCompartment": {
+								"$ref": "AAAAAAFlIYbc7M+mE4I="
+							}
 						}
 					]
 				},
@@ -23589,6 +23924,101 @@
 							},
 							"name": "getBit",
 							"stereotype": "public boolean getBit(int bitPos)"
+						}
+					]
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAFlIYbc6s+bKcE=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "ProducerManager",
+					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFlIYdHM8/sfIk=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "LOCK_TIMEOUT_MILLIS",
+							"isStatic": true,
+							"type": "long"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFlIYdK+9ABGH4=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "CHANNEL_EXPIRED_TIMEOUT",
+							"isStatic": true,
+							"type": "long"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFlIYdN+9AWs/s=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "groupChannelLock",
+							"type": "Lock"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFlIYdQ69Arr28=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "groupChannelTable",
+							"type": "HashMap<String /* group name */, HashMap<Channel, ClientChannelInfo>>"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlIYoEJNGns8U=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "getGroupChannelTable",
+							"stereotype": "public HashMap<String, HashMap<Channel, ClientChannelInfo>> getGroupChannelTable()"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlIYqT7NIKMDQ=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "scanNotActiveChannel",
+							"stereotype": "public void scanNotActiveChannel()"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlIZMYONJgMP4=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "doChannelCloseEvent",
+							"stereotype": "public void doChannelCloseEvent(final String remoteAddr, final Channel channel)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlIZOQCtK5EB8=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "registerProducer",
+							"stereotype": "public void registerProducer(final String group, final ClientChannelInfo clientChannelInfo)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlIZPiaNMJxqU=",
+							"_parent": {
+								"$ref": "AAAAAAFlIYbc6s+bKcE="
+							},
+							"name": "unregisterProducer",
+							"stereotype": "public void unregisterProducer(final String group, final ClientChannelInfo clientChannelInfo)"
 						}
 					]
 				}

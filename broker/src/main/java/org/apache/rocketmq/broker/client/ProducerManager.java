@@ -57,13 +57,14 @@ public class ProducerManager {
         return newGroupChannelTable;
     }
 
+    //销毁过期连接通道
     public void scanNotActiveChannel() {
         try {
             if (this.groupChannelLock.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 try {
                     for (final Map.Entry<String, HashMap<Channel, ClientChannelInfo>> entry : this.groupChannelTable.entrySet()) {
-                        final String group = entry.getKey();
-                        final HashMap<Channel, ClientChannelInfo> chlMap = entry.getValue();
+                        final String group = entry.getKey();                                           //producerGroup name
+                        final HashMap<Channel, ClientChannelInfo> chlMap = entry.getValue();           //某个producerGroup下的所有生产者
 
                         Iterator<Entry<Channel, ClientChannelInfo>> it = chlMap.entrySet().iterator();
                         while (it.hasNext()) {
@@ -74,9 +75,7 @@ public class ProducerManager {
                             long diff = System.currentTimeMillis() - info.getLastUpdateTimestamp();
                             if (diff > CHANNEL_EXPIRED_TIMEOUT) {
                                 it.remove();
-                                log.warn(
-                                    "SCAN: remove expired channel[{}] from ProducerManager groupChannelTable, producer group name: {}",
-                                    RemotingHelper.parseChannelRemoteAddr(info.getChannel()), group);
+                                log.warn("SCAN: remove expired channel[{}] from ProducerManager groupChannelTable, producer group name: {}", RemotingHelper.parseChannelRemoteAddr(info.getChannel()), group);
                                 RemotingUtil.closeChannel(info.getChannel());
                             }
                         }
@@ -92,24 +91,20 @@ public class ProducerManager {
         }
     }
 
+    //销毁掉channel对应的数据结构
     public void doChannelCloseEvent(final String remoteAddr, final Channel channel) {
         if (channel != null) {
             try {
                 if (this.groupChannelLock.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                     try {
-                        for (final Map.Entry<String, HashMap<Channel, ClientChannelInfo>> entry : this.groupChannelTable
-                            .entrySet()) {
+                        for (final Map.Entry<String, HashMap<Channel, ClientChannelInfo>> entry : this.groupChannelTable.entrySet()) {
                             final String group = entry.getKey();
-                            final HashMap<Channel, ClientChannelInfo> clientChannelInfoTable =
-                                entry.getValue();
-                            final ClientChannelInfo clientChannelInfo =
-                                clientChannelInfoTable.remove(channel);
+                            final HashMap<Channel, ClientChannelInfo> clientChannelInfoTable = entry.getValue();
+                            final ClientChannelInfo clientChannelInfo = clientChannelInfoTable.remove(channel);
                             if (clientChannelInfo != null) {
-                                log.info(
-                                    "NETTY EVENT: remove channel[{}][{}] from ProducerManager groupChannelTable, producer group: {}",
+                                log.info("NETTY EVENT: remove channel[{}][{}] from ProducerManager groupChannelTable, producer group: {}",
                                     clientChannelInfo.toString(), remoteAddr, group);
                             }
-
                         }
                     } finally {
                         this.groupChannelLock.unlock();
@@ -123,6 +118,7 @@ public class ProducerManager {
         }
     }
 
+    //注册生产者，有则更新，没有则插入
     public void registerProducer(final String group, final ClientChannelInfo clientChannelInfo) {
         try {
             ClientChannelInfo clientChannelInfoFound = null;
@@ -138,8 +134,7 @@ public class ProducerManager {
                     clientChannelInfoFound = channelTable.get(clientChannelInfo.getChannel());
                     if (null == clientChannelInfoFound) {
                         channelTable.put(clientChannelInfo.getChannel(), clientChannelInfo);
-                        log.info("new producer connected, group: {} channel: {}", group,
-                            clientChannelInfo.toString());
+                        log.info("new producer connected, group: {} channel: {}", group, clientChannelInfo.toString());
                     }
                 } finally {
                     this.groupChannelLock.unlock();
@@ -156,6 +151,7 @@ public class ProducerManager {
         }
     }
 
+    //注销生产者
     public void unregisterProducer(final String group, final ClientChannelInfo clientChannelInfo) {
         try {
             if (this.groupChannelLock.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
@@ -164,10 +160,8 @@ public class ProducerManager {
                     if (null != channelTable && !channelTable.isEmpty()) {
                         ClientChannelInfo old = channelTable.remove(clientChannelInfo.getChannel());
                         if (old != null) {
-                            log.info("unregister a producer[{}] from groupChannelTable {}", group,
-                                clientChannelInfo.toString());
+                            log.info("unregister a producer[{}] from groupChannelTable {}", group, clientChannelInfo.toString());
                         }
-
                         if (channelTable.isEmpty()) {
                             this.groupChannelTable.remove(group);
                             log.info("unregister a producer group[{}] from groupChannelTable", group);
