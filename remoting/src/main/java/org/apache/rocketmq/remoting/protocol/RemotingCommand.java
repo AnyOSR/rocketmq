@@ -31,6 +31,7 @@ import org.apache.rocketmq.remoting.exception.RemotingCommandException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//encode和decode怎么感觉差了一个字节？长度字节？
 public class RemotingCommand {
     public static final String SERIALIZE_TYPE_PROPERTY = "rocketmq.serialize.type";
     public static final String SERIALIZE_TYPE_ENV = "ROCKETMQ_SERIALIZE_TYPE";
@@ -148,7 +149,7 @@ public class RemotingCommand {
         byte[] headerData = new byte[headerLength];
         byteBuffer.get(headerData);                                                      //取出headerData
 
-        RemotingCommand cmd = headerDecode(headerData, getProtocolType(oriHeaderLen));   //根据数据以及序列化方式 反序列化出RemotingCommand
+        RemotingCommand cmd = headerDecode(headerData, getProtocolType(oriHeaderLen));   //根据headerData数据以及序列化方式 反序列化出RemotingCommand
 
         int bodyLength = length - 4 - headerLength;                                      //得到body数据
         byte[] bodyData = null;
@@ -330,7 +331,7 @@ public class RemotingCommand {
         return name;
     }
 
-    //序列化请求数据
+    //序列化请求数据    总的长度 +一字节序列化方式+三字节header长度 +header+body
     public ByteBuffer encode() {
         // 1> header length size
         int length = 4;
@@ -365,6 +366,7 @@ public class RemotingCommand {
         return result;
     }
 
+    //将当前对象转化为字节数组
     private byte[] headerEncode() {
         this.makeCustomHeaderToNet();
         if (SerializeType.ROCKETMQ == serializeTypeCurrentRPC) {

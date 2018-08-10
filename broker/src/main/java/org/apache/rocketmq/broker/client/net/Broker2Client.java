@@ -86,9 +86,7 @@ public class Broker2Client {
         return this.brokerController.getRemotingServer().invokeSync(channel, request, 10000);
     }
 
-    public void notifyConsumerIdsChanged(
-        final Channel channel,
-        final String consumerGroup) {
+    public void notifyConsumerIdsChanged(final Channel channel, final String consumerGroup) {
         if (null == consumerGroup) {
             log.error("notifyConsumerIdsChanged consumerGroup is null");
             return;
@@ -129,8 +127,7 @@ public class Broker2Client {
             mq.setTopic(topic);
             mq.setQueueId(i);
 
-            long consumerOffset =
-                this.brokerController.getConsumerOffsetManager().queryOffset(group, topic, i);
+            long consumerOffset = this.brokerController.getConsumerOffsetManager().queryOffset(group, topic, i);
             if (-1 == consumerOffset) {
                 response.setCode(ResponseCode.SYSTEM_ERROR);
                 response.setRemark(String.format("THe consumer group <%s> not exist", group));
@@ -139,7 +136,6 @@ public class Broker2Client {
 
             long timeStampOffset;
             if (timeStamp == -1) {
-
                 timeStampOffset = this.brokerController.getMessageStore().getMaxOffsetInQueue(topic, i);
             } else {
                 timeStampOffset = this.brokerController.getMessageStore().getOffsetInQueueByTime(topic, i, timeStamp);
@@ -161,8 +157,7 @@ public class Broker2Client {
         requestHeader.setTopic(topic);
         requestHeader.setGroup(group);
         requestHeader.setTimestamp(timeStamp);
-        RemotingCommand request =
-            RemotingCommand.createRequestCommand(RequestCode.RESET_CONSUMER_CLIENT_OFFSET, requestHeader);
+        RemotingCommand request = RemotingCommand.createRequestCommand(RequestCode.RESET_CONSUMER_CLIENT_OFFSET, requestHeader);
         if (isC) {
             // c++ language
             ResetOffsetBodyForC body = new ResetOffsetBodyForC();
@@ -176,8 +171,7 @@ public class Broker2Client {
             request.setBody(body.encode());
         }
 
-        ConsumerGroupInfo consumerGroupInfo =
-            this.brokerController.getConsumerManager().getConsumerGroupInfo(group);
+        ConsumerGroupInfo consumerGroupInfo = this.brokerController.getConsumerManager().getConsumerGroupInfo(group);
 
         if (consumerGroupInfo != null && !consumerGroupInfo.getAllChannel().isEmpty()) {
             ConcurrentMap<Channel, ClientChannelInfo> channelInfoTable =
