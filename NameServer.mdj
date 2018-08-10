@@ -8218,11 +8218,30 @@
 									"model": {
 										"$ref": "AAAAAAFlIypRMm7oOko="
 									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlI2aNRoASELs=",
+											"_parent": {
+												"$ref": "AAAAAAFlIypRMm7xNuU="
+											},
+											"model": {
+												"$ref": "AAAAAAFlI2aNAIAJmP8="
+											},
+											"font": "Arial;13;0",
+											"left": 2477,
+											"top": 768,
+											"width": 396.1318359375,
+											"height": 13,
+											"text": "«public void closeChannel(final Channel channel)»+closeChannel()",
+											"horizontalAlignment": 0
+										}
+									],
 									"font": "Arial;13;0",
 									"left": 2472,
 									"top": 763,
 									"width": 406.1318359375,
-									"height": 10
+									"height": 23
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -8262,7 +8281,7 @@
 							"left": 2472,
 							"top": 520,
 							"width": 406.1318359375,
-							"height": 253,
+							"height": 266,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlIypRMm7rWQg="
 							},
@@ -10199,6 +10218,17 @@
 							},
 							"name": "timer",
 							"type": "Timer"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlI2aNAIAJmP8=",
+							"_parent": {
+								"$ref": "AAAAAAFlIypRMm7oOko="
+							},
+							"name": "closeChannel",
+							"stereotype": "public void closeChannel(final Channel channel)"
 						}
 					]
 				}
