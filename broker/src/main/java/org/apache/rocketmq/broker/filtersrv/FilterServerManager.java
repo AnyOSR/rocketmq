@@ -35,6 +35,7 @@ import org.apache.rocketmq.remoting.common.RemotingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//新创建的process？怎么用？
 public class FilterServerManager {
 
     public static final long FILTER_SERVER_MAX_IDLE_TIME_MILLS = 30000;
@@ -80,13 +81,9 @@ public class FilterServerManager {
         }
 
         if (RemotingUtil.isWindowsPlatform()) {
-            return String.format("start /b %s\\bin\\mqfiltersrv.exe %s",
-                this.brokerController.getBrokerConfig().getRocketmqHome(),
-                config);
+            return String.format("start /b %s\\bin\\mqfiltersrv.exe %s", this.brokerController.getBrokerConfig().getRocketmqHome(), config);
         } else {
-            return String.format("sh %s/bin/startfsrv.sh %s",
-                this.brokerController.getBrokerConfig().getRocketmqHome(),
-                config);
+            return String.format("sh %s/bin/startfsrv.sh %s", this.brokerController.getBrokerConfig().getRocketmqHome(), config);
         }
     }
 
@@ -125,8 +122,7 @@ public class FilterServerManager {
     public void doChannelCloseEvent(final String remoteAddr, final Channel channel) {
         FilterServerInfo old = this.filterServerTable.remove(channel);
         if (old != null) {
-            log.warn("The Filter Server<{}> connection<{}> closed, remove it", old.getFilterServerAddr(),
-                remoteAddr);
+            log.warn("The Filter Server<{}> connection<{}> closed, remove it", old.getFilterServerAddr(), remoteAddr);
         }
     }
 

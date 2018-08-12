@@ -24389,7 +24389,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -16,
-											"top": 48,
+											"top": -16,
 											"height": 13
 										},
 										{
@@ -24400,7 +24400,7 @@
 											},
 											"font": "Arial;13;1",
 											"left": 2821,
-											"top": 1183,
+											"top": 1151,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "BrokerOuterAPI"
@@ -24414,7 +24414,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -16,
-											"top": 48,
+											"top": -16,
 											"width": 73.67724609375,
 											"height": 13,
 											"text": "(from Model)"
@@ -24428,14 +24428,14 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -16,
-											"top": 48,
+											"top": -16,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 2816,
-									"top": 1176,
+									"top": 1144,
 									"width": 863.68359375,
 									"height": 25,
 									"stereotypeLabel": {
@@ -24472,7 +24472,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2821,
-											"top": 1206,
+											"top": 1174,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "+remotingClient: RemotingClient",
@@ -24489,7 +24489,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2821,
-											"top": 1221,
+											"top": 1189,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "+nameSrvAddr: String",
@@ -24506,7 +24506,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2821,
-											"top": 1236,
+											"top": 1204,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "+topAddressing: TopAddressing",
@@ -24515,7 +24515,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 2816,
-									"top": 1201,
+									"top": 1169,
 									"width": 863.68359375,
 									"height": 53
 								},
@@ -24540,7 +24540,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2821,
-											"top": 1259,
+											"top": 1227,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "«public void start()»+start()",
@@ -24557,7 +24557,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2821,
-											"top": 1274,
+											"top": 1242,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "«public void shutdown()»+shutdown()",
@@ -24574,7 +24574,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2821,
-											"top": 1289,
+											"top": 1257,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "+registerBrokerAll()",
@@ -24591,7 +24591,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2821,
-											"top": 1304,
+											"top": 1272,
 											"width": 853.68359375,
 											"height": 13,
 											"text": "«public void unregisterBrokerAll(final String clusterName, final String brokerAddr, final String brokerName, final long brokerId)»+unregisterBrokerAll()",
@@ -24600,7 +24600,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 2816,
-									"top": 1254,
+									"top": 1222,
 									"width": 863.68359375,
 									"height": 68
 								},
@@ -24616,7 +24616,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -8,
-									"top": 24,
+									"top": -8,
 									"width": 10,
 									"height": 10
 								},
@@ -24632,7 +24632,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -8,
-									"top": 24,
+									"top": -8,
 									"width": 10,
 									"height": 10
 								}
@@ -24640,7 +24640,7 @@
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 2816,
-							"top": 1176,
+							"top": 1144,
 							"width": 863.68359375,
 							"height": 146,
 							"nameCompartment": {
@@ -25013,6 +25013,271 @@
 							},
 							"propertyLabel": {
 								"$ref": "AAAAAAFlI3KjaSHU6H0="
+							}
+						},
+						{
+							"_type": "UMLClassView",
+							"_id": "AAAAAAFlLbtQyJpSjpE=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"model": {
+								"$ref": "AAAAAAFlLbtQx5pQZJY="
+							},
+							"subViews": [
+								{
+									"_type": "UMLNameCompartmentView",
+									"_id": "AAAAAAFlLbtQyJpTq4U=",
+									"_parent": {
+										"$ref": "AAAAAAFlLbtQyJpSjpE="
+									},
+									"model": {
+										"$ref": "AAAAAAFlLbtQx5pQZJY="
+									},
+									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlLbtQyJpUxJ4=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyJpTq4U="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -16,
+											"top": -32,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlLbtQyZpVC5Q=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyJpTq4U="
+											},
+											"font": "Arial;13;1",
+											"left": 2821,
+											"top": 1327,
+											"width": 613.056640625,
+											"height": 13,
+											"text": "FilterServerManager"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlLbtQyZpWcPI=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyJpTq4U="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -16,
+											"top": -32,
+											"width": 73.67724609375,
+											"height": 13,
+											"text": "(from Model)"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFlLbtQyZpXi84=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyJpTq4U="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -16,
+											"top": -32,
+											"height": 13,
+											"horizontalAlignment": 1
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2816,
+									"top": 1320,
+									"width": 623.056640625,
+									"height": 25,
+									"stereotypeLabel": {
+										"$ref": "AAAAAAFlLbtQyJpUxJ4="
+									},
+									"nameLabel": {
+										"$ref": "AAAAAAFlLbtQyZpVC5Q="
+									},
+									"namespaceLabel": {
+										"$ref": "AAAAAAFlLbtQyZpWcPI="
+									},
+									"propertyLabel": {
+										"$ref": "AAAAAAFlLbtQyZpXi84="
+									}
+								},
+								{
+									"_type": "UMLAttributeCompartmentView",
+									"_id": "AAAAAAFlLbtQyZpYwNk=",
+									"_parent": {
+										"$ref": "AAAAAAFlLbtQyJpSjpE="
+									},
+									"model": {
+										"$ref": "AAAAAAFlLbtQx5pQZJY="
+									},
+									"subViews": [
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFlLbuDC5qr4iw=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyZpYwNk="
+											},
+											"model": {
+												"$ref": "AAAAAAFlLbuCoZqlqtA="
+											},
+											"font": "Arial;13;0",
+											"left": 2821,
+											"top": 1350,
+											"width": 613.056640625,
+											"height": 13,
+											"text": "+filterServerTable: ConcurrentMap<Channel, FilterServerInfo>",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFlLbudP5rK8dc=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyZpYwNk="
+											},
+											"model": {
+												"$ref": "AAAAAAFlLbuc2prESHo="
+											},
+											"font": "Arial;13;0",
+											"left": 2821,
+											"top": 1365,
+											"width": 613.056640625,
+											"height": 13,
+											"text": "+scheduledExecutorService: ScheduledExecutorService",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2816,
+									"top": 1345,
+									"width": 623.056640625,
+									"height": 38
+								},
+								{
+									"_type": "UMLOperationCompartmentView",
+									"_id": "AAAAAAFlLbtQyZpZuds=",
+									"_parent": {
+										"$ref": "AAAAAAFlLbtQyJpSjpE="
+									},
+									"model": {
+										"$ref": "AAAAAAFlLbtQx5pQZJY="
+									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlLcH2XJsPrDg=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyZpZuds="
+											},
+											"model": {
+												"$ref": "AAAAAAFlLcH19JsJHWc="
+											},
+											"font": "Arial;13;0",
+											"left": 2821,
+											"top": 1388,
+											"width": 613.056640625,
+											"height": 13,
+											"text": "«public void createFilterServer()»+createFilterServer()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlLcJTZJtB2DA=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyZpZuds="
+											},
+											"model": {
+												"$ref": "AAAAAAFlLcJS+5s7y0Q="
+											},
+											"font": "Arial;13;0",
+											"left": 2821,
+											"top": 1403,
+											"width": 613.056640625,
+											"height": 13,
+											"text": "«public void registerFilterServer(final Channel channel, final String filterServerAddr)»+registerFilterServer()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlLcKxO5tzsUk=",
+											"_parent": {
+												"$ref": "AAAAAAFlLbtQyZpZuds="
+											},
+											"model": {
+												"$ref": "AAAAAAFlLcKw05ttJ6E="
+											},
+											"font": "Arial;13;0",
+											"left": 2821,
+											"top": 1418,
+											"width": 613.056640625,
+											"height": 13,
+											"text": "«public List<String> buildNewFilterServerList()»+buildNewFilterServerList()",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2816,
+									"top": 1383,
+									"width": 623.056640625,
+									"height": 53
+								},
+								{
+									"_type": "UMLReceptionCompartmentView",
+									"_id": "AAAAAAFlLbtQyZpajLE=",
+									"_parent": {
+										"$ref": "AAAAAAFlLbtQyJpSjpE="
+									},
+									"model": {
+										"$ref": "AAAAAAFlLbtQx5pQZJY="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": -8,
+									"top": -16,
+									"width": 10,
+									"height": 10
+								},
+								{
+									"_type": "UMLTemplateParameterCompartmentView",
+									"_id": "AAAAAAFlLbtQyZpbQOw=",
+									"_parent": {
+										"$ref": "AAAAAAFlLbtQyJpSjpE="
+									},
+									"model": {
+										"$ref": "AAAAAAFlLbtQx5pQZJY="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": -8,
+									"top": -16,
+									"width": 10,
+									"height": 10
+								}
+							],
+							"font": "Arial;13;0",
+							"containerChangeable": true,
+							"left": 2816,
+							"top": 1320,
+							"width": 623.056640625,
+							"height": 116,
+							"nameCompartment": {
+								"$ref": "AAAAAAFlLbtQyJpTq4U="
+							},
+							"attributeCompartment": {
+								"$ref": "AAAAAAFlLbtQyZpYwNk="
+							},
+							"operationCompartment": {
+								"$ref": "AAAAAAFlLbtQyZpZuds="
+							},
+							"receptionCompartment": {
+								"$ref": "AAAAAAFlLbtQyZpajLE="
+							},
+							"templateParameterCompartment": {
+								"$ref": "AAAAAAFlLbtQyZpbQOw="
 							}
 						}
 					]
@@ -30154,6 +30419,63 @@
 							},
 							"name": "brokerId",
 							"type": "Long"
+						}
+					]
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAFlLbtQx5pQZJY=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "FilterServerManager",
+					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFlLbuCoZqlqtA=",
+							"_parent": {
+								"$ref": "AAAAAAFlLbtQx5pQZJY="
+							},
+							"name": "filterServerTable",
+							"type": "ConcurrentMap<Channel, FilterServerInfo>"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFlLbuc2prESHo=",
+							"_parent": {
+								"$ref": "AAAAAAFlLbtQx5pQZJY="
+							},
+							"name": "scheduledExecutorService",
+							"type": "ScheduledExecutorService"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlLcH19JsJHWc=",
+							"_parent": {
+								"$ref": "AAAAAAFlLbtQx5pQZJY="
+							},
+							"name": "createFilterServer",
+							"stereotype": "public void createFilterServer()"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlLcJS+5s7y0Q=",
+							"_parent": {
+								"$ref": "AAAAAAFlLbtQx5pQZJY="
+							},
+							"name": "registerFilterServer",
+							"stereotype": "public void registerFilterServer(final Channel channel, final String filterServerAddr)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlLcKw05ttJ6E=",
+							"_parent": {
+								"$ref": "AAAAAAFlLbtQx5pQZJY="
+							},
+							"name": "buildNewFilterServerList",
+							"stereotype": "public List<String> buildNewFilterServerList()"
 						}
 					]
 				}
