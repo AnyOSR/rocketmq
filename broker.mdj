@@ -24401,7 +24401,7 @@
 											"font": "Arial;13;1",
 											"left": 2821,
 											"top": 1183,
-											"width": 215.7060546875,
+											"width": 853.68359375,
 											"height": 13,
 											"text": "BrokerOuterAPI"
 										},
@@ -24436,7 +24436,7 @@
 									"font": "Arial;13;0",
 									"left": 2816,
 									"top": 1176,
-									"width": 225.7060546875,
+									"width": 863.68359375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFlIw1HrmHIuj4="
@@ -24473,7 +24473,7 @@
 											"font": "Arial;13;0",
 											"left": 2821,
 											"top": 1206,
-											"width": 215.7060546875,
+											"width": 853.68359375,
 											"height": 13,
 											"text": "+remotingClient: RemotingClient",
 											"horizontalAlignment": 0
@@ -24490,7 +24490,7 @@
 											"font": "Arial;13;0",
 											"left": 2821,
 											"top": 1221,
-											"width": 215.7060546875,
+											"width": 853.68359375,
 											"height": 13,
 											"text": "+nameSrvAddr: String",
 											"horizontalAlignment": 0
@@ -24507,7 +24507,7 @@
 											"font": "Arial;13;0",
 											"left": 2821,
 											"top": 1236,
-											"width": 215.7060546875,
+											"width": 853.68359375,
 											"height": 13,
 											"text": "+topAddressing: TopAddressing",
 											"horizontalAlignment": 0
@@ -24516,7 +24516,7 @@
 									"font": "Arial;13;0",
 									"left": 2816,
 									"top": 1201,
-									"width": 225.7060546875,
+									"width": 863.68359375,
 									"height": 53
 								},
 								{
@@ -24541,7 +24541,7 @@
 											"font": "Arial;13;0",
 											"left": 2821,
 											"top": 1259,
-											"width": 215.7060546875,
+											"width": 853.68359375,
 											"height": 13,
 											"text": "«public void start()»+start()",
 											"horizontalAlignment": 0
@@ -24558,7 +24558,7 @@
 											"font": "Arial;13;0",
 											"left": 2821,
 											"top": 1274,
-											"width": 215.7060546875,
+											"width": 853.68359375,
 											"height": 13,
 											"text": "«public void shutdown()»+shutdown()",
 											"horizontalAlignment": 0
@@ -24575,17 +24575,34 @@
 											"font": "Arial;13;0",
 											"left": 2821,
 											"top": 1289,
-											"width": 215.7060546875,
+											"width": 853.68359375,
 											"height": 13,
 											"text": "+registerBrokerAll()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlLWrOnpnzp6U=",
+											"_parent": {
+												"$ref": "AAAAAAFlIw1HrmHNstU="
+											},
+											"model": {
+												"$ref": "AAAAAAFlLWrOK5ntQxw="
+											},
+											"font": "Arial;13;0",
+											"left": 2821,
+											"top": 1304,
+											"width": 853.68359375,
+											"height": 13,
+											"text": "«public void unregisterBrokerAll(final String clusterName, final String brokerAddr, final String brokerName, final long brokerId)»+unregisterBrokerAll()",
 											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 2816,
 									"top": 1254,
-									"width": 225.7060546875,
-									"height": 53
+									"width": 863.68359375,
+									"height": 68
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -24624,8 +24641,8 @@
 							"containerChangeable": true,
 							"left": 2816,
 							"top": 1176,
-							"width": 225.7060546875,
-							"height": 131,
+							"width": 863.68359375,
+							"height": 146,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlIw1HrmHHytM="
 							},
@@ -30058,6 +30075,15 @@
 								"$ref": "AAAAAAFlIw1HrWHEH+s="
 							},
 							"name": "registerBrokerAll"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlLWrOK5ntQxw=",
+							"_parent": {
+								"$ref": "AAAAAAFlIw1HrWHEH+s="
+							},
+							"name": "unregisterBrokerAll",
+							"stereotype": "public void unregisterBrokerAll(final String clusterName, final String brokerAddr, final String brokerName, final long brokerId)"
 						}
 					]
 				},
