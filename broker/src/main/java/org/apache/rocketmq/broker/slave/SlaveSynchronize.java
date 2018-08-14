@@ -45,6 +45,7 @@ public class SlaveSynchronize {
         this.masterAddr = masterAddr;
     }
 
+    //同步相关信息
     public void syncAll() {
         this.syncTopicConfig();
         this.syncConsumerOffset();
@@ -52,14 +53,13 @@ public class SlaveSynchronize {
         this.syncSubscriptionGroupConfig();
     }
 
+    //同步topicConfig信息
     private void syncTopicConfig() {
         String masterAddrBak = this.masterAddr;
         if (masterAddrBak != null) {
             try {
-                TopicConfigSerializeWrapper topicWrapper =
-                    this.brokerController.getBrokerOuterAPI().getAllTopicConfig(masterAddrBak);
-                if (!this.brokerController.getTopicConfigManager().getDataVersion()
-                    .equals(topicWrapper.getDataVersion())) {
+                TopicConfigSerializeWrapper topicWrapper = this.brokerController.getBrokerOuterAPI().getAllTopicConfig(masterAddrBak);
+                if (!this.brokerController.getTopicConfigManager().getDataVersion().equals(topicWrapper.getDataVersion())) {
 
                     this.brokerController.getTopicConfigManager().getDataVersion().assignNewOne(topicWrapper.getDataVersion());
                     this.brokerController.getTopicConfigManager().getTopicConfigTable().clear();
@@ -74,6 +74,7 @@ public class SlaveSynchronize {
         }
     }
 
+    //同步offset信息
     private void syncConsumerOffset() {
         String masterAddrBak = this.masterAddr;
         if (masterAddrBak != null) {
@@ -92,8 +93,7 @@ public class SlaveSynchronize {
         String masterAddrBak = this.masterAddr;
         if (masterAddrBak != null) {
             try {
-                String delayOffset =
-                    this.brokerController.getBrokerOuterAPI().getAllDelayOffset(masterAddrBak);
+                String delayOffset = this.brokerController.getBrokerOuterAPI().getAllDelayOffset(masterAddrBak);
                 if (delayOffset != null) {
 
                     String fileName = StorePathConfigHelper.getDelayOffsetStorePath(this.brokerController.getMessageStoreConfig().getStorePathRootDir());
