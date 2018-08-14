@@ -41,8 +41,7 @@ public class StatsItem {
     private final ScheduledExecutorService scheduledExecutorService;
     private final Logger log;
 
-    public StatsItem(String statsName, String statsKey, ScheduledExecutorService scheduledExecutorService,
-        Logger log) {
+    public StatsItem(String statsName, String statsKey, ScheduledExecutorService scheduledExecutorService, Logger log) {
         this.statsName = statsName;
         this.statsKey = statsKey;
         this.scheduledExecutorService = scheduledExecutorService;
