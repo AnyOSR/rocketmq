@@ -17,6 +17,7 @@
 
 package org.apache.rocketmq.common.stats;
 
+//统计快照实体
 public class StatsSnapshot {
     private long sum;
     private double tps;

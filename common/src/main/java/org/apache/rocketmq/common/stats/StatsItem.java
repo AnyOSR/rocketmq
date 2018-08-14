@@ -48,6 +48,7 @@ public class StatsItem {
         this.log = log;
     }
 
+    //计算一些统计信息 sum值 tps avgpt
     private static StatsSnapshot computeStatsData(final LinkedList<CallSnapshot> csList) {
         StatsSnapshot statsSnapshot = new StatsSnapshot();
         synchronized (csList) {
@@ -62,7 +63,7 @@ public class StatsItem {
 
                 long timesDiff = last.getTimes() - first.getTimes();
                 if (timesDiff > 0) {
-                    avgpt = (sum * 1.0d) / timesDiff;
+                    avgpt = (sum * 1.0d) / timesDiff;                 //平均每次调用消耗时间
                 }
             }
 
@@ -151,8 +152,7 @@ public class StatsItem {
 
     public void samplingInSeconds() {
         synchronized (this.csListMinute) {
-            this.csListMinute.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value
-                .get()));
+            this.csListMinute.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value.get()));
             if (this.csListMinute.size() > 7) {
                 this.csListMinute.removeFirst();
             }
@@ -161,8 +161,7 @@ public class StatsItem {
 
     public void samplingInMinutes() {
         synchronized (this.csListHour) {
-            this.csListHour.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value
-                .get()));
+            this.csListHour.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value.get()));
             if (this.csListHour.size() > 7) {
                 this.csListHour.removeFirst();
             }
@@ -171,8 +170,7 @@ public class StatsItem {
 
     public void samplingInHour() {
         synchronized (this.csListDay) {
-            this.csListDay.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value
-                .get()));
+            this.csListDay.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value.get()));
             if (this.csListDay.size() > 25) {
                 this.csListDay.removeFirst();
             }
@@ -226,6 +224,7 @@ public class StatsItem {
     }
 }
 
+//状态信息
 class CallSnapshot {
     private final long timestamp;
     private final long times;
