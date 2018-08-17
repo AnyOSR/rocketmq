@@ -63,6 +63,7 @@ public class BrokerFastFailure {
         }, 1000, 10, TimeUnit.MILLISECONDS);
     }
 
+    //系统繁忙，则发送繁忙响应，并清除掉sendpool和pullpool里面过期的runable
     private void cleanExpiredRequest() {
         while (this.brokerController.getMessageStore().isOSPageCacheBusy()) {
             try {
@@ -81,11 +82,9 @@ public class BrokerFastFailure {
             }
         }
 
-        cleanExpiredRequestInQueue(this.brokerController.getSendThreadPoolQueue(),
-            this.brokerController.getBrokerConfig().getWaitTimeMillsInSendQueue());
+        cleanExpiredRequestInQueue(this.brokerController.getSendThreadPoolQueue(), this.brokerController.getBrokerConfig().getWaitTimeMillsInSendQueue());
 
-        cleanExpiredRequestInQueue(this.brokerController.getPullThreadPoolQueue(),
-            this.brokerController.getBrokerConfig().getWaitTimeMillsInPullQueue());
+        cleanExpiredRequestInQueue(this.brokerController.getPullThreadPoolQueue(), this.brokerController.getBrokerConfig().getWaitTimeMillsInPullQueue());
     }
 
     void cleanExpiredRequestInQueue(final BlockingQueue<Runnable> blockingQueue, final long maxWaitTimeMillsInQueue) {

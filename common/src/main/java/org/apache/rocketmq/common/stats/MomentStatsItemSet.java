@@ -73,11 +73,11 @@ public class MomentStatsItemSet {
         statsItem.getValue().set(value);
     }
 
+    //创建一个新的MomentStatsItem，如果对应的statsKey不存在的话
     public MomentStatsItem getAndCreateStatsItem(final String statsKey) {
         MomentStatsItem statsItem = this.statsItemTable.get(statsKey);
         if (null == statsItem) {
-            statsItem =
-                new MomentStatsItem(this.statsName, statsKey, this.scheduledExecutorService, this.log);
+            statsItem = new MomentStatsItem(this.statsName, statsKey, this.scheduledExecutorService, this.log);
             MomentStatsItem prev = this.statsItemTable.put(statsKey, statsItem);
 
             if (null == prev) {

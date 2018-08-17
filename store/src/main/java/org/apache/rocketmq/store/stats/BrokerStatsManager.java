@@ -137,6 +137,7 @@ public class BrokerStatsManager {
         this.statsTable.get(GROUP_GET_NUMS).addValue(statsKey, incValue, 1);
     }
 
+    //根据topic和group创建key
     public String buildStatsKey(String topic, String group) {
         StringBuffer strBuilder = new StringBuffer();
         strBuilder.append(topic);
@@ -177,20 +178,17 @@ public class BrokerStatsManager {
         return this.statsTable.get(GROUP_GET_NUMS).getStatsDataInMinute(statsKey).getTps();
     }
 
-    public void recordDiskFallBehindTime(final String group, final String topic, final int queueId,
-        final long fallBehind) {
+    public void recordDiskFallBehindTime(final String group, final String topic, final int queueId, final long fallBehind) {
         final String statsKey = String.format("%d@%s@%s", queueId, topic, group);
         this.momentStatsItemSetFallTime.getAndCreateStatsItem(statsKey).getValue().set(fallBehind);
     }
 
-    public void recordDiskFallBehindSize(final String group, final String topic, final int queueId,
-        final long fallBehind) {
+    public void recordDiskFallBehindSize(final String group, final String topic, final int queueId, final long fallBehind) {
         final String statsKey = String.format("%d@%s@%s", queueId, topic, group);
         this.momentStatsItemSetFallSize.getAndCreateStatsItem(statsKey).getValue().set(fallBehind);
     }
 
-    public void incCommercialValue(final String key, final String owner, final String group,
-        final String topic, final String type, final int incValue) {
+    public void incCommercialValue(final String key, final String owner, final String group, final String topic, final String type, final int incValue) {
         final String statsKey = buildCommercialStatsKey(owner, topic, group, type);
         this.statsTable.get(key).addValue(statsKey, incValue, 1);
     }

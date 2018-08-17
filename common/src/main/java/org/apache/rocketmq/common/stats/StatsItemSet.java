@@ -151,12 +151,14 @@ public class StatsItemSet {
         }
     }
 
+    //创建一个新的StatsItem，如果key不存在的话
     public void addValue(final String statsKey, final int incValue, final int incTimes) {
         StatsItem statsItem = this.getAndCreateStatsItem(statsKey);
         statsItem.getValue().addAndGet(incValue);
         statsItem.getTimes().addAndGet(incTimes);
     }
 
+    //创建一个新的StatsItem，如果key不存在的话
     public StatsItem getAndCreateStatsItem(final String statsKey) {
         StatsItem statsItem = this.statsItemTable.get(statsKey);
         if (null == statsItem) {
