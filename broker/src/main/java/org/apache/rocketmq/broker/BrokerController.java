@@ -193,9 +193,11 @@ public class BrokerController {
         return queryThreadPoolQueue;
     }
 
+    //初始化
     public boolean initialize() throws CloneNotSupportedException {
-        boolean result = this.topicConfigManager.load();
 
+        //从本地文件反序列化成对象
+        boolean result = this.topicConfigManager.load();
         result = result && this.consumerOffsetManager.load();
         result = result && this.subscriptionGroupManager.load();
         result = result && this.consumerFilterManager.load();

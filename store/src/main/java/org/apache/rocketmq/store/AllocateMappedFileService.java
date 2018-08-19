@@ -46,6 +46,7 @@ public class AllocateMappedFileService extends ServiceThread {
         this.messageStore = messageStore;
     }
 
+
     public MappedFile putRequestAndReturnMappedFile(String nextFilePath, String nextNextFilePath, int fileSize) {
         int canSubmitRequests = 2;
         if (this.messageStore.getMessageStoreConfig().isTransientStorePoolEnable()) {
@@ -273,7 +274,7 @@ public class AllocateMappedFileService extends ServiceThread {
                 return -1;
             } else {
                 int mIndex = this.filePath.lastIndexOf(File.separator);
-                long mName = Long.parseLong(this.filePath.substring(mIndex + 1));
+                long mName = Long.parseLong(this.filePath.substring(mIndex + 1));          //文件名是数字 偏移量
                 int oIndex = other.filePath.lastIndexOf(File.separator);
                 long oName = Long.parseLong(other.filePath.substring(oIndex + 1));
                 if (mName < oName) {
