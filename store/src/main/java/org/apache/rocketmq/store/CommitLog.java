@@ -1156,9 +1156,9 @@ public class CommitLog {
     class DefaultAppendMessageCallback implements AppendMessageCallback {
         // File at the end of the minimum fixed length empty
         private static final int END_FILE_MIN_BLANK_LENGTH = 4 + 4;
-        private final ByteBuffer msgIdMemory;
+        private final ByteBuffer msgIdMemory;                  //        16字节  定长
         // Store the message content
-        private final ByteBuffer msgStoreItemMemory;
+        private final ByteBuffer msgStoreItemMemory;           //消息体   size+8字节
         // The maximum length of the message
         private final int maxMessageSize;
         // Build Message Key
@@ -1166,7 +1166,7 @@ public class CommitLog {
 
         private final StringBuilder msgIdBuilder = new StringBuilder();
 
-        private final ByteBuffer hostHolder = ByteBuffer.allocate(8);
+        private final ByteBuffer hostHolder = ByteBuffer.allocate(8);      //8字节  定长
 
         DefaultAppendMessageCallback(final int size) {
             this.msgIdMemory = ByteBuffer.allocate(MessageDecoder.MSG_ID_LENGTH);
@@ -1403,6 +1403,7 @@ public class CommitLog {
             return result;
         }
 
+        //position设置为0，limit设置参数值
         private void resetByteBuffer(final ByteBuffer byteBuffer, final int limit) {
             byteBuffer.flip();
             byteBuffer.limit(limit);
