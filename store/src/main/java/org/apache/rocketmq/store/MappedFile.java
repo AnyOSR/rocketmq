@@ -428,6 +428,7 @@ public class MappedFile extends ReferenceResource {
         return null;
     }
 
+    //pos到committedPosition之间的数据
     public SelectMappedBufferResult selectMappedBuffer(int pos) {
         int readPosition = getReadPosition();         //committedPosition
         if (pos < readPosition && pos >= 0) {
@@ -513,7 +514,7 @@ public class MappedFile extends ReferenceResource {
         this.committedPosition.set(pos);
     }
 
-
+    //写几个字节是啥意思？
     public void warmMappedFile(FlushDiskType type, int pages) {
         long beginTime = System.currentTimeMillis();
         ByteBuffer byteBuffer = this.mappedByteBuffer.slice();
