@@ -452,14 +452,14 @@ public class MappedFileQueue {
         return result;
     }
 
-    //提交
+    //提交 true tm 是啥意思？
     public boolean commit(final int commitLeastPages) {
         boolean result = true;
         MappedFile mappedFile = this.findMappedFileByOffset(this.committedWhere, this.committedWhere == 0);
         if (mappedFile != null) {
             int offset = mappedFile.commit(commitLeastPages);
             long where = mappedFile.getFileFromOffset() + offset;
-            result = where == this.committedWhere;
+            result = where == this.committedWhere;                      //应该不会相等啊？就算offset为0应该也不会相等啊？
             this.committedWhere = where;
         }
 
