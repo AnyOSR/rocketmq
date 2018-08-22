@@ -94,6 +94,7 @@ public class MessageExt extends Message {
         return socketAddress2ByteBuffer(this.storeHost);
     }
 
+    //将storeHost信息写入byteBuffer
     public ByteBuffer getStoreHostBytes(ByteBuffer byteBuffer) {
         return socketAddress2ByteBuffer(this.storeHost, byteBuffer);
     }

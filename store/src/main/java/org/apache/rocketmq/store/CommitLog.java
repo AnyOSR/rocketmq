@@ -1156,17 +1156,17 @@ public class CommitLog {
     class DefaultAppendMessageCallback implements AppendMessageCallback {
         // File at the end of the minimum fixed length empty
         private static final int END_FILE_MIN_BLANK_LENGTH = 4 + 4;
-        private final ByteBuffer msgIdMemory;                  //        16字节  定长
-        // Store the message content
-        private final ByteBuffer msgStoreItemMemory;           //消息体   size+8字节
+
         // The maximum length of the message
         private final int maxMessageSize;
+
         // Build Message Key
         private final StringBuilder keyBuilder = new StringBuilder();
-
         private final StringBuilder msgIdBuilder = new StringBuilder();
 
-        private final ByteBuffer hostHolder = ByteBuffer.allocate(8);      //8字节  定长
+        private final ByteBuffer hostHolder = ByteBuffer.allocate(8);         //8字节   定长
+        private final ByteBuffer msgStoreItemMemory;                          //8+size  字节  Store the message content
+        private final ByteBuffer msgIdMemory;                                 //16字节   定长
 
         DefaultAppendMessageCallback(final int size) {
             this.msgIdMemory = ByteBuffer.allocate(MessageDecoder.MSG_ID_LENGTH);
@@ -1185,6 +1185,9 @@ public class CommitLog {
             long wroteOffset = fileFromOffset + byteBuffer.position();
 
             this.resetByteBuffer(hostHolder, 8);
+
+            //将storeHost信息和wroteOffset信息写入msgIdMemory
+            //storeHost(8字节)+wroteOffset(8字节)
             String msgId = MessageDecoder.createMessageId(this.msgIdMemory, msgInner.getStoreHostBytes(hostHolder), wroteOffset);
 
             // Record ConsumeQueue information
@@ -1214,11 +1217,8 @@ public class CommitLog {
                     break;
             }
 
-            /**
-             * Serialize message
-             */
+            //properties信息
             final byte[] propertiesData = msgInner.getPropertiesString() == null ? null : msgInner.getPropertiesString().getBytes(MessageDecoder.CHARSET_UTF8);
-
             final int propertiesLength = propertiesData == null ? 0 : propertiesData.length;
 
             if (propertiesLength > Short.MAX_VALUE) {
@@ -1226,21 +1226,24 @@ public class CommitLog {
                 return new AppendMessageResult(AppendMessageStatus.PROPERTIES_SIZE_EXCEEDED);
             }
 
+            //topic信息
             final byte[] topicData = msgInner.getTopic().getBytes(MessageDecoder.CHARSET_UTF8);
             final int topicLength = topicData.length;
 
+            //body信息
             final int bodyLength = msgInner.getBody() == null ? 0 : msgInner.getBody().length;
 
+            //计算message长度
             final int msgLen = calMsgLength(bodyLength, topicLength, propertiesLength);
 
             // Exceeds the maximum message
             if (msgLen > this.maxMessageSize) {
-                CommitLog.log.warn("message size exceeded, msg total size: " + msgLen + ", msg body size: " + bodyLength
-                    + ", maxMessageSize: " + this.maxMessageSize);
+                CommitLog.log.warn("message size exceeded, msg total size: " + msgLen + ", msg body size: " + bodyLength + ", maxMessageSize: " + this.maxMessageSize);
                 return new AppendMessageResult(AppendMessageStatus.MESSAGE_SIZE_EXCEEDED);
             }
 
             // Determines whether there is sufficient free space
+            //空间不够？遇到end_of_file
             if ((msgLen + END_FILE_MIN_BLANK_LENGTH) > maxBlank) {
                 this.resetByteBuffer(this.msgStoreItemMemory, maxBlank);
                 // 1 TOTALSIZE
@@ -1255,6 +1258,7 @@ public class CommitLog {
                     queueOffset, CommitLog.this.defaultMessageStore.now() - beginTimeMills);
             }
 
+            // 序列化
             // Initialization of storage space
             this.resetByteBuffer(msgStoreItemMemory, msgLen);
             // 1 TOTALSIZE
@@ -1288,6 +1292,8 @@ public class CommitLog {
             this.msgStoreItemMemory.putInt(msgInner.getReconsumeTimes());
             // 14 Prepared Transaction Offset
             this.msgStoreItemMemory.putLong(msgInner.getPreparedTransactionOffset());
+
+            //body长度 + body + topic长度 + topic内容 + properties长度 + properties内容
             // 15 BODY
             this.msgStoreItemMemory.putInt(bodyLength);
             if (bodyLength > 0)
@@ -1304,8 +1310,7 @@ public class CommitLog {
             // Write messages to the queue buffer
             byteBuffer.put(this.msgStoreItemMemory.array(), 0, msgLen);
 
-            AppendMessageResult result = new AppendMessageResult(AppendMessageStatus.PUT_OK, wroteOffset, msgLen, msgId,
-                msgInner.getStoreTimestamp(), queueOffset, CommitLog.this.defaultMessageStore.now() - beginTimeMills);
+            AppendMessageResult result = new AppendMessageResult(AppendMessageStatus.PUT_OK, wroteOffset, msgLen, msgId, msgInner.getStoreTimestamp(), queueOffset, CommitLog.this.defaultMessageStore.now() - beginTimeMills);
 
             switch (tranType) {
                 case MessageSysFlag.TRANSACTION_PREPARED_TYPE:
