@@ -114,24 +114,23 @@ public class CommitLog {
         return this.mappedFileQueue.getFlushedWhere();
     }
 
+    //commit位置
     public long getMaxOffset() {
         return this.mappedFileQueue.getMaxOffset();
     }
 
+    //还有多少数据需要commit
     public long remainHowManyDataToCommit() {
         return this.mappedFileQueue.remainHowManyDataToCommit();
     }
 
+    //还有多少数据要flush
     public long remainHowManyDataToFlush() {
         return this.mappedFileQueue.remainHowManyDataToFlush();
     }
 
-    public int deleteExpiredFile(
-        final long expiredTime,
-        final int deleteFilesInterval,
-        final long intervalForcibly,
-        final boolean cleanImmediately
-    ) {
+    //删除过期file 如果cleanImmediately为true，则立即删除
+    public int deleteExpiredFile(final long expiredTime, final int deleteFilesInterval, final long intervalForcibly, final boolean cleanImmediately) {
         return this.mappedFileQueue.deleteExpiredFileByTime(expiredTime, deleteFilesInterval, intervalForcibly, cleanImmediately);
     }
 
@@ -225,8 +224,7 @@ public class CommitLog {
      *
      * @return 0 Come the end of the file // >0 Normal messages // -1 Message checksum failure
      */
-    public DispatchRequest checkMessageAndReturnSize(java.nio.ByteBuffer byteBuffer, final boolean checkCRC,
-        final boolean readBody) {
+    public DispatchRequest checkMessageAndReturnSize(java.nio.ByteBuffer byteBuffer, final boolean checkCRC, final boolean readBody) {
         try {
             // 1 TOTAL SIZE
             int totalSize = byteBuffer.getInt();
@@ -820,6 +818,7 @@ public class CommitLog {
         return null;
     }
 
+
     public long rollNextFile(final long offset) {
         int mappedFileSize = this.defaultMessageStore.getMessageStoreConfig().getMapedFileSizeCommitLog();
         return offset + mappedFileSize - offset % mappedFileSize;
@@ -1342,27 +1341,32 @@ public class CommitLog {
                 queueOffset = 0L;
                 CommitLog.this.topicQueueTable.put(key, queueOffset);
             }
+
             long beginQueueOffset = queueOffset;
             int totalMsgLen = 0;
             int msgNum = 0;
             msgIdBuilder.setLength(0);
             final long beginTimeMills = CommitLog.this.defaultMessageStore.now();
-            ByteBuffer messagesByteBuff = messageExtBatch.getEncodedBuff();
+
             this.resetByteBuffer(hostHolder, 8);
             ByteBuffer storeHostBytes = messageExtBatch.getStoreHostBytes(hostHolder);
+
+            //获取messageExtBatch的encodedBuff encodedBuff是一系列的message叠加起来的 每个有自己的格式
+            //长度(4字节)+16个字节   长度(4字节)+16个字节    长度(4字节)+16个字节    长度(4字节)+16个字节  before
+            //长度(4字节)+16字节+队列偏移量(8字节)+实际offset(8字节)+一系列字节数据   下一个
+            ByteBuffer messagesByteBuff = messageExtBatch.getEncodedBuff();
             messagesByteBuff.mark();
             while (messagesByteBuff.hasRemaining()) {
                 // 1 TOTALSIZE
-                final int msgPos = messagesByteBuff.position();
-                final int msgLen = messagesByteBuff.getInt();
+                final int msgPos = messagesByteBuff.position();          //当前位置
+                final int msgLen = messagesByteBuff.getInt();            //四个字节的message长度
                 final int bodyLen = msgLen - 40; //only for log, just estimate it
                 // Exceeds the maximum message
                 if (msgLen > this.maxMessageSize) {
-                    CommitLog.log.warn("message size exceeded, msg total size: " + msgLen + ", msg body size: " + bodyLen
-                        + ", maxMessageSize: " + this.maxMessageSize);
+                    CommitLog.log.warn("message size exceeded, msg total size: " + msgLen + ", msg body size: " + bodyLen + ", maxMessageSize: " + this.maxMessageSize);
                     return new AppendMessageResult(AppendMessageStatus.MESSAGE_SIZE_EXCEEDED);
                 }
-                totalMsgLen += msgLen;
+                totalMsgLen += msgLen;                                   //总长度
                 // Determines whether there is sufficient free space
                 if ((totalMsgLen + END_FILE_MIN_BLANK_LENGTH) > maxBlank) {
                     this.resetByteBuffer(this.msgStoreItemMemory, 8);
@@ -1380,9 +1384,9 @@ public class CommitLog {
                         beginQueueOffset, CommitLog.this.defaultMessageStore.now() - beginTimeMills);
                 }
                 //move to add queue offset and commitlog offset
-                messagesByteBuff.position(msgPos + 20);
-                messagesByteBuff.putLong(queueOffset);
-                messagesByteBuff.putLong(wroteOffset + totalMsgLen - msgLen);
+                messagesByteBuff.position(msgPos + 20);                  //直接定位到msgPos + 20处  中间的16个字节是啥？
+                messagesByteBuff.putLong(queueOffset);                   //写入queueOffset 8字节
+                messagesByteBuff.putLong(wroteOffset + totalMsgLen - msgLen);   //写入偏移量
 
                 storeHostBytes.rewind();
                 String msgId = MessageDecoder.createMessageId(this.msgIdMemory, storeHostBytes, wroteOffset + totalMsgLen - msgLen);
@@ -1393,7 +1397,7 @@ public class CommitLog {
                 }
                 queueOffset++;
                 msgNum++;
-                messagesByteBuff.position(msgPos + msgLen);
+                messagesByteBuff.position(msgPos + msgLen);                  //messagesByteBuff定位到msgPos + msgLen
             }
 
             messagesByteBuff.position(0);
@@ -1429,6 +1433,7 @@ public class CommitLog {
             this.maxMessageSize = size;
         }
 
+        //将messageExtBatch编码成ByteBuffer
         public ByteBuffer encode(final MessageExtBatch messageExtBatch) {
             msgBatchMemory.clear(); //not thread-safe
             int totalMsgLen = 0;
