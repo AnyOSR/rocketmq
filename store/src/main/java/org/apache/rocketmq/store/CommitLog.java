@@ -268,6 +268,7 @@ public class CommitLog {
             long preparedTransactionOffset = byteBuffer.getLong();
 
             int bodyLen = byteBuffer.getInt();
+            //是否需要校验body数据
             if (bodyLen > 0) {
                 if (readBody) {
                     byteBuffer.get(bytesContent, 0, bodyLen);
@@ -319,8 +320,7 @@ public class CommitLog {
                         }
 
                         if (delayLevel > 0) {
-                            tagsCode = this.defaultMessageStore.getScheduleMessageService().computeDeliverTimestamp(delayLevel,
-                                storeTimestamp);
+                            tagsCode = this.defaultMessageStore.getScheduleMessageService().computeDeliverTimestamp(delayLevel, storeTimestamp);
                         }
                     }
                 }
@@ -333,8 +333,7 @@ public class CommitLog {
                 doNothingForDeadCode(bornTimeStamp);
                 doNothingForDeadCode(byteBuffer1);
                 doNothingForDeadCode(byteBuffer2);
-                log.error(
-                    "[BUG]read total count not equals msg total size. totalSize={}, readTotalCount={}, bodyLen={}, topicLen={}, propertiesLength={}",
+                log.error("[BUG]read total count not equals msg total size. totalSize={}, readTotalCount={}, bodyLen={}, topicLen={}, propertiesLength={}",
                     totalSize, readLength, bodyLen, topicLen, propertiesLength);
                 return new DispatchRequest(totalSize, false/* success */);
             }
@@ -681,6 +680,7 @@ public class CommitLog {
     }
 
     public PutMessageResult putMessages(final MessageExtBatch messageExtBatch) {
+
         messageExtBatch.setStoreTimestamp(System.currentTimeMillis());
         AppendMessageResult result;
 
