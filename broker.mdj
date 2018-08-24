@@ -33765,7 +33765,7 @@
 											"font": "Arial;13;1",
 											"left": 1893,
 											"top": 55,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
 											"text": "StoreStatsService"
 										},
@@ -33800,7 +33800,7 @@
 									"font": "Arial;13;0",
 									"left": 1888,
 									"top": 48,
-									"width": 210.0400390625,
+									"width": 338.65625,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFlZ48deV+0td4="
@@ -33837,9 +33837,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 78,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+putMessageFailedTimes",
+											"text": "+putMessageFailedTimes: AtomicLong",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33854,9 +33854,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 93,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+putMessageTopicTimesTotal",
+											"text": "+putMessageTopicTimesTotal: Map<String, AtomicLong>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33871,9 +33871,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 108,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+putMessageTopicSizeTotal",
+											"text": "+putMessageTopicSizeTotal: Map<String, AtomicLong>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33888,9 +33888,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 123,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+getMessageTimesTotalFound",
+											"text": "+getMessageTimesTotalFound: AtomicLong",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33905,9 +33905,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 138,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+getMessageTransferedMsgCount",
+											"text": "+getMessageTransferedMsgCount: AtomicLong",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33922,9 +33922,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 153,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+getMessageTimesTotalMiss",
+											"text": "+getMessageTimesTotalMiss: AtomicLong",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33939,9 +33939,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 168,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+putTimesList",
+											"text": "+putTimesList: LinkedList<CallSnapshot>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33956,9 +33956,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 183,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+getTimesFoundList",
+											"text": "+getTimesFoundList: LinkedList<CallSnapshot>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33973,9 +33973,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 198,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+getTimesMissList",
+											"text": "+getTimesMissList: LinkedList<CallSnapshot>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -33990,9 +33990,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 213,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+transferedMsgCountList",
+											"text": "+transferedMsgCountList: LinkedList<CallSnapshot>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -34007,9 +34007,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 228,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+putMessageDistributeTime",
+											"text": "+putMessageDistributeTime: AtomicLong[]",
 											"horizontalAlignment": 0
 										},
 										{
@@ -34024,9 +34024,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 243,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+putMessageEntireTimeMax",
+											"text": "+putMessageEntireTimeMax: long",
 											"horizontalAlignment": 0
 										},
 										{
@@ -34041,9 +34041,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 258,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+getMessageEntireTimeMax",
+											"text": "+getMessageEntireTimeMax: long",
 											"horizontalAlignment": 0
 										},
 										{
@@ -34058,9 +34058,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 273,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+lockPut",
+											"text": "+lockPut: ReentrantLock",
 											"horizontalAlignment": 0
 										},
 										{
@@ -34075,9 +34075,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 288,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+lockGet",
+											"text": "+lockGet: ReentrantLock",
 											"horizontalAlignment": 0
 										},
 										{
@@ -34092,9 +34092,9 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 303,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+dispatchMaxBuffer",
+											"text": "+dispatchMaxBuffer: long",
 											"horizontalAlignment": 0
 										},
 										{
@@ -34109,16 +34109,16 @@
 											"font": "Arial;13;0",
 											"left": 1893,
 											"top": 318,
-											"width": 200.0400390625,
+											"width": 328.65625,
 											"height": 13,
-											"text": "+lockSampling",
+											"text": "+lockSampling: ReentrantLock",
 											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 1888,
 									"top": 73,
-									"width": 210.0400390625,
+									"width": 338.65625,
 									"height": 263
 								},
 								{
@@ -34133,7 +34133,7 @@
 									"font": "Arial;13;0",
 									"left": 1888,
 									"top": 336,
-									"width": 210.0400390625,
+									"width": 338.65625,
 									"height": 10
 								},
 								{
@@ -34173,7 +34173,7 @@
 							"containerChangeable": true,
 							"left": 1888,
 							"top": 48,
-							"width": 210.0400390625,
+							"width": 338.65625,
 							"height": 298,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlZ48deV+zWjk="
@@ -41359,7 +41359,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "putMessageFailedTimes"
+							"name": "putMessageFailedTimes",
+							"type": "AtomicLong"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41367,7 +41368,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "putMessageTopicTimesTotal"
+							"name": "putMessageTopicTimesTotal",
+							"type": "Map<String, AtomicLong>"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41375,7 +41377,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "putMessageTopicSizeTotal"
+							"name": "putMessageTopicSizeTotal",
+							"type": "Map<String, AtomicLong>"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41383,7 +41386,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "getMessageTimesTotalFound"
+							"name": "getMessageTimesTotalFound",
+							"type": "AtomicLong"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41391,7 +41395,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "getMessageTransferedMsgCount"
+							"name": "getMessageTransferedMsgCount",
+							"type": "AtomicLong"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41399,7 +41404,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "getMessageTimesTotalMiss"
+							"name": "getMessageTimesTotalMiss",
+							"type": "AtomicLong"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41407,7 +41413,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "putTimesList"
+							"name": "putTimesList",
+							"type": "LinkedList<CallSnapshot>"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41415,7 +41422,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "getTimesFoundList"
+							"name": "getTimesFoundList",
+							"type": "LinkedList<CallSnapshot>"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41423,7 +41431,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "getTimesMissList"
+							"name": "getTimesMissList",
+							"type": "LinkedList<CallSnapshot>"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41431,7 +41440,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "transferedMsgCountList"
+							"name": "transferedMsgCountList",
+							"type": "LinkedList<CallSnapshot>"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41439,7 +41449,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "putMessageDistributeTime"
+							"name": "putMessageDistributeTime",
+							"type": "AtomicLong[]"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41447,7 +41458,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "putMessageEntireTimeMax"
+							"name": "putMessageEntireTimeMax",
+							"type": "long"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41455,7 +41467,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "getMessageEntireTimeMax"
+							"name": "getMessageEntireTimeMax",
+							"type": "long"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41463,7 +41476,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "lockPut"
+							"name": "lockPut",
+							"type": "ReentrantLock"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41471,7 +41485,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "lockGet"
+							"name": "lockGet",
+							"type": "ReentrantLock"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41479,7 +41494,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "dispatchMaxBuffer"
+							"name": "dispatchMaxBuffer",
+							"type": "long"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -41487,7 +41503,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFlZ48deF+wFko="
 							},
-							"name": "lockSampling"
+							"name": "lockSampling",
+							"type": "ReentrantLock"
 						}
 					]
 				}
