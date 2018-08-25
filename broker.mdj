@@ -35065,11 +35065,47 @@
 									"model": {
 										"$ref": "AAAAAAFlcAW2thwO2SI="
 									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlcOfZYjK7Nss=",
+											"_parent": {
+												"$ref": "AAAAAAFlcAW2uBwXFYU="
+											},
+											"model": {
+												"$ref": "AAAAAAFlcOfYzTK1cP8="
+											},
+											"font": "Arial;13;0",
+											"left": 1293,
+											"top": 2647,
+											"width": 238.53857421875,
+											"height": 13,
+											"text": "«public void start()»+start()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlcOgiezQrSWI=",
+											"_parent": {
+												"$ref": "AAAAAAFlcAW2uBwXFYU="
+											},
+											"model": {
+												"$ref": "AAAAAAFlcOgh7TQlYzE="
+											},
+											"font": "Arial;13;0",
+											"left": 1293,
+											"top": 2662,
+											"width": 238.53857421875,
+											"height": 13,
+											"text": "«public void shutdown()»+shutdown()",
+											"horizontalAlignment": 0
+										}
+									],
 									"font": "Arial;13;0",
 									"left": 1288,
 									"top": 2642,
 									"width": 248.53857421875,
-									"height": 10
+									"height": 38
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -35109,7 +35145,7 @@
 							"left": 1288,
 							"top": 2504,
 							"width": 248.53857421875,
-							"height": 148,
+							"height": 176,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlcAW2uBwRK94="
 							},
@@ -44035,6 +44071,26 @@
 							},
 							"name": "slaveAckOffset",
 							"type": "long"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlcOfYzTK1cP8=",
+							"_parent": {
+								"$ref": "AAAAAAFlcAW2thwO2SI="
+							},
+							"name": "start",
+							"stereotype": "public void start()"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlcOgh7TQlYzE=",
+							"_parent": {
+								"$ref": "AAAAAAFlcAW2thwO2SI="
+							},
+							"name": "shutdown",
+							"stereotype": "public void shutdown()"
 						}
 					]
 				}
