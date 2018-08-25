@@ -78,6 +78,7 @@ public class HAConnection {
         return socketChannel;
     }
 
+    //建立一个selector，并将一个socketChannel注册到该selector，关注其read事件
     class ReadSocketService extends ServiceThread {
         private static final int READ_MAX_BUFFER_SIZE = 1024 * 1024;
         private final Selector selector;
