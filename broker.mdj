@@ -34556,7 +34556,7 @@
 											"font": "Arial;13;1",
 											"left": 1613,
 											"top": 2511,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "HAService"
 										},
@@ -34591,7 +34591,7 @@
 									"font": "Arial;13;0",
 									"left": 1608,
 									"top": 2504,
-									"width": 276.728515625,
+									"width": 427.51708984375,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFlcAJ7gRoRKIk="
@@ -34628,7 +34628,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2534,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+connectionCount: AtomicInteger",
 											"horizontalAlignment": 0
@@ -34645,7 +34645,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2549,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+defaultMessageStore: DefaultMessageStore",
 											"horizontalAlignment": 0
@@ -34662,7 +34662,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2564,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+push2SlaveMaxOffset: AtomicLong",
 											"horizontalAlignment": 0
@@ -34679,7 +34679,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2579,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+connectionList: List<HAConnection>",
 											"horizontalAlignment": 0
@@ -34696,7 +34696,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2594,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+acceptSocketService: AcceptSocketService",
 											"horizontalAlignment": 0
@@ -34713,7 +34713,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2609,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+waitNotifyObject: WaitNotifyObject",
 											"horizontalAlignment": 0
@@ -34730,7 +34730,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2624,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+groupTransferService: GroupTransferService",
 											"horizontalAlignment": 0
@@ -34747,7 +34747,7 @@
 											"font": "Arial;13;0",
 											"left": 1613,
 											"top": 2639,
-											"width": 266.728515625,
+											"width": 417.51708984375,
 											"height": 13,
 											"text": "+haClient: HAClient",
 											"horizontalAlignment": 0
@@ -34756,7 +34756,7 @@
 									"font": "Arial;13;0",
 									"left": 1608,
 									"top": 2529,
-									"width": 276.728515625,
+									"width": 427.51708984375,
 									"height": 128
 								},
 								{
@@ -34768,11 +34768,30 @@
 									"model": {
 										"$ref": "AAAAAAFlcAJ7gBoNjsc="
 									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlesj05ydyltQ=",
+											"_parent": {
+												"$ref": "AAAAAAFlcAJ7gRoWh74="
+											},
+											"model": {
+												"$ref": "AAAAAAFlesj0GidsUeY="
+											},
+											"font": "Arial;13;0",
+											"left": 1613,
+											"top": 2662,
+											"width": 417.51708984375,
+											"height": 13,
+											"text": "«public void notifyTransferSome(final long offset)»+notifyTransferSome()",
+											"horizontalAlignment": 0
+										}
+									],
 									"font": "Arial;13;0",
 									"left": 1608,
 									"top": 2657,
-									"width": 276.728515625,
-									"height": 10
+									"width": 427.51708984375,
+									"height": 23
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -34811,8 +34830,8 @@
 							"containerChangeable": true,
 							"left": 1608,
 							"top": 2504,
-							"width": 276.728515625,
-							"height": 163,
+							"width": 427.51708984375,
+							"height": 176,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlcAJ7gRoQzH0="
 							},
@@ -44566,6 +44585,17 @@
 							},
 							"name": "haClient",
 							"type": "HAClient"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlesj0GidsUeY=",
+							"_parent": {
+								"$ref": "AAAAAAFlcAJ7gBoNjsc="
+							},
+							"name": "notifyTransferSome",
+							"stereotype": "public void notifyTransferSome(final long offset)"
 						}
 					]
 				},

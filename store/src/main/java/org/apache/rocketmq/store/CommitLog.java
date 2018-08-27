@@ -667,8 +667,9 @@ public class CommitLog {
                 // Determine whether to wait
                 if (service.isSlaveOK(result.getWroteOffset() + result.getWroteBytes())) {
                     GroupCommitRequest request = new GroupCommitRequest(result.getWroteOffset() + result.getWroteBytes());
-                    service.putRequest(request);
-                    service.getWaitNotifyObject().wakeupAll();
+                    service.putRequest(request);    //唤醒GroupTransferService线程
+                    service.getWaitNotifyObject().wakeupAll(); //唤醒在waitNotifyObject上阻塞的线程
+                    //同步和异步的差别，也是关键所在
                     boolean flushOK = request.waitForFlush(this.defaultMessageStore.getMessageStoreConfig().getSyncFlushTimeout());
                     if (!flushOK) {
                         log.error("do sync transfer other node, wait return, but failed, topic: " + messageExt.getTopic() + " tags: "

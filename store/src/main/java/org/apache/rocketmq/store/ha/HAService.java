@@ -77,10 +77,7 @@ public class HAService {
 
     public boolean isSlaveOK(final long masterPutWhere) {
         boolean result = this.connectionCount.get() > 0;
-        result =
-            result
-                && ((masterPutWhere - this.push2SlaveMaxOffset.get()) < this.defaultMessageStore
-                .getMessageStoreConfig().getHaSlaveFallbehindMax());
+        result = result && ((masterPutWhere - this.push2SlaveMaxOffset.get()) < this.defaultMessageStore.getMessageStoreConfig().getHaSlaveFallbehindMax());
         return result;
     }
 
@@ -88,7 +85,7 @@ public class HAService {
         for (long value = this.push2SlaveMaxOffset.get(); offset > value; ) {
             boolean ok = this.push2SlaveMaxOffset.compareAndSet(value, offset);
             if (ok) {
-                this.groupTransferService.notifyTransferSome();
+                this.groupTransferService.notifyTransferSome();   //唤醒阻塞在notifyTransferObject上的线程
                 break;
             } else {
                 value = this.push2SlaveMaxOffset.get();
