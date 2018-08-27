@@ -63,7 +63,7 @@ public class WaitNotifyObject {
     protected void onWaitEnd() {
     }
 
-    //将thread值为false时，唤醒所有在this上等待的线程
+    //只要有一个thread的值为false时，则唤醒所有在this上等待的线程(notifyAll)
     public void wakeupAll() {
         synchronized (this) {
             boolean needNotify = false;
