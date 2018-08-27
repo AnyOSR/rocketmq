@@ -64,11 +64,7 @@ public class ConsumeQueueExt {
      * @param mappedFileSize file size
      * @param bitMapLength bit map length.
      */
-    public ConsumeQueueExt(final String topic,
-        final int queueId,
-        final String storePath,
-        final int mappedFileSize,
-        final int bitMapLength) {
+    public ConsumeQueueExt(final String topic, final int queueId, final String storePath, final int mappedFileSize, final int bitMapLength) {
 
         this.storePath = storePath;
         this.mappedFileSize = mappedFileSize;
