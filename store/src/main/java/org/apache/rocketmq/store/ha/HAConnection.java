@@ -108,6 +108,7 @@ public class HAConnection {
                         break;
                     }
 
+                    //是否超时
                     long interval = HAConnection.this.haService.getDefaultMessageStore().getSystemClock().now() - this.lastReadTimestamp;
                     if (interval > HAConnection.this.haService.getDefaultMessageStore().getMessageStoreConfig().getHaHousekeepingInterval()) {
                         log.warn("ha housekeeping, found this connection[" + HAConnection.this.clientAddr + "] expired, " + interval);
@@ -167,7 +168,7 @@ public class HAConnection {
                             //pos为 小于等于position的 最大的一个8的整倍数 ，且position()-pos<=7
                             //则必有processPostion < pos <= position()
                             int pos = this.byteBufferRead.position() - (this.byteBufferRead.position() % 8);
-                            long readOffset = this.byteBufferRead.getLong(pos - 8);      //pos-8之前的字节干嘛去了？
+                            long readOffset = this.byteBufferRead.getLong(pos - 8);      //pos-8之前的字节干嘛去了？接受slave传过来的maxoffset
 
                             //由于pos为8的整数倍，则processPostion为8的整数倍，那前面那句和这一句就有依据了
                             this.processPostion = pos;
@@ -234,6 +235,7 @@ public class HAConnection {
                         continue;
                     }
 
+                    //第一次传输
                     if (-1 == this.nextTransferFromWhere) {
                         if (0 == HAConnection.this.slaveRequestOffset) {
                             long masterOffset = HAConnection.this.haService.getDefaultMessageStore().getCommitLog().getMaxOffset();
@@ -268,7 +270,7 @@ public class HAConnection {
                             if (!this.lastWriteOver)
                                 continue;
                         }
-                    } else {
+                    } else {       //继续传输数据
                         this.lastWriteOver = this.transferData();
                         if (!this.lastWriteOver)
                             continue;

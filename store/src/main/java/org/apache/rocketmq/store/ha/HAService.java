@@ -260,11 +260,13 @@ public class HAService {
             synchronized (this.requestsWrite) {
                 this.requestsWrite.add(request);
             }
+            //唤醒在this.waitPoint 上await的线程   即this.waitForRunning(interval)
             if (hasNotified.compareAndSet(false, true)) {
                 waitPoint.countDown(); // notify
             }
         }
 
+        //唤醒等待notifyTransferObject锁的某一个线程 waitForRunning
         public void notifyTransferSome() {
             this.notifyTransferObject.wakeup();
         }
@@ -275,11 +277,14 @@ public class HAService {
             this.requestsRead = tmp;
         }
 
+        //清除已经transfer ok的offset request
+        //并唤醒在req.waitForFlush()上阻塞的线程 返回transfer结果
         private void doWaitTransfer() {
             synchronized (this.requestsRead) {
                 if (!this.requestsRead.isEmpty()) {
                     for (CommitLog.GroupCommitRequest req : this.requestsRead) {
                         boolean transferOK = HAService.this.push2SlaveMaxOffset.get() >= req.getNextOffset();
+                        //重试五次
                         for (int i = 0; !transferOK && i < 5; i++) {
                             this.notifyTransferObject.waitForRunning(1000);
                             transferOK = HAService.this.push2SlaveMaxOffset.get() >= req.getNextOffset();
@@ -289,7 +294,7 @@ public class HAService {
                             log.warn("transfer messsage to slave timeout, " + req.getNextOffset());
                         }
 
-                        req.wakeupCustomer(transferOK);
+                        req.wakeupCustomer(transferOK);   //唤醒在req.waitForFlush()上阻塞的线程 一定还有一次线程在处理数据
                     }
 
                     this.requestsRead.clear();
@@ -302,7 +307,7 @@ public class HAService {
 
             while (!this.isStopped()) {
                 try {
-                    this.waitForRunning(10);
+                    this.waitForRunning(10);    //没10ms 交换一次任务队列
                     this.doWaitTransfer();
                 } catch (Exception e) {
                     log.warn(this.getServiceName() + " service has exception. ", e);
@@ -323,6 +328,7 @@ public class HAService {
         }
     }
 
+    //slave broker端
     class HAClient extends ServiceThread {
         private static final int READ_MAX_BUFFER_SIZE = 1024 * 1024 * 4;
         private final AtomicReference<String> masterAddress = new AtomicReference<>();
@@ -331,8 +337,8 @@ public class HAService {
         private Selector selector;
         private long lastWriteTimestamp = System.currentTimeMillis();
 
-        private long currentReportedOffset = 0;
-        private int dispatchPostion = 0;
+        private long currentReportedOffset = 0;               //当前报告的偏移量
+        private int dispatchPostion = 0;                      //已经处理到当前位置了，因为先写后处理
         private ByteBuffer byteBufferRead = ByteBuffer.allocate(READ_MAX_BUFFER_SIZE);
         private ByteBuffer byteBufferBackup = ByteBuffer.allocate(READ_MAX_BUFFER_SIZE);
 
@@ -349,14 +355,12 @@ public class HAService {
         }
 
         private boolean isTimeToReportOffset() {
-            long interval =
-                HAService.this.defaultMessageStore.getSystemClock().now() - this.lastWriteTimestamp;
-            boolean needHeart = interval > HAService.this.defaultMessageStore.getMessageStoreConfig()
-                .getHaSendHeartbeatInterval();
-
+            long interval = HAService.this.defaultMessageStore.getSystemClock().now() - this.lastWriteTimestamp;
+            boolean needHeart = interval > HAService.this.defaultMessageStore.getMessageStoreConfig().getHaSendHeartbeatInterval();
             return needHeart;
         }
 
+        //将offset写到channel
         private boolean reportSlaveMaxOffset(final long maxOffset) {
             this.reportOffset.position(0);
             this.reportOffset.limit(8);
@@ -368,30 +372,31 @@ public class HAService {
                 try {
                     this.socketChannel.write(this.reportOffset);
                 } catch (IOException e) {
-                    log.error(this.getServiceName()
-                        + "reportSlaveMaxOffset this.socketChannel.write exception", e);
+                    log.error(this.getServiceName() + "reportSlaveMaxOffset this.socketChannel.write exception", e);
                     return false;
                 }
             }
-
             return !this.reportOffset.hasRemaining();
         }
 
+
+        //只是将byteBufferRead的数据转移到back
+        //且，dispatchPostion和position的相应值也都随之变化，对外部无影响
         private void reallocateByteBuffer() {
-            int remain = READ_MAX_BUFFER_SIZE - this.dispatchPostion;
+            int remain = READ_MAX_BUFFER_SIZE - this.dispatchPostion;    //dispatchPostion属于byteBufferRead？
             if (remain > 0) {
                 this.byteBufferRead.position(this.dispatchPostion);
 
                 this.byteBufferBackup.position(0);
                 this.byteBufferBackup.limit(READ_MAX_BUFFER_SIZE);
-                this.byteBufferBackup.put(this.byteBufferRead);
+                this.byteBufferBackup.put(this.byteBufferRead);               //将byteBufferRead中位于dispatchPostion之后的数据复制到byteBufferBackup中
             }
 
-            this.swapByteBuffer();
+            this.swapByteBuffer();                                            //将byteBufferBackup转换为byteBufferRead
 
-            this.byteBufferRead.position(remain);
+            this.byteBufferRead.position(remain);                             //刚好是原来dispatchPostion到READ_MAX_BUFFER_SIZE的range
             this.byteBufferRead.limit(READ_MAX_BUFFER_SIZE);
-            this.dispatchPostion = 0;
+            this.dispatchPostion = 0;                                       //应该是，之前是处理到dispatchPostion，转化后位置成为了0
         }
 
         private void swapByteBuffer() {
@@ -435,37 +440,37 @@ public class HAService {
             int readSocketPos = this.byteBufferRead.position();
 
             while (true) {
+                //还有多少数据未处理
                 int diff = this.byteBufferRead.position() - this.dispatchPostion;
                 if (diff >= msgHeaderSize) {
+
                     long masterPhyOffset = this.byteBufferRead.getLong(this.dispatchPostion);
                     int bodySize = this.byteBufferRead.getInt(this.dispatchPostion + 8);
-
+                    //拿到commit location
                     long slavePhyOffset = HAService.this.defaultMessageStore.getMaxPhyOffset();
 
                     if (slavePhyOffset != 0) {
                         if (slavePhyOffset != masterPhyOffset) {
-                            log.error("master pushed offset not equal the max phy offset in slave, SLAVE: "
-                                + slavePhyOffset + " MASTER: " + masterPhyOffset);
+                            log.error("master pushed offset not equal the max phy offset in slave, SLAVE: " + slavePhyOffset + " MASTER: " + masterPhyOffset);
                             return false;
                         }
                     }
 
+                    //足够一个完整的请求
                     if (diff >= (msgHeaderSize + bodySize)) {
+                        //拿到body data
                         byte[] bodyData = new byte[bodySize];
                         this.byteBufferRead.position(this.dispatchPostion + msgHeaderSize);
                         this.byteBufferRead.get(bodyData);
-
                         HAService.this.defaultMessageStore.appendToCommitLog(masterPhyOffset, bodyData);
-
-                        this.byteBufferRead.position(readSocketPos);
+                        this.byteBufferRead.position(readSocketPos);                 //将position设置为原来位置？为啥 对的，假如continue的话，继续从原位置取数据
                         this.dispatchPostion += msgHeaderSize + bodySize;
-
-                        if (!reportSlaveMaxOffsetPlus()) {
+                        if (!reportSlaveMaxOffsetPlus()) {                           //report完了怎么还continue？
                             return false;
                         }
-
                         continue;
                     }
+
                 }
 
                 if (!this.byteBufferRead.hasRemaining()) {
@@ -478,12 +483,13 @@ public class HAService {
             return true;
         }
 
+        //获取到最大偏移量，并report
         private boolean reportSlaveMaxOffsetPlus() {
             boolean result = true;
             long currentPhyOffset = HAService.this.defaultMessageStore.getMaxPhyOffset();
             if (currentPhyOffset > this.currentReportedOffset) {
                 this.currentReportedOffset = currentPhyOffset;
-                result = this.reportSlaveMaxOffset(this.currentReportedOffset);
+                result = this.reportSlaveMaxOffset(this.currentReportedOffset);          //将slave的maxoffset报告
                 if (!result) {
                     this.closeMaster();
                     log.error("HAClient, reportSlaveMaxOffset error, " + this.currentReportedOffset);
@@ -493,6 +499,7 @@ public class HAService {
             return result;
         }
 
+        //建立连接
         private boolean connectMaster() throws ClosedChannelException {
             if (null == socketChannel) {
                 String addr = this.masterAddress.get();
@@ -507,6 +514,7 @@ public class HAService {
                     }
                 }
 
+                //拿到当前slave上的offset
                 this.currentReportedOffset = HAService.this.defaultMessageStore.getMaxPhyOffset();
 
                 this.lastWriteTimestamp = System.currentTimeMillis();
@@ -542,6 +550,7 @@ public class HAService {
             }
         }
 
+        //核心
         @Override
         public void run() {
             log.info(this.getServiceName() + " service started");
@@ -551,12 +560,14 @@ public class HAService {
                     if (this.connectMaster()) {
 
                         if (this.isTimeToReportOffset()) {
+                            //报告当前offset
                             boolean result = this.reportSlaveMaxOffset(this.currentReportedOffset);
                             if (!result) {
                                 this.closeMaster();
                             }
                         }
 
+                        //select最长1000ms,等待相应
                         this.selector.select(1000);
 
                         boolean ok = this.processReadEvent();
@@ -568,13 +579,9 @@ public class HAService {
                             continue;
                         }
 
-                        long interval =
-                            HAService.this.getDefaultMessageStore().getSystemClock().now()
-                                - this.lastWriteTimestamp;
-                        if (interval > HAService.this.getDefaultMessageStore().getMessageStoreConfig()
-                            .getHaHousekeepingInterval()) {
-                            log.warn("HAClient, housekeeping, found this connection[" + this.masterAddress
-                                + "] expired, " + interval);
+                        long interval = HAService.this.getDefaultMessageStore().getSystemClock().now() - this.lastWriteTimestamp;
+                        if (interval > HAService.this.getDefaultMessageStore().getMessageStoreConfig().getHaHousekeepingInterval()) {
+                            log.warn("HAClient, housekeeping, found this connection[" + this.masterAddress + "] expired, " + interval);
                             this.closeMaster();
                             log.warn("HAClient, master not response some time, so close connection");
                         }

@@ -244,7 +244,7 @@ public class MappedFile extends ReferenceResource {
         return this.fileFromOffset;
     }
 
-    //将数据写入到通道
+    //将数据写入到文件通道
     public boolean appendMessage(final byte[] data) {
         int currentPos = this.wrotePosition.get();
 
