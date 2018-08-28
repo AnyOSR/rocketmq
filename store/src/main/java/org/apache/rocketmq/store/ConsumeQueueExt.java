@@ -54,6 +54,7 @@ public class ConsumeQueueExt {
      */
     //先将Integer.MIN_VALUE转换为Long 左端补1，大小刚好不变,源自IEEE754的特性
     public static final long MAX_ADDR = Integer.MIN_VALUE - 1L;                           //   0x FFFFFFFF 80000000 - 0x 00000000 00000001 = 0x FFFFFFFF 7FFFFFFF
+    //一个long的负数，减去Long.MIN_VALUE，相当于减掉符号位
     public static final long MAX_REAL_OFFSET = MAX_ADDR - Long.MIN_VALUE;                 //   0x FFFFFFFF 7FFFFFFF - 0x 80000000 00000000 = 0x 7FFFFFFF 7FFFFFFF
 
     /**
