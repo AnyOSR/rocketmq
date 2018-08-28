@@ -100,6 +100,7 @@ public class ConsumeQueueExt {
      * else, just return {@code address}
      * </p>
      */
+    //返回正的address
     public long unDecorate(final long address) {
         if (isExtAddr(address)) {
             return address - Long.MIN_VALUE;
@@ -116,6 +117,7 @@ public class ConsumeQueueExt {
      *
      * @return ext address(value is less than 0)  加上符号位
      */
+    //返回负的address
     public long decorate(final long offset) {
         if (!isExtAddr(offset)) {
             return offset + Long.MIN_VALUE;
