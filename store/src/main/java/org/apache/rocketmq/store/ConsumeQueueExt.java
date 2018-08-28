@@ -52,7 +52,7 @@ public class ConsumeQueueExt {
     /**
      * Addr can not exceed this value.For compatible.
      */
-    //先将Integer.MIN_VALUE转换为Long 左端补1，大小刚好不变,源自IEEE754的特性
+    //先将Integer.MIN_VALUE转换为Long 左端补最高位，大小刚好不变,源自IEEE754的特性
     public static final long MAX_ADDR = Integer.MIN_VALUE - 1L;                           //   0x FFFFFFFF 80000000 - 0x 00000000 00000001 = 0x FFFFFFFF 7FFFFFFF
     //一个long的负数，减去Long.MIN_VALUE，相当于减掉符号位
     public static final long MAX_REAL_OFFSET = MAX_ADDR - Long.MIN_VALUE;                 //   0x FFFFFFFF 7FFFFFFF - 0x 80000000 00000000 = 0x 7FFFFFFF 7FFFFFFF
@@ -114,7 +114,7 @@ public class ConsumeQueueExt {
      * else, just return {@code offset}
      * </p>
      *
-     * @return ext address(value is less than 0)
+     * @return ext address(value is less than 0)  加上符号位
      */
     public long decorate(final long offset) {
         if (!isExtAddr(offset)) {
