@@ -45,16 +45,16 @@ public class ConsumeQueueExt {
 
     private final String storePath;
     private final int mappedFileSize;
-    private ByteBuffer tempContainer;
+    private ByteBuffer tempContainer;           //bitMapLength(可能不到)bit位
 
     public static final int END_BLANK_DATA_LENGTH = 4;
 
     /**
      * Addr can not exceed this value.For compatible.
      */
-    public static final long MAX_ADDR = Integer.MIN_VALUE - 1L;
-    public static final long MAX_REAL_OFFSET = MAX_ADDR - Long.MIN_VALUE;
-
+    //先将Integer.MIN_VALUE转换为Long 左端补1，大小刚好不变,源自IEEE754的特性
+    public static final long MAX_ADDR = Integer.MIN_VALUE - 1L;                           //   0x FFFFFFFF 80000000 - 0x 00000000 00000001 = 0x FFFFFFFF 7FFFFFFF
+    public static final long MAX_REAL_OFFSET = MAX_ADDR - Long.MIN_VALUE;                 //   0x FFFFFFFF 7FFFFFFF - 0x 80000000 00000000 = 0x 7FFFFFFF 7FFFFFFF
     /**
      * Constructor.
      *
@@ -72,16 +72,12 @@ public class ConsumeQueueExt {
         this.topic = topic;
         this.queueId = queueId;
 
-        String queueDir = this.storePath
-            + File.separator + topic
-            + File.separator + queueId;
+        String queueDir = this.storePath + File.separator + topic + File.separator + queueId;
 
         this.mappedFileQueue = new MappedFileQueue(queueDir, mappedFileSize, null);
 
         if (bitMapLength > 0) {
-            this.tempContainer = ByteBuffer.allocate(
-                bitMapLength / Byte.SIZE
-            );
+            this.tempContainer = ByteBuffer.allocate(bitMapLength / Byte.SIZE);
         }
     }
 

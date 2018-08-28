@@ -37214,6 +37214,23 @@
 									"subViews": [
 										{
 											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFle7hTQ04pLhg=",
+											"_parent": {
+												"$ref": "AAAAAAFle2YKayxG+b4="
+											},
+											"model": {
+												"$ref": "AAAAAAFle7hSrk4Rs1U="
+											},
+											"font": "Arial;13;0",
+											"left": 2253,
+											"top": 2534,
+											"width": 262.6787109375,
+											"height": 13,
+											"text": "+CQ_STORE_UNIT_SIZE: int",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
 											"_id": "AAAAAAFle2hSyC187vU=",
 											"_parent": {
 												"$ref": "AAAAAAFle2YKayxG+b4="
@@ -37223,7 +37240,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2534,
+											"top": 2549,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+defaultMessageStore: DefaultMessageStore",
@@ -37240,7 +37257,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2549,
+											"top": 2564,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+mappedFileQueue: MappedFileQueue",
@@ -37257,7 +37274,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2564,
+											"top": 2579,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+topic: String",
@@ -37274,7 +37291,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2579,
+											"top": 2594,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+queueId: int",
@@ -37291,7 +37308,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2594,
+											"top": 2609,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+byteBufferIndex: ByteBuffer",
@@ -37308,7 +37325,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2609,
+											"top": 2624,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+storePath: String",
@@ -37325,7 +37342,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2624,
+											"top": 2639,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+mappedFileSize: int",
@@ -37342,7 +37359,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2639,
+											"top": 2654,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+maxPhysicOffset: long",
@@ -37359,7 +37376,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2654,
+											"top": 2669,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+minLogicOffset: long",
@@ -37376,7 +37393,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 2253,
-											"top": 2669,
+											"top": 2684,
 											"width": 262.6787109375,
 											"height": 13,
 											"text": "+consumeQueueExt: ConsumeQueueExt",
@@ -37387,7 +37404,7 @@
 									"left": 2248,
 									"top": 2529,
 									"width": 272.6787109375,
-									"height": 158
+									"height": 173
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -37400,7 +37417,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 2248,
-									"top": 2687,
+									"top": 2702,
 									"width": 272.6787109375,
 									"height": 10
 								},
@@ -37442,7 +37459,7 @@
 							"left": 2248,
 							"top": 2504,
 							"width": 272.6787109375,
-							"height": 193,
+							"height": 208,
 							"nameCompartment": {
 								"$ref": "AAAAAAFle2YKayxB+qE="
 							},
@@ -45864,6 +45881,15 @@
 						}
 					],
 					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFle7hSrk4Rs1U=",
+							"_parent": {
+								"$ref": "AAAAAAFle2YKaiw+sTE="
+							},
+							"name": "CQ_STORE_UNIT_SIZE",
+							"type": "int"
+						},
 						{
 							"_type": "UMLAttribute",
 							"_id": "AAAAAAFle2hSNC1kWFg=",
