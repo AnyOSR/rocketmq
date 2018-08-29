@@ -447,6 +447,7 @@ public class ConsumeQueueExt {
          * build unit from buffer from current position.
          */
         private boolean read(final ByteBuffer buffer) {
+            //  buffer.position()==buffer.limit()  or buffer.position()==buffer.limit()-1
             if (buffer.position() + 2 > buffer.limit()) {
                 return false;
             }

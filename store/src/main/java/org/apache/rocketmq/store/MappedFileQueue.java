@@ -65,8 +65,7 @@ public class MappedFileQueue {
 
                 if (pre != null) {
                     if (cur.getFileFromOffset() - pre.getFileFromOffset() != this.mappedFileSize) {
-                        LOG_ERROR.error("[BUG]The mappedFile queue's data is damaged, the adjacent mappedFile's offset don't match. pre file {}, cur file {}",
-                            pre.getFileName(), cur.getFileName());
+                        LOG_ERROR.error("[BUG]The mappedFile queue's data is damaged, the adjacent mappedFile's offset don't match. pre file {}, cur file {}", pre.getFileName(), cur.getFileName());
                     }
                 }
                 pre = cur;
@@ -109,7 +108,7 @@ public class MappedFileQueue {
         for (MappedFile file : this.mappedFiles) {
             long fileTailOffset = file.getFileFromOffset() + this.mappedFileSize;
             if (fileTailOffset > offset) {
-                if (offset >= file.getFileFromOffset()) {    //offset位于file.getFileFromOffset() 和 fileTailOffset之间，直接抛弃offset之前的数据
+                if (offset >= file.getFileFromOffset()) {    //offset位于file.getFileFromOffset() 和 fileTailOffset之间，直接抛弃offset之后的数据
                     file.setWrotePosition((int) (offset % this.mappedFileSize));
                     file.setCommittedPosition((int) (offset % this.mappedFileSize));
                     file.setFlushedPosition((int) (offset % this.mappedFileSize));

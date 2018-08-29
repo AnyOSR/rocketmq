@@ -509,8 +509,7 @@ public class DefaultMessageStore implements MessageStore {
 
                             boolean isInDisk = checkInDiskByCommitOffset(offsetPy, maxOffsetPy);
 
-                            if (this.isTheBatchFull(sizePy, maxMsgNums, getResult.getBufferTotalSize(), getResult.getMessageCount(),
-                                isInDisk)) {
+                            if (this.isTheBatchFull(sizePy, maxMsgNums, getResult.getBufferTotalSize(), getResult.getMessageCount(), isInDisk)) {
                                 break;
                             }
 
@@ -1259,8 +1258,8 @@ public class DefaultMessageStore implements MessageStore {
                         ConsumeQueue logic = new ConsumeQueue(
                             topic,
                             queueId,
-                            StorePathConfigHelper.getStorePathConsumeQueue(this.messageStoreConfig.getStorePathRootDir()),
-                            this.getMessageStoreConfig().getMapedFileSizeConsumeQueue(),
+                            StorePathConfigHelper.getStorePathConsumeQueue(this.messageStoreConfig.getStorePathRootDir()),          //consumequeue
+                            this.getMessageStoreConfig().getMapedFileSizeConsumeQueue(),                                            //600W字节  30W条数据
                             this);
                         this.putConsumeQueue(topic, queueId, logic);
                         if (!logic.load()) {
