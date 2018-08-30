@@ -40,7 +40,7 @@ public class ConsumeQueue {
 
     private final String storePath;
     private final int mappedFileSize;
-    private long maxPhysicOffset = -1;
+    private long maxPhysicOffset = -1;                   //commitlog最大物理偏移量
     private volatile long minLogicOffset = 0;
     private ConsumeQueueExt consumeQueueExt = null;
 
@@ -80,6 +80,8 @@ public class ConsumeQueue {
         return result;
     }
 
+    //根据mappedFileQueue恢复maxPhysicOffset，flushPos，commitPos
+    //并设置
     public void recover() {
         final List<MappedFile> mappedFiles = this.mappedFileQueue.getMappedFiles();
         if (!mappedFiles.isEmpty()) {
@@ -98,10 +100,11 @@ public class ConsumeQueue {
             long maxExtAddr = 1;
             while (true) {
                 for (int i = 0; i < mappedFileSizeLogics; i += CQ_STORE_UNIT_SIZE) {
-                    long offset = byteBuffer.getLong();      //偏移
+                    long offset = byteBuffer.getLong();      //commitLog偏移
                     int size = byteBuffer.getInt();          //大小
                     long tagsCode = byteBuffer.getLong();    //tagsCode
 
+                    //offset大于0和size>0是一个有效消息的必要条件
                     if (offset >= 0 && size > 0) {
                         mappedFileOffset = i + CQ_STORE_UNIT_SIZE;
                         this.maxPhysicOffset = offset;
@@ -114,7 +117,7 @@ public class ConsumeQueue {
                     }
                 }
 
-                //文件末尾
+                //文件末尾,如果可能，处理下一个
                 if (mappedFileOffset == mappedFileSizeLogics) {
                     index++;
                     if (index >= mappedFiles.size()) {
@@ -133,7 +136,7 @@ public class ConsumeQueue {
                 }
             }
 
-            //设置flushPostion CommitPostion
+            //设置flushPostion CommitPostion 为当前已经处理到的位置
             processOffset += mappedFileOffset;
             this.mappedFileQueue.setFlushedWhere(processOffset);
             this.mappedFileQueue.setCommittedWhere(processOffset);

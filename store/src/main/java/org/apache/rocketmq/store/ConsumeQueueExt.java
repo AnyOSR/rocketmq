@@ -55,6 +55,8 @@ public class ConsumeQueueExt {
     //先将Integer.MIN_VALUE转换为Long 左端补最高位，大小刚好不变,源自IEEE754的特性
     public static final long MAX_ADDR = Integer.MIN_VALUE - 1L;                           //   0x FFFFFFFF 80000000 - 0x 00000000 00000001 = 0x FFFFFFFF 7FFFFFFF
     //一个long的负数，减去Long.MIN_VALUE，相当于减掉符号位
+    //负数减掉一个Long.MIN_VALUE，相当于拿掉了符号位，变成了正数
+    //正数加一个Long.MIN_VALUE，相当去加了一个符号位，变成了负数 一一映射，这是要干嘛？   这个值和mappedFileSize有关？
     public static final long MAX_REAL_OFFSET = MAX_ADDR - Long.MIN_VALUE;                 //   0x FFFFFFFF 7FFFFFFF - 0x 80000000 00000000 = 0x 7FFFFFFF 7FFFFFFF
 
     /**
@@ -89,6 +91,9 @@ public class ConsumeQueueExt {
      * Just test {@code address} is less than 0.
      * </p>
      */
+    //MAX_ADDR<0
+    //返回true则表示address为负数，返回false，不能确定address的正负
+    //ext Address 小于0
     public static boolean isExtAddr(final long address) {
         return address <= MAX_ADDR;
     }
@@ -100,7 +105,7 @@ public class ConsumeQueueExt {
      * else, just return {@code address}
      * </p>
      */
-    //返回正的address
+    //好奇怪？正address
     public long unDecorate(final long address) {
         if (isExtAddr(address)) {
             return address - Long.MIN_VALUE;
@@ -130,6 +135,9 @@ public class ConsumeQueueExt {
      *
      * @param address less than 0
      */
+    //统一编解码方式也行，但是为啥是MAX_ADDR这个值？
+    //根据负的address，找到真实的offset，根据offset找到mapfile
+    //读取mapfile slice出来的buffer来给cqExtUnit的数据结构赋值
     public CqExtUnit get(final long address) {
         CqExtUnit cqExtUnit = new CqExtUnit();
         if (get(address, cqExtUnit)) {
@@ -144,13 +152,16 @@ public class ConsumeQueueExt {
      *
      * @param address less than 0
      */
+    //根据address 构造cqExtUnit
+    //返回构造是否成功
     public boolean get(final long address, final CqExtUnit cqExtUnit) {
         if (!isExtAddr(address)) {
             return false;
         }
 
+        //是扩展地址
         final int mappedFileSize = this.mappedFileSize;
-        final long realOffset = unDecorate(address);
+        final long realOffset = unDecorate(address);    //真实偏移
 
         MappedFile mappedFile = this.mappedFileQueue.findMappedFileByOffset(realOffset, realOffset == 0);
         if (mappedFile == null) {
@@ -182,14 +193,17 @@ public class ConsumeQueueExt {
      *
      * @return success: < 0: fail: >=0
      */
+    //成功返回的值小于0
     public long put(final CqExtUnit cqExtUnit) {
         final int retryTimes = 3;
         try {
             int size = cqExtUnit.calcUnitSize();
+            //长度限制
             if (size > CqExtUnit.MAX_EXT_UNIT_SIZE) {
                 log.error("Size of cq ext unit is greater than {}, {}", CqExtUnit.MAX_EXT_UNIT_SIZE, cqExtUnit);
                 return 1;
             }
+            //最大偏移量限制
             if (this.mappedFileQueue.getMaxOffset() + size > MAX_REAL_OFFSET) {
                 log.warn("Capacity of ext is maximum!{}, {}", this.mappedFileQueue.getMaxOffset(), size);
                 return 1;
@@ -199,6 +213,7 @@ public class ConsumeQueueExt {
                 this.tempContainer = ByteBuffer.allocate(size);
             }
 
+            //重试
             for (int i = 0; i < retryTimes; i++) {
                 MappedFile mappedFile = this.mappedFileQueue.getLastMappedFile();
 
@@ -211,16 +226,17 @@ public class ConsumeQueueExt {
                     continue;
                 }
                 final int wrotePosition = mappedFile.getWrotePosition();
-                final int blankSize = this.mappedFileSize - wrotePosition - END_BLANK_DATA_LENGTH;
+                //空闲容量
+                final int blankSize = this.mappedFileSize - wrotePosition - END_BLANK_DATA_LENGTH;   //减掉四个空格是啥意思？
 
                 // check whether has enough space.
                 if (size > blankSize) {
                     fullFillToEnd(mappedFile, wrotePosition);
-                    log.info("No enough space(need:{}, has:{}) of file {}, so fill to end",
-                        size, blankSize, mappedFile.getFileName());
+                    log.info("No enough space(need:{}, has:{}) of file {}, so fill to end", size, blankSize, mappedFile.getFileName());
                     continue;
                 }
 
+                //返回扩展地址 是负的 小于0
                 if (mappedFile.appendMessage(cqExtUnit.write(this.tempContainer), 0, size)) {
                     return decorate(wrotePosition + mappedFile.getFileFromOffset());
                 }
@@ -404,22 +420,24 @@ public class ConsumeQueueExt {
      * Store unit.
      */
     public static class CqExtUnit {
+
         public static final short MIN_EXT_UNIT_SIZE
             = 2 * 1 // size, 32k max
             + 8 * 2 // msg time + tagCode
             + 2; // bitMapSize
 
-        public static final int MAX_EXT_UNIT_SIZE = Short.MAX_VALUE;
+        public static final int MAX_EXT_UNIT_SIZE = Short.MAX_VALUE;  // 32768 b/ 1kb = 32    32k
 
         public CqExtUnit() {
         }
 
+        //每个消息体的大小为20 + bitMapSize
         public CqExtUnit(Long tagsCode, long msgStoreTime, byte[] filterBitMap) {
             this.tagsCode = tagsCode == null ? 0 : tagsCode;
             this.msgStoreTime = msgStoreTime;
             this.filterBitMap = filterBitMap;
             this.bitMapSize = (short) (filterBitMap == null ? 0 : filterBitMap.length);
-            this.size = (short) (MIN_EXT_UNIT_SIZE + this.bitMapSize);
+            this.size = (short) (MIN_EXT_UNIT_SIZE + this.bitMapSize);               //size = 20+ filterBitMap.length >=20
         }
 
         /**
@@ -439,25 +457,28 @@ public class ConsumeQueueExt {
          */
         private short bitMapSize;
         /**
-         * filter bit map
+         * filter bit map           filterBitMap.length = bitMapSize
          */
         private byte[] filterBitMap;
 
         /**
          * build unit from buffer from current position.
          */
+        //从buffer中构造一个CqExtUnit
         private boolean read(final ByteBuffer buffer) {
-            //  buffer.position()==buffer.limit()  or buffer.position()==buffer.limit()-1
+            // buffer.position()==buffer.limit()-1  至多只有一个字节可读了
             if (buffer.position() + 2 > buffer.limit()) {
                 return false;
             }
 
+            //buffer.position() + 2 <= buffer.limit() 至少有两个字节可读
             this.size = buffer.getShort();
 
             if (this.size < 1) {
                 return false;
             }
 
+            //size(2) + tagsCode(8) + msgStoreTime(8) + bitMapSize(2)
             this.tagsCode = buffer.getLong();
             this.msgStoreTime = buffer.getLong();
             this.bitMapSize = buffer.getShort();
@@ -466,10 +487,12 @@ public class ConsumeQueueExt {
                 return true;
             }
 
+            //这里不用校验size和bitMapSize的关系吗？
             if (this.filterBitMap == null || this.filterBitMap.length != this.bitMapSize) {
                 this.filterBitMap = new byte[bitMapSize];
             }
 
+            //读入bitMapSize字节到filterBitMap
             buffer.get(this.filterBitMap);
             return true;
         }
@@ -483,6 +506,7 @@ public class ConsumeQueueExt {
          * if size <= 0, nothing to do.
          * </p>
          */
+        //直接跳到下一CqExtUnit
         private void readBySkip(final ByteBuffer buffer) {
             ByteBuffer temp = buffer.slice();
 
@@ -501,6 +525,8 @@ public class ConsumeQueueExt {
          * <li>2. if capacity of @{code container} is less than unit size, it will be created also.</li>
          * <li>3. Pls be sure that size of unit is not greater than {@link #MAX_EXT_UNIT_SIZE}</li>
          */
+        //将this(CqExtUnit)转换为一个byte数组
+        //如果container的大小大于this.size,container的内容将被改变
         private byte[] write(final ByteBuffer container) {
             this.bitMapSize = (short) (filterBitMap == null ? 0 : filterBitMap.length);
             this.size = (short) (MIN_EXT_UNIT_SIZE + this.bitMapSize);
@@ -514,6 +540,7 @@ public class ConsumeQueueExt {
             temp.flip();
             temp.limit(this.size);
 
+            //这里没有检查size的大小
             temp.putShort(this.size);
             temp.putLong(this.tagsCode);
             temp.putLong(this.msgStoreTime);
@@ -528,6 +555,7 @@ public class ConsumeQueueExt {
         /**
          * Calculate unit size by current data.
          */
+        //计算当前CqExtUnit的size
         private int calcUnitSize() {
             int sizeTemp = MIN_EXT_UNIT_SIZE + (filterBitMap == null ? 0 : filterBitMap.length);
             return sizeTemp;
