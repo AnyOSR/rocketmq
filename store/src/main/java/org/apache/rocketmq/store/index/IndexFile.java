@@ -30,25 +30,28 @@ import org.slf4j.LoggerFactory;
 public class IndexFile {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
     private static int hashSlotSize = 4;
-    private static int indexSize = 20;
-    private static int invalidIndex = 0;
     private final int hashSlotNum;
+
+    private static int indexSize = 20;
     private final int indexNum;
+
+    private static int invalidIndex = 0;
     private final MappedFile mappedFile;
     private final FileChannel fileChannel;
     private final MappedByteBuffer mappedByteBuffer;
     private final IndexHeader indexHeader;
 
-    public IndexFile(final String fileName, final int hashSlotNum, final int indexNum,
-        final long endPhyOffset, final long endTimestamp) throws IOException {
-        int fileTotalSize =
-            IndexHeader.INDEX_HEADER_SIZE + (hashSlotNum * hashSlotSize) + (indexNum * indexSize);
+    //indexheader保存着该file的基本信息
+    //indexfile的总大小为 40字节的header + hashSlot的大小 + index大小
+    public IndexFile(final String fileName, final int hashSlotNum, final int indexNum, final long endPhyOffset, final long endTimestamp) throws IOException {
+        int fileTotalSize = IndexHeader.INDEX_HEADER_SIZE + (hashSlotNum * hashSlotSize) + (indexNum * indexSize);
         this.mappedFile = new MappedFile(fileName, fileTotalSize);
         this.fileChannel = this.mappedFile.getFileChannel();
         this.mappedByteBuffer = this.mappedFile.getMappedByteBuffer();
         this.hashSlotNum = hashSlotNum;
         this.indexNum = indexNum;
 
+        //内容可见，但是有各自的pos,limit,mark
         ByteBuffer byteBuffer = this.mappedByteBuffer.slice();
         this.indexHeader = new IndexHeader(byteBuffer);
 
@@ -71,6 +74,7 @@ public class IndexFile {
         this.indexHeader.load();
     }
 
+    //flush 该file
     public void flush() {
         long beginTime = System.currentTimeMillis();
         if (this.mappedFile.hold()) {
@@ -81,6 +85,7 @@ public class IndexFile {
         }
     }
 
+    //是否写满
     public boolean isWriteFull() {
         return this.indexHeader.getIndexCount() >= this.indexNum;
     }

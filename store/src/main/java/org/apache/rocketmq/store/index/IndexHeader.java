@@ -22,19 +22,22 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class IndexHeader {
     public static final int INDEX_HEADER_SIZE = 40;
+    private final ByteBuffer byteBuffer;
+
+    //在buffer中所处位置
     private static int beginTimestampIndex = 0;
     private static int endTimestampIndex = 8;
     private static int beginPhyoffsetIndex = 16;
     private static int endPhyoffsetIndex = 24;
     private static int hashSlotcountIndex = 32;
     private static int indexCountIndex = 36;
-    private final ByteBuffer byteBuffer;
+
+    //具体的值
     private AtomicLong beginTimestamp = new AtomicLong(0);
     private AtomicLong endTimestamp = new AtomicLong(0);
     private AtomicLong beginPhyOffset = new AtomicLong(0);
     private AtomicLong endPhyOffset = new AtomicLong(0);
     private AtomicInteger hashSlotCount = new AtomicInteger(0);
-
     private AtomicInteger indexCount = new AtomicInteger(1);
 
     public IndexHeader(final ByteBuffer byteBuffer) {
@@ -55,6 +58,7 @@ public class IndexHeader {
         }
     }
 
+    //根据this来update byteBuffer
     public void updateByteBuffer() {
         this.byteBuffer.putLong(beginTimestampIndex, this.beginTimestamp.get());
         this.byteBuffer.putLong(endTimestampIndex, this.endTimestamp.get());
@@ -68,6 +72,7 @@ public class IndexHeader {
         return beginTimestamp.get();
     }
 
+    //改变buffer里面的值和this的相关属性值
     public void setBeginTimestamp(long beginTimestamp) {
         this.beginTimestamp.set(beginTimestamp);
         this.byteBuffer.putLong(beginTimestampIndex, beginTimestamp);
