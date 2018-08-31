@@ -45,7 +45,7 @@ public class ConsumeQueueExt {
 
     private final String storePath;
     private final int mappedFileSize;
-    private ByteBuffer tempContainer;           //bitMapLength(可能不到)bit位
+    private ByteBuffer tempContainer;           //bitMapLength(可能不到)bit位   不是线程安全
 
     public static final int END_BLANK_DATA_LENGTH = 4;
 
@@ -227,9 +227,10 @@ public class ConsumeQueueExt {
                 }
                 final int wrotePosition = mappedFile.getWrotePosition();
                 //空闲容量
-                final int blankSize = this.mappedFileSize - wrotePosition - END_BLANK_DATA_LENGTH;   //减掉四个空格是啥意思？
+                final int blankSize = this.mappedFileSize - wrotePosition - END_BLANK_DATA_LENGTH;   //最后减掉四个是啥意思？
 
                 // check whether has enough space.
+                //如果空间不够 ，put一个short -1 然后最后将wrotePos设置为文件末尾
                 if (size > blankSize) {
                     fullFillToEnd(mappedFile, wrotePosition);
                     log.info("No enough space(need:{}, has:{}) of file {}, so fill to end", size, blankSize, mappedFile.getFileName());
@@ -248,6 +249,7 @@ public class ConsumeQueueExt {
         return 1;
     }
 
+    //-1 是结尾标志位？ 直接写到结尾
     protected void fullFillToEnd(final MappedFile mappedFile, final int wrotePosition) {
         ByteBuffer mappedFileBuffer = mappedFile.sliceByteBuffer();
         mappedFileBuffer.position(wrotePosition);
@@ -277,6 +279,7 @@ public class ConsumeQueueExt {
     /**
      * Recover.
      */
+
     public void recover() {
         final List<MappedFile> mappedFiles = this.mappedFileQueue.getMappedFiles();
         if (mappedFiles == null || mappedFiles.isEmpty()) {
@@ -292,11 +295,11 @@ public class ConsumeQueueExt {
         long mappedFileOffset = 0;
         CqExtUnit extUnit = new CqExtUnit();
         while (true) {
-            extUnit.readBySkip(byteBuffer);
+            extUnit.readBySkip(byteBuffer);                         //在当前mapfile内skip  能不从第一个mappedFile开始做？直接getLast
 
             // check whether write sth.
             if (extUnit.getSize() > 0) {
-                mappedFileOffset += extUnit.getSize();
+                mappedFileOffset += extUnit.getSize();               //当前已经处理到的位置
                 continue;
             }
 
@@ -310,8 +313,7 @@ public class ConsumeQueueExt {
                 continue;
             }
 
-            log.info("All files of consume queue extend has been recovered over, last mapped file "
-                + mappedFile.getFileName());
+            log.info("All files of consume queue extend has been recovered over, last mapped file " + mappedFile.getFileName());
             break;
         }
 
@@ -326,6 +328,7 @@ public class ConsumeQueueExt {
      *
      * @param minAddress less than 0
      */
+    //删除掉minAddress之前的file
     public void truncateByMinAddress(final long minAddress) {
         if (!isExtAddr(minAddress)) {
             return;
@@ -342,8 +345,7 @@ public class ConsumeQueueExt {
             long fileTailOffset = file.getFileFromOffset() + this.mappedFileSize;
 
             if (fileTailOffset < realOffset) {
-                log.info("Destroy consume queue ext by min: file={}, fileTailOffset={}, minOffset={}", file.getFileName(),
-                    fileTailOffset, realOffset);
+                log.info("Destroy consume queue ext by min: file={}, fileTailOffset={}, minOffset={}", file.getFileName(), fileTailOffset, realOffset);
                 if (file.destroy(1000)) {
                     willRemoveFiles.add(file);
                 }
@@ -358,6 +360,7 @@ public class ConsumeQueueExt {
      *
      * @param maxAddress less than 0
      */
+    //删除大于maxAddress的file
     public void truncateByMaxAddress(final long maxAddress) {
         if (!isExtAddr(maxAddress)) {
             return;
@@ -413,7 +416,7 @@ public class ConsumeQueueExt {
         if (firstFile == null) {
             return decorate(0);
         }
-        return decorate(firstFile.getFileFromOffset());
+        return decorate(firstFile.getFileFromOffset());                    //干嘛非得decorate？
     }
 
     /**
@@ -507,6 +510,7 @@ public class ConsumeQueueExt {
          * </p>
          */
         //直接跳到下一CqExtUnit
+        //改变了this.size
         private void readBySkip(final ByteBuffer buffer) {
             ByteBuffer temp = buffer.slice();
 

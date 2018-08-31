@@ -108,7 +108,7 @@ public class MappedFileQueue {
         for (MappedFile file : this.mappedFiles) {
             long fileTailOffset = file.getFileFromOffset() + this.mappedFileSize;
             if (fileTailOffset > offset) {
-                if (offset >= file.getFileFromOffset()) {    //offset位于file.getFileFromOffset() 和 fileTailOffset之间，直接抛弃offset之后的数据
+                if (offset >= file.getFileFromOffset()) {    //offset位于file.getFileFromOffset() 和 fileTailOffset之间，直接抛弃offset之后的数据 每个MappedFile都设置，这样好吗？
                     file.setWrotePosition((int) (offset % this.mappedFileSize));
                     file.setCommittedPosition((int) (offset % this.mappedFileSize));
                     file.setFlushedPosition((int) (offset % this.mappedFileSize));
@@ -398,7 +398,7 @@ public class MappedFileQueue {
         int deleteCount = 0;
         if (null != mfs) {
 
-            int mfsLength = mfs.length - 1;
+            int mfsLength = mfs.length - 1;                //不处理最后一个
 
             for (int i = 0; i < mfsLength; i++) {
                 boolean destroy;

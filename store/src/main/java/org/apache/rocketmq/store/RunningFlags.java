@@ -113,12 +113,14 @@ public class RunningFlags {
         return false;
     }
 
+    //返回之前的磁盘DISK_FULL_BIT标志，并设置DISK_FULL_BIT标志
     public boolean getAndMakeDiskFull() {
         boolean result = !((this.flagBits & DISK_FULL_BIT) == DISK_FULL_BIT);
         this.flagBits |= DISK_FULL_BIT;
         return result;
     }
 
+    //返回之前的磁盘DISK_FULL_BIT标志，并清除DISK_FULL_BIT标志
     public boolean getAndMakeDiskOK() {
         boolean result = !((this.flagBits & DISK_FULL_BIT) == DISK_FULL_BIT);
         this.flagBits &= ~DISK_FULL_BIT;

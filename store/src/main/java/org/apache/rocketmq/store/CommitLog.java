@@ -789,6 +789,7 @@ public class CommitLog {
     /**
      * According to receive certain message or offset storage time if an error occurs, it returns -1
      */
+    //拿到偏移量为offset的commitLog的存储时间标签
     public long pickupStoreTimestamp(final long offset, final int size) {
         if (offset >= this.getMinOffset()) {
             SelectMappedBufferResult result = this.getMessage(offset, size);
@@ -809,7 +810,7 @@ public class CommitLog {
         if (mappedFile != null) {
             if (mappedFile.isAvailable()) {
                 return mappedFile.getFileFromOffset();
-            } else {
+            } else {  //要是下一个也是无效的呢？
                 return this.rollNextFile(mappedFile.getFileFromOffset());
             }
         }
@@ -827,7 +828,7 @@ public class CommitLog {
         return null;
     }
 
-
+    //滚到下一个mappedFile的初始偏移量
     public long rollNextFile(final long offset) {
         int mappedFileSize = this.defaultMessageStore.getMessageStoreConfig().getMapedFileSizeCommitLog();
         return offset + mappedFileSize - offset % mappedFileSize;
