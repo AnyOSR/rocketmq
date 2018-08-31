@@ -30,16 +30,16 @@ import org.slf4j.LoggerFactory;
 public class IndexFile {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
     private static int hashSlotSize = 4;
-    private final int hashSlotNum;
+    private final int hashSlotNum;       //final
 
     private static int indexSize = 20;
-    private final int indexNum;
+    private final int indexNum;          //final
 
     private static int invalidIndex = 0;
     private final MappedFile mappedFile;
     private final FileChannel fileChannel;
     private final MappedByteBuffer mappedByteBuffer;
-    private final IndexHeader indexHeader;
+    private final IndexHeader indexHeader;    //实际上保存了多少东西全部存在了header里面
 
     //indexheader保存着该file的基本信息
     //indexfile的总大小为 40字节的header + hashSlot的大小 + index大小
@@ -94,10 +94,13 @@ public class IndexFile {
         return this.mappedFile.destroy(intervalForcibly);
     }
 
+    // header(40) + slot + index
     public boolean putKey(final String key, final long phyOffset, final long storeTimestamp) {
         if (this.indexHeader.getIndexCount() < this.indexNum) {
+
+            //根据key的hash值，找到对应的桶，然后找到该桶的位置
             int keyHash = indexKeyHashMethod(key);
-            int slotPos = keyHash % this.hashSlotNum;
+            int slotPos = keyHash % this.hashSlotNum;   //（0 ~ hashSlotNum-1）
             int absSlotPos = IndexHeader.INDEX_HEADER_SIZE + slotPos * hashSlotSize;
 
             FileLock fileLock = null;
@@ -107,13 +110,14 @@ public class IndexFile {
                 // fileLock = this.fileChannel.lock(absSlotPos, hashSlotSize,
                 // false);
                 int slotValue = this.mappedByteBuffer.getInt(absSlotPos);
-                if (slotValue <= invalidIndex || slotValue > this.indexHeader.getIndexCount()) {
+                //桶的值小于等于0，或者大于现在该file已存的index总数
+                if (slotValue <= invalidIndex || slotValue > this.indexHeader.getIndexCount()) {      //slot里面保存的是indexCount信息？
                     slotValue = invalidIndex;
                 }
 
                 long timeDiff = storeTimestamp - this.indexHeader.getBeginTimestamp();
 
-                timeDiff = timeDiff / 1000;
+                timeDiff = timeDiff / 1000;           //s
 
                 if (this.indexHeader.getBeginTimestamp() <= 0) {
                     timeDiff = 0;
@@ -123,22 +127,24 @@ public class IndexFile {
                     timeDiff = 0;
                 }
 
-                int absIndexPos =
-                    IndexHeader.INDEX_HEADER_SIZE + this.hashSlotNum * hashSlotSize
-                        + this.indexHeader.getIndexCount() * indexSize;
+                //当前indexPos位置
+                int absIndexPos = IndexHeader.INDEX_HEADER_SIZE + this.hashSlotNum * hashSlotSize + this.indexHeader.getIndexCount() * indexSize;
 
+                //哈希值(4) 物理偏移(8) 时间interval(4) 桶的slot值(4)
                 this.mappedByteBuffer.putInt(absIndexPos, keyHash);
                 this.mappedByteBuffer.putLong(absIndexPos + 4, phyOffset);
                 this.mappedByteBuffer.putInt(absIndexPos + 4 + 8, (int) timeDiff);
-                this.mappedByteBuffer.putInt(absIndexPos + 4 + 8 + 4, slotValue);
+                this.mappedByteBuffer.putInt(absIndexPos + 4 + 8 + 4, slotValue);           //最后一位放的是slotValue值   也就是上一条的index信息 构成了一个链表
 
-                this.mappedByteBuffer.putInt(absSlotPos, this.indexHeader.getIndexCount());
+                //当前indexCount值
+                this.mappedByteBuffer.putInt(absSlotPos, this.indexHeader.getIndexCount());        //slot里面放的是当时的indexCount信息 最新的index信息
 
                 if (this.indexHeader.getIndexCount() <= 1) {
                     this.indexHeader.setBeginPhyOffset(phyOffset);
                     this.indexHeader.setBeginTimestamp(storeTimestamp);
                 }
 
+                //记录状态变量
                 this.indexHeader.incHashSlotCount();
                 this.indexHeader.incIndexCount();
                 this.indexHeader.setEndPhyOffset(phyOffset);
@@ -157,13 +163,13 @@ public class IndexFile {
                 }
             }
         } else {
-            log.warn("Over index file capacity: index count = " + this.indexHeader.getIndexCount()
-                + "; index max num = " + this.indexNum);
+            log.warn("Over index file capacity: index count = " + this.indexHeader.getIndexCount() + "; index max num = " + this.indexNum);
         }
 
         return false;
     }
 
+    //生成key的hashCode
     public int indexKeyHashMethod(final String key) {
         int keyHash = key.hashCode();
         int keyHashPositive = Math.abs(keyHash);
