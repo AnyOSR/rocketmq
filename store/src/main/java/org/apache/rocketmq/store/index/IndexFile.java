@@ -133,7 +133,7 @@ public class IndexFile {
                 //slot是随机写的
                 //slot存放的是最新的索引，（hash冲突）,但是由于index里面保存了其上一个index的pos，能找到上一个冲突的index位置，链表
                 //那么get的时候，根据keyhash拿到index的时候(slotPos一样，但是keyHash不一样)，如果keyHash和传入的不一样,需要沿着链表向上查找，
-                //但是对于不同的key也有可能生成相同的keyhash，这个冲突怎么解决？根据index数据里面的哪个字段去解决？
+                //但是对于不同的key也有可能生成相同的keyhash，这个冲突怎么解决？根据index数据里面的哪个字段去解决？需要去看get方法
                 int absIndexPos = IndexHeader.INDEX_HEADER_SIZE + this.hashSlotNum * hashSlotSize + this.indexHeader.getIndexCount() * indexSize;
 
                 //哈希值(4) 物理偏移(8) 时间interval(4) 桶的slot值(4)
