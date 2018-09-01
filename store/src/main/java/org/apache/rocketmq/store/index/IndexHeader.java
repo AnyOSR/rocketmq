@@ -38,7 +38,7 @@ public class IndexHeader {
     private AtomicLong beginPhyOffset = new AtomicLong(0);
     private AtomicLong endPhyOffset = new AtomicLong(0);
     private AtomicInteger hashSlotCount = new AtomicInteger(0);
-    private AtomicInteger indexCount = new AtomicInteger(1);   //
+    private AtomicInteger indexCount = new AtomicInteger(1);   //invalidIndex  0
 
     public IndexHeader(final ByteBuffer byteBuffer) {
         this.byteBuffer = byteBuffer;

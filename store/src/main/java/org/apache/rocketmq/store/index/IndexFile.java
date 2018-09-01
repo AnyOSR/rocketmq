@@ -127,17 +127,23 @@ public class IndexFile {
                     timeDiff = 0;
                 }
 
+                //中间是不是有一个20字节的empty？
                 //当前indexPos位置
+                //index 是顺序写的
+                //slot是随机写的
+                //slot存放的是最新的索引，（hash冲突）,但是由于index里面保存了其上一个index的pos，能找到上一个冲突的index位置，链表
                 int absIndexPos = IndexHeader.INDEX_HEADER_SIZE + this.hashSlotNum * hashSlotSize + this.indexHeader.getIndexCount() * indexSize;
 
                 //哈希值(4) 物理偏移(8) 时间interval(4) 桶的slot值(4)
                 this.mappedByteBuffer.putInt(absIndexPos, keyHash);
                 this.mappedByteBuffer.putLong(absIndexPos + 4, phyOffset);
                 this.mappedByteBuffer.putInt(absIndexPos + 4 + 8, (int) timeDiff);
-                this.mappedByteBuffer.putInt(absIndexPos + 4 + 8 + 4, slotValue);           //最后一位放的是slotValue值   也就是上一条的index信息 构成了一个链表
+                this.mappedByteBuffer.putInt(absIndexPos + 4 + 8 + 4, slotValue);           //最后一位放的是之前的slotValue值   也就是上一条的index信息 构成了一个链表
 
-                //当前indexCount值
-                this.mappedByteBuffer.putInt(absSlotPos, this.indexHeader.getIndexCount());        //slot里面放的是当时的indexCount信息 最新的index信息
+                //当前put时候的indexCount值，那就可以根据这个找到index位置信息
+                //slot里面放的是当时的indexCount信息 最新的index信息
+                //用来解决不同的key同样的哈希值的问题，同样哈希值的构成一个逻辑链表
+                this.mappedByteBuffer.putInt(absSlotPos, this.indexHeader.getIndexCount());
 
                 if (this.indexHeader.getIndexCount() <= 1) {
                     this.indexHeader.setBeginPhyOffset(phyOffset);
