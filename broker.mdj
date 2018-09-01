@@ -48510,7 +48510,8 @@
 								"$ref": "AAAAAAFlkD9hncK6+yo="
 							},
 							"name": "INDEX_HEADER_SIZE",
-							"isStatic": true
+							"isStatic": true,
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
