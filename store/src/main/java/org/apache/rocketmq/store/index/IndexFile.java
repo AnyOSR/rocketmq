@@ -218,7 +218,7 @@ public class IndexFile {
 
             FileLock fileLock = null;
             try {
-                if (lock) {
+                if (lock) {       //lock没啥用
                     // fileLock = this.fileChannel.lock(absSlotPos,
                     // hashSlotSize, true);
                 }

@@ -38788,13 +38788,30 @@
 											"height": 13,
 											"text": "«public QueryOffsetResult queryOffset(String topic, String key, int maxNum, long begin, long end)»+queryOffset()",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFllB+yKaNSSQY=",
+											"_parent": {
+												"$ref": "AAAAAAFlkDJqP5hOh5Y="
+											},
+											"model": {
+												"$ref": "AAAAAAFllB+xiqM3s64="
+											},
+											"font": "Arial;13;0",
+											"left": 1645,
+											"top": 2934,
+											"width": 651.16162109375,
+											"height": 13,
+											"text": "«public IndexFile getAndCreateLastIndexFile()»+getAndCreateLastIndexFile()",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 1640,
 									"top": 2914,
 									"width": 661.16162109375,
-									"height": 23
+									"height": 38
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -38834,7 +38851,7 @@
 							"left": 1640,
 							"top": 2776,
 							"width": 661.16162109375,
-							"height": 161,
+							"height": 176,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlkDJqP5hIprM="
 							},
@@ -48434,6 +48451,15 @@
 							},
 							"name": "queryOffset",
 							"stereotype": "public QueryOffsetResult queryOffset(String topic, String key, int maxNum, long begin, long end)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFllB+xiqM3s64=",
+							"_parent": {
+								"$ref": "AAAAAAFlkDJqPphF/u8="
+							},
+							"name": "getAndCreateLastIndexFile",
+							"stereotype": "public IndexFile getAndCreateLastIndexFile()"
 						}
 					]
 				},

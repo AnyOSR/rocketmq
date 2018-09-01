@@ -152,11 +152,12 @@ public class IndexService {
         }
     }
 
+    //查询offset
     public QueryOffsetResult queryOffset(String topic, String key, int maxNum, long begin, long end) {
         List<Long> phyOffsets = new ArrayList<Long>(maxNum);
 
-        long indexLastUpdateTimestamp = 0;
-        long indexLastUpdatePhyoffset = 0;
+        long indexLastUpdateTimestamp = 0;                         //最后更新时间戳
+        long indexLastUpdatePhyoffset = 0;                         //最后更新偏移量
         maxNum = Math.min(maxNum, this.defaultMessageStore.getMessageStoreConfig().getMaxMsgsNumBatch());
         try {
             this.readWriteLock.readLock().lock();
@@ -164,6 +165,7 @@ public class IndexService {
                 for (int i = this.indexFileList.size(); i > 0; i--) {
                     IndexFile f = this.indexFileList.get(i - 1);
                     boolean lastFile = i == this.indexFileList.size();
+                    //如果是最后一个IndexFile，获取indexLastUpdateTimestamp和indexLastUpdatePhyoffset
                     if (lastFile) {
                         indexLastUpdateTimestamp = f.getEndTimestamp();
                         indexLastUpdatePhyoffset = f.getEndPhyOffset();
@@ -195,6 +197,7 @@ public class IndexService {
         return topic + "#" + key;
     }
 
+    //build index
     public void buildIndex(DispatchRequest req) {
         IndexFile indexFile = retryGetAndCreateIndexFile();
         if (indexFile != null) {
@@ -202,6 +205,7 @@ public class IndexService {
             DispatchRequest msg = req;
             String topic = msg.getTopic();
             String keys = msg.getKeys();
+            //不用再写入了
             if (msg.getCommitLogOffset() < endPhyOffset) {
                 return;
             }
@@ -212,10 +216,17 @@ public class IndexService {
                 case MessageSysFlag.TRANSACTION_PREPARED_TYPE:
                 case MessageSysFlag.TRANSACTION_COMMIT_TYPE:
                     break;
-                case MessageSysFlag.TRANSACTION_ROLLBACK_TYPE:
+                case MessageSysFlag.TRANSACTION_ROLLBACK_TYPE:               //TRANSACTION_ROLLBACK_TYPE类型的不写入index
                     return;
             }
 
+            //写入index
+            //topic  ---  req.getUniqKey()
+            //topic ---key1
+            //topic ---key2
+            // .
+            // .
+            // .
             if (req.getUniqKey() != null) {
                 indexFile = putKey(indexFile, msg, buildKey(topic, req.getUniqKey()));
                 if (indexFile == null) {
@@ -247,6 +258,7 @@ public class IndexService {
             log.warn("Index file [" + indexFile.getFileName() + "] is full, trying to create another one");
 
             indexFile = retryGetAndCreateIndexFile();
+            //返回
             if (null == indexFile) {
                 return null;
             }
@@ -278,6 +290,7 @@ public class IndexService {
             }
         }
 
+        //将tag写入运行状态
         if (null == indexFile) {
             this.defaultMessageStore.getAccessRights().makeIndexFileError();
             log.error("Mark index file cannot build flag");
@@ -296,9 +309,11 @@ public class IndexService {
             this.readWriteLock.readLock().lock();
             if (!this.indexFileList.isEmpty()) {
                 IndexFile tmp = this.indexFileList.get(this.indexFileList.size() - 1);
+                //最后一个file文件没有写满，
                 if (!tmp.isWriteFull()) {
                     indexFile = tmp;
                 } else {
+                    //已经写满 ，将prevIndexFile指向最后一个
                     lastUpdateEndPhyOffset = tmp.getEndPhyOffset();
                     lastUpdateIndexTimestamp = tmp.getEndTimestamp();
                     prevIndexFile = tmp;
@@ -308,14 +323,11 @@ public class IndexService {
             this.readWriteLock.readLock().unlock();
         }
 
+        //创建新的file
         if (indexFile == null) {
             try {
-                String fileName =
-                    this.storePath + File.separator
-                        + UtilAll.timeMillisToHumanString(System.currentTimeMillis());
-                indexFile =
-                    new IndexFile(fileName, this.hashSlotNum, this.indexNum, lastUpdateEndPhyOffset,
-                        lastUpdateIndexTimestamp);
+                String fileName = this.storePath + File.separator + UtilAll.timeMillisToHumanString(System.currentTimeMillis());
+                indexFile = new IndexFile(fileName, this.hashSlotNum, this.indexNum, lastUpdateEndPhyOffset, lastUpdateIndexTimestamp);
                 this.readWriteLock.writeLock().lock();
                 this.indexFileList.add(indexFile);
             } catch (Exception e) {
@@ -324,6 +336,7 @@ public class IndexService {
                 this.readWriteLock.writeLock().unlock();
             }
 
+            //创建成功，刷新上一个file
             if (indexFile != null) {
                 final IndexFile flushThisFile = prevIndexFile;
                 Thread flushThread = new Thread(new Runnable() {
