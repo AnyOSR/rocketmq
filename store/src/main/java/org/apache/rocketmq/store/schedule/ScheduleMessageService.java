@@ -259,7 +259,7 @@ public class ScheduleMessageService extends ConfigManager {
             long failScheduleOffset = offset;   //offset是一个index ++
 
             if (cq != null) {
-                SelectMappedBufferResult bufferCQ = cq.getIndexBuffer(this.offset);    //根据offset生成对应的buffer
+                SelectMappedBufferResult bufferCQ = cq.getIndexBuffer(this.offset);    //根据offset生成对应的cq buffer
                 if (bufferCQ != null) {
                     try {
                         long nextOffset = offset;
@@ -301,7 +301,7 @@ public class ScheduleMessageService extends ConfigManager {
                                         if (putMessageResult != null && putMessageResult.getPutMessageStatus() == PutMessageStatus.PUT_OK) {
                                             continue;
                                         } else {
-                                            // XXX: warn and notify me
+                                            // XXX: warn and notify me   写下一个
                                             log.error("ScheduleMessageService, a message time up, but reput it failed, topic: {} msgId {}", msgExt.getTopic(), msgExt.getMsgId());
                                             ScheduleMessageService.this.timer.schedule(new DeliverDelayedMessageTimerTask(this.delayLevel, nextOffset), DELAY_FOR_A_PERIOD);
                                             ScheduleMessageService.this.updateOffset(this.delayLevel, nextOffset);
@@ -327,6 +327,7 @@ public class ScheduleMessageService extends ConfigManager {
                             }
                         } // end of for
 
+                        //修正偏移量
                         nextOffset = offset + (i / ConsumeQueue.CQ_STORE_UNIT_SIZE);
                         ScheduleMessageService.this.timer.schedule(new DeliverDelayedMessageTimerTask(this.delayLevel, nextOffset), DELAY_FOR_A_WHILE);
                         ScheduleMessageService.this.updateOffset(this.delayLevel, nextOffset);
