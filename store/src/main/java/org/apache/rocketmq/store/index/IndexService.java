@@ -48,9 +48,9 @@ public class IndexService {
 
     public IndexService(final DefaultMessageStore store) {
         this.defaultMessageStore = store;
-        this.hashSlotNum = store.getMessageStoreConfig().getMaxHashSlotNum();
-        this.indexNum = store.getMessageStoreConfig().getMaxIndexNum();
-        this.storePath = StorePathConfigHelper.getStorePathIndex(store.getMessageStoreConfig().getStorePathRootDir());
+        this.hashSlotNum = store.getMessageStoreConfig().getMaxHashSlotNum();                 //默认5000000个槽
+        this.indexNum = store.getMessageStoreConfig().getMaxIndexNum();                       //默认保存 5000000 * 4 = 20000000 个index
+        this.storePath = StorePathConfigHelper.getStorePathIndex(store.getMessageStoreConfig().getStorePathRootDir());    //...index
     }
 
     public boolean load(final boolean lastExitOK) {
@@ -170,7 +170,6 @@ public class IndexService {
                     }
 
                     if (f.isTimeMatched(begin, end)) {
-
                         f.selectPhyOffset(phyOffsets, buildKey(topic, key), maxNum, begin, end, lastFile);
                     }
 
