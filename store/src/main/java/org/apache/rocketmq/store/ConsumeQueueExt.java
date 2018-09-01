@@ -194,6 +194,7 @@ public class ConsumeQueueExt {
      * @return success: < 0: fail: >=0
      */
     //成功返回的值小于0
+    //返回了put之后的被装饰的address
     public long put(final CqExtUnit cqExtUnit) {
         final int retryTimes = 3;
         try {

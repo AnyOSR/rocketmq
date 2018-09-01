@@ -40285,6 +40285,272 @@
 							"headQualifiersCompartment": {
 								"$ref": "AAAAAAFlkD+KzcQ4kLk="
 							}
+						},
+						{
+							"_type": "UMLClassView",
+							"_id": "AAAAAAFllHPU7KZNST4=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"model": {
+								"$ref": "AAAAAAFllHPU66ZL9jI="
+							},
+							"subViews": [
+								{
+									"_type": "UMLNameCompartmentView",
+									"_id": "AAAAAAFllHPU7KZO39M=",
+									"_parent": {
+										"$ref": "AAAAAAFllHPU7KZNST4="
+									},
+									"model": {
+										"$ref": "AAAAAAFllHPU66ZL9jI="
+									},
+									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFllHPU7KZPXLw=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7KZO39M="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -560,
+											"top": -960,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFllHPU7aZQx0w=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7KZO39M="
+											},
+											"font": "Arial;13;1",
+											"left": 2381,
+											"top": 2775,
+											"width": 492.47021484375,
+											"height": 13,
+											"text": "ScheduleMessageService"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFllHPU7aZRl0I=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7KZO39M="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -560,
+											"top": -960,
+											"width": 73.67724609375,
+											"height": 13,
+											"text": "(from Model)"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFllHPU7aZSY6g=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7KZO39M="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": -560,
+											"top": -960,
+											"height": 13,
+											"horizontalAlignment": 1
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2376,
+									"top": 2768,
+									"width": 502.47021484375,
+									"height": 25,
+									"stereotypeLabel": {
+										"$ref": "AAAAAAFllHPU7KZPXLw="
+									},
+									"nameLabel": {
+										"$ref": "AAAAAAFllHPU7aZQx0w="
+									},
+									"namespaceLabel": {
+										"$ref": "AAAAAAFllHPU7aZRl0I="
+									},
+									"propertyLabel": {
+										"$ref": "AAAAAAFllHPU7aZSY6g="
+									}
+								},
+								{
+									"_type": "UMLAttributeCompartmentView",
+									"_id": "AAAAAAFllHPU7aZTRLA=",
+									"_parent": {
+										"$ref": "AAAAAAFllHPU7KZNST4="
+									},
+									"model": {
+										"$ref": "AAAAAAFllHPU66ZL9jI="
+									},
+									"subViews": [
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFllHQeeqhZHW4=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7aZTRLA="
+											},
+											"model": {
+												"$ref": "AAAAAAFllHQd26g4zbc="
+											},
+											"font": "Arial;13;0",
+											"left": 2381,
+											"top": 2798,
+											"width": 492.47021484375,
+											"height": 13,
+											"text": "+delayLevelTable: ConcurrentMap<Integer /* level */, Long/* delay timeMillis */>",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFllHQ2EKlQdUo=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7aZTRLA="
+											},
+											"model": {
+												"$ref": "AAAAAAFllHQ1eqkvnxA="
+											},
+											"font": "Arial;13;0",
+											"left": 2381,
+											"top": 2813,
+											"width": 492.47021484375,
+											"height": 13,
+											"text": "+offsetTable: ConcurrentMap<Integer /* level */, Long/* offset */>",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFllHWDjK3QSIY=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7aZTRLA="
+											},
+											"model": {
+												"$ref": "AAAAAAFllHWC6q2v2aw="
+											},
+											"font": "Arial;13;0",
+											"left": 2381,
+											"top": 2828,
+											"width": 492.47021484375,
+											"height": 13,
+											"underline": true,
+											"text": "+SCHEDULE_TOPIC: String",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFllHWG+a4wjl4=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7aZTRLA="
+											},
+											"model": {
+												"$ref": "AAAAAAFllHWGYq4PczE="
+											},
+											"font": "Arial;13;0",
+											"left": 2381,
+											"top": 2843,
+											"width": 492.47021484375,
+											"height": 13,
+											"text": "+maxDelayLevel: int",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2376,
+									"top": 2793,
+									"width": 502.47021484375,
+									"height": 68
+								},
+								{
+									"_type": "UMLOperationCompartmentView",
+									"_id": "AAAAAAFllHPU7aZUkmk=",
+									"_parent": {
+										"$ref": "AAAAAAFllHPU7KZNST4="
+									},
+									"model": {
+										"$ref": "AAAAAAFllHPU66ZL9jI="
+									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFllIEO07MK2ak=",
+											"_parent": {
+												"$ref": "AAAAAAFllHPU7aZUkmk="
+											},
+											"model": {
+												"$ref": "AAAAAAFllIEONLLp6W0="
+											},
+											"font": "Arial;13;0",
+											"left": 2381,
+											"top": 2866,
+											"width": 492.47021484375,
+											"height": 13,
+											"text": "«public void buildRunningStats(HashMap<String, String> stats)»+buildRunningStats()",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 2376,
+									"top": 2861,
+									"width": 502.47021484375,
+									"height": 23
+								},
+								{
+									"_type": "UMLReceptionCompartmentView",
+									"_id": "AAAAAAFllHPU7aZV6lU=",
+									"_parent": {
+										"$ref": "AAAAAAFllHPU7KZNST4="
+									},
+									"model": {
+										"$ref": "AAAAAAFllHPU66ZL9jI="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": -280,
+									"top": -480,
+									"width": 10,
+									"height": 10
+								},
+								{
+									"_type": "UMLTemplateParameterCompartmentView",
+									"_id": "AAAAAAFllHPU7aZW5JQ=",
+									"_parent": {
+										"$ref": "AAAAAAFllHPU7KZNST4="
+									},
+									"model": {
+										"$ref": "AAAAAAFllHPU66ZL9jI="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": -280,
+									"top": -480,
+									"width": 10,
+									"height": 10
+								}
+							],
+							"font": "Arial;13;0",
+							"containerChangeable": true,
+							"left": 2376,
+							"top": 2768,
+							"width": 502.47021484375,
+							"height": 116,
+							"nameCompartment": {
+								"$ref": "AAAAAAFllHPU7KZO39M="
+							},
+							"attributeCompartment": {
+								"$ref": "AAAAAAFllHPU7aZTRLA="
+							},
+							"operationCompartment": {
+								"$ref": "AAAAAAFllHPU7aZUkmk="
+							},
+							"receptionCompartment": {
+								"$ref": "AAAAAAFllHPU7aZV6lU="
+							},
+							"templateParameterCompartment": {
+								"$ref": "AAAAAAFllHPU7aZW5JQ="
+							}
 						}
 					]
 				},
@@ -48743,6 +49009,65 @@
 							},
 							"name": "byteBuffer",
 							"type": "ByteBuffer"
+						}
+					]
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAFllHPU66ZL9jI=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "ScheduleMessageService",
+					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFllHQd26g4zbc=",
+							"_parent": {
+								"$ref": "AAAAAAFllHPU66ZL9jI="
+							},
+							"name": "delayLevelTable",
+							"stereotype": "",
+							"type": "ConcurrentMap<Integer /* level */, Long/* delay timeMillis */>"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFllHQ1eqkvnxA=",
+							"_parent": {
+								"$ref": "AAAAAAFllHPU66ZL9jI="
+							},
+							"name": "offsetTable",
+							"type": "ConcurrentMap<Integer /* level */, Long/* offset */>"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFllHWC6q2v2aw=",
+							"_parent": {
+								"$ref": "AAAAAAFllHPU66ZL9jI="
+							},
+							"name": "SCHEDULE_TOPIC",
+							"isStatic": true,
+							"type": "String"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFllHWGYq4PczE=",
+							"_parent": {
+								"$ref": "AAAAAAFllHPU66ZL9jI="
+							},
+							"name": "maxDelayLevel",
+							"type": "int"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFllIEONLLp6W0=",
+							"_parent": {
+								"$ref": "AAAAAAFllHPU66ZL9jI="
+							},
+							"name": "buildRunningStats",
+							"stereotype": "public void buildRunningStats(HashMap<String, String> stats)"
 						}
 					]
 				}
