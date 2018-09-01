@@ -84,8 +84,8 @@ public class DefaultMessageStore implements MessageStore {
     private final HAService haService;
 
     private final ScheduleMessageService scheduleMessageService;
-
     private final StoreStatsService storeStatsService;
+    private StoreCheckpoint storeCheckpoint;
 
     private final TransientStorePool transientStorePool;
 
@@ -98,8 +98,6 @@ public class DefaultMessageStore implements MessageStore {
     private final BrokerConfig brokerConfig;
 
     private volatile boolean shutdown = true;
-
-    private StoreCheckpoint storeCheckpoint;
 
     private AtomicLong printTimes = new AtomicLong(0);
 
