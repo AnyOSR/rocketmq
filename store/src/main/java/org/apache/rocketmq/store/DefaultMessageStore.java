@@ -226,8 +226,10 @@ public class DefaultMessageStore implements MessageStore {
         } else {
             this.reputMessageService.setReputFromOffset(this.commitLog.getMaxOffset());
         }
+        //重放构建服务
         this.reputMessageService.start();
 
+        //HA service
         this.haService.start();
 
         this.createTempFile();
@@ -1167,6 +1169,7 @@ public class DefaultMessageStore implements MessageStore {
 
     private void addScheduleTask() {
 
+        //清理commitLog 和consumeQueue
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -1174,6 +1177,7 @@ public class DefaultMessageStore implements MessageStore {
             }
         }, 1000 * 60, this.messageStoreConfig.getCleanResourceInterval(), TimeUnit.MILLISECONDS);
 
+        //cq定期自检
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -1181,6 +1185,7 @@ public class DefaultMessageStore implements MessageStore {
             }
         }, 1, 10, TimeUnit.MINUTES);
 
+        //打印堆栈信息到file
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -1191,8 +1196,7 @@ public class DefaultMessageStore implements MessageStore {
                             if (lockTime > 1000 && lockTime < 10000000) {
 
                                 String stack = UtilAll.jstack();
-                                final String fileName = System.getProperty("user.home") + File.separator + "debug/lock/stack-"
-                                    + DefaultMessageStore.this.commitLog.getBeginTimeInLock() + "-" + lockTime;
+                                final String fileName = System.getProperty("user.home") + File.separator + "debug/lock/stack-" + DefaultMessageStore.this.commitLog.getBeginTimeInLock() + "-" + lockTime;
                                 MixAll.string2FileNotSafe(stack, fileName);
                             }
                         }
@@ -1708,6 +1712,7 @@ public class DefaultMessageStore implements MessageStore {
         }
     }
 
+    //重放commitLog来写入index和consumeQueue？
     class ReputMessageService extends ServiceThread {
 
         private volatile long reputFromOffset = 0;
@@ -1767,6 +1772,7 @@ public class DefaultMessageStore implements MessageStore {
 
                             if (dispatchRequest.isSuccess()) {
                                 if (size > 0) {
+                                    //两个CommitLogDispatcher  一个consumeQueue  一个index
                                     DefaultMessageStore.this.doDispatch(dispatchRequest);
 
                                     if (BrokerRole.SLAVE != DefaultMessageStore.this.getMessageStoreConfig().getBrokerRole()

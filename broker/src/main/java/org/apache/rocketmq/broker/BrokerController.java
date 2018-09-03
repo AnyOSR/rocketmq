@@ -219,10 +219,14 @@ public class BrokerController {
         result = result && this.messageStore.load();
 
         if (result) {
+            //remotingServer和fastRemotingServer之间的区别？ remotingServer 多了一个pullMessageProcessor
+            //handler都是一样的  都是NettyRemotingServer类
             this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.clientHousekeepingService);
             NettyServerConfig fastConfig = (NettyServerConfig) this.nettyServerConfig.clone();
             fastConfig.setListenPort(nettyServerConfig.getListenPort() - 2);
             this.fastRemotingServer = new NettyRemotingServer(fastConfig, this.clientHousekeepingService);
+
+            // sendMessageExecutor  sendThreadPoolQueue
             this.sendMessageExecutor = new BrokerFixedThreadPoolExecutor(
                 this.brokerConfig.getSendMessageThreadPoolNums(),
                 this.brokerConfig.getSendMessageThreadPoolNums(),
@@ -231,6 +235,7 @@ public class BrokerController {
                 this.sendThreadPoolQueue,
                 new ThreadFactoryImpl("SendMessageThread_"));
 
+            //  pullMessageExecutor  pullThreadPoolQueue
             this.pullMessageExecutor = new BrokerFixedThreadPoolExecutor(
                 this.brokerConfig.getPullMessageThreadPoolNums(),
                 this.brokerConfig.getPullMessageThreadPoolNums(),
@@ -239,6 +244,7 @@ public class BrokerController {
                 this.pullThreadPoolQueue,
                 new ThreadFactoryImpl("PullMessageThread_"));
 
+            //  queryMessageExecutor  queryThreadPoolQueue
             this.queryMessageExecutor = new BrokerFixedThreadPoolExecutor(
                 this.brokerConfig.getQueryMessageThreadPoolNums(),
                 this.brokerConfig.getQueryMessageThreadPoolNums(),
@@ -249,6 +255,7 @@ public class BrokerController {
 
             this.adminBrokerExecutor = Executors.newFixedThreadPool(this.brokerConfig.getAdminBrokerThreadPoolNums(), new ThreadFactoryImpl("AdminBrokerThread_"));
 
+            //  clientManageExecutor   clientManagerThreadPoolQueue
             this.clientManageExecutor = new ThreadPoolExecutor(
                 this.brokerConfig.getClientManageThreadPoolNums(),
                 this.brokerConfig.getClientManageThreadPoolNums(),
@@ -257,14 +264,15 @@ public class BrokerController {
                 this.clientManagerThreadPoolQueue,
                 new ThreadFactoryImpl("ClientManageThread_"));
 
-            this.consumerManageExecutor =
-                Executors.newFixedThreadPool(this.brokerConfig.getConsumerManageThreadPoolNums(), new ThreadFactoryImpl(
-                    "ConsumerManageThread_"));
+            this.consumerManageExecutor = Executors.newFixedThreadPool(this.brokerConfig.getConsumerManageThreadPoolNums(), new ThreadFactoryImpl("ConsumerManageThread_"));
 
             this.registerProcessor();
 
             final long initialDelay = UtilAll.computNextMorningTimeMillis() - System.currentTimeMillis();
+            //一天毫秒数
             final long period = 1000 * 60 * 60 * 24;
+
+            //一天执行一次，记录put和get的统计信息  定时任务
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
@@ -276,6 +284,7 @@ public class BrokerController {
                 }
             }, initialDelay, period, TimeUnit.MILLISECONDS);
 
+            //将consumerOffsetManager持久化到磁盘 定时任务
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
@@ -287,6 +296,7 @@ public class BrokerController {
                 }
             }, 1000 * 10, this.brokerConfig.getFlushConsumerOffsetInterval(), TimeUnit.MILLISECONDS);
 
+            //consumerFilterManager持久化到磁盘 定时任务
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
@@ -298,6 +308,7 @@ public class BrokerController {
                 }
             }, 1000 * 10, 1000 * 10, TimeUnit.MILLISECONDS);
 
+            //将消费慢的consumer disable掉
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
@@ -309,6 +320,7 @@ public class BrokerController {
                 }
             }, 3, 3, TimeUnit.MINUTES);
 
+            //定时任务 打印出几个queue任务里面当前任务的创建时间与当前时间之差
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
@@ -320,6 +332,7 @@ public class BrokerController {
                 }
             }, 10, 1, TimeUnit.SECONDS);
 
+            //每60s打印一次  还需要重放多少
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
                 @Override
@@ -332,6 +345,7 @@ public class BrokerController {
                 }
             }, 1000 * 10, 1000 * 60, TimeUnit.MILLISECONDS);
 
+            //根据配置或者根据AddressServer定时获取更新
             if (this.brokerConfig.getNamesrvAddr() != null) {
                 this.brokerOuterAPI.updateNameServerAddressList(this.brokerConfig.getNamesrvAddr());
                 log.info("Set user specified name server address: {}", this.brokerConfig.getNamesrvAddr());
@@ -349,6 +363,8 @@ public class BrokerController {
                 }, 1000 * 10, 1000 * 60 * 2, TimeUnit.MILLISECONDS);
             }
 
+            //如果broker是slave 且HAMasterAddress有效，则更新
+            //否则设置updateMasterHAServerAddrPeriodically为true
             if (BrokerRole.SLAVE == this.messageStoreConfig.getBrokerRole()) {
                 if (this.messageStoreConfig.getHaMasterAddress() != null && this.messageStoreConfig.getHaMasterAddress().length() >= 6) {
                     this.messageStore.updateHaMasterAddress(this.messageStoreConfig.getHaMasterAddress());
@@ -357,8 +373,8 @@ public class BrokerController {
                     this.updateMasterHAServerAddrPeriodically = true;
                 }
 
+                //同步master的相关信息
                 this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-
                     @Override
                     public void run() {
                         try {
@@ -369,6 +385,7 @@ public class BrokerController {
                     }
                 }, 1000 * 10, 1000 * 60, TimeUnit.MILLISECONDS);
             } else {
+                //如果是master,周期打印出slave commitLog与master之间的diff
                 this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
                     @Override
@@ -648,13 +665,16 @@ public class BrokerController {
             this.messageStore.start();
         }
 
+        //启动remotingServer
         if (this.remotingServer != null) {
             this.remotingServer.start();
         }
 
+        //启动fastRemotingServer
         if (this.fastRemotingServer != null) {
             this.fastRemotingServer.start();
         }
+
 
         if (this.brokerOuterAPI != null) {
             this.brokerOuterAPI.start();

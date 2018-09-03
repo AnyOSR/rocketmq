@@ -24,6 +24,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+//有必要吗？
 public class BrokerFixedThreadPoolExecutor extends ThreadPoolExecutor {
     public BrokerFixedThreadPoolExecutor(final int corePoolSize, final int maximumPoolSize, final long keepAliveTime,
         final TimeUnit unit,

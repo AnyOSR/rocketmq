@@ -20,6 +20,7 @@ package org.apache.rocketmq.common;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
+//线程工厂类，每一个线程都有自己的threadIndex
 public class ThreadFactoryImpl implements ThreadFactory {
     private final AtomicLong threadIndex = new AtomicLong(0);
     private final String threadNamePrefix;
