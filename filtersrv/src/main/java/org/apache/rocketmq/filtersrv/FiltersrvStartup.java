@@ -61,6 +61,7 @@ public class FiltersrvStartup {
         return controller;
     }
 
+    //启动filterServer -c 用的是broker的配置 -n nameServer
     public static FiltersrvController createController(String[] args) {
         System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
 
@@ -74,9 +75,7 @@ public class FiltersrvStartup {
 
         try {
             Options options = ServerUtil.buildCommandlineOptions(new Options());
-            final CommandLine commandLine =
-                ServerUtil.parseCmdLine("mqfiltersrv", args, buildCommandlineOptions(options),
-                    new PosixParser());
+            final CommandLine commandLine = ServerUtil.parseCmdLine("mqfiltersrv", args, buildCommandlineOptions(options), new PosixParser());
             if (null == commandLine) {
                 System.exit(-1);
                 return null;
@@ -95,6 +94,7 @@ public class FiltersrvStartup {
                     System.out.printf("load config properties file OK, %s%n", file);
                     in.close();
 
+                    //这里的是broker的listenPort
                     String port = properties.getProperty("listenPort");
                     if (port != null) {
                         filtersrvConfig.setConnectWhichBroker(String.format("127.0.0.1:%s", port));
@@ -102,10 +102,10 @@ public class FiltersrvStartup {
                 }
             }
 
+            //端口为0？
             nettyServerConfig.setListenPort(0);
             nettyServerConfig.setServerAsyncSemaphoreValue(filtersrvConfig.getFsServerAsyncSemaphoreValue());
-            nettyServerConfig.setServerCallbackExecutorThreads(filtersrvConfig
-                .getFsServerCallbackExecutorThreads());
+            nettyServerConfig.setServerCallbackExecutorThreads(filtersrvConfig.getFsServerCallbackExecutorThreads());
             nettyServerConfig.setServerWorkerThreads(filtersrvConfig.getFsServerWorkerThreads());
 
             if (commandLine.hasOption('p')) {
@@ -127,8 +127,7 @@ public class FiltersrvStartup {
             configurator.doConfigure(filtersrvConfig.getRocketmqHome() + "/conf/logback_filtersrv.xml");
             log = LoggerFactory.getLogger(LoggerName.FILTERSRV_LOGGER_NAME);
 
-            final FiltersrvController controller =
-                new FiltersrvController(filtersrvConfig, nettyServerConfig);
+            final FiltersrvController controller = new FiltersrvController(filtersrvConfig, nettyServerConfig);
             boolean initResult = controller.initialize();
             if (!initResult) {
                 controller.shutdown();

@@ -20,6 +20,8 @@ package org.apache.rocketmq.broker.filtersrv;
 import org.slf4j.Logger;
 
 public class FilterServerUtil {
+
+    //同一台broker机器上启动 filterServer
     public static void callShell(final String shellString, final Logger log) {
         Process process = null;
         try {

@@ -23,6 +23,8 @@ import org.apache.rocketmq.common.utils.HttpTinyClient.HttpResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//还有一个http服务？
+//http请求获取.java文件
 public class HttpFilterClassFetchMethod implements FilterClassFetchMethod {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.FILTERSRV_LOGGER_NAME);
     private final String url;
@@ -41,8 +43,7 @@ public class HttpFilterClassFetchMethod implements FilterClassFetchMethod {
                 return result.content;
             }
         } catch (Exception e) {
-            log.error(
-                String.format("call <%s> exception, Topic: %s Group: %s", thisUrl, topic, consumerGroup), e);
+            log.error(String.format("call <%s> exception, Topic: %s Group: %s", thisUrl, topic, consumerGroup), e);
         }
 
         return null;

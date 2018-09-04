@@ -29,8 +29,7 @@ import org.apache.rocketmq.common.MixAll;
 
 public class HttpTinyClient {
 
-    static public HttpResult httpGet(String url, List<String> headers, List<String> paramValues,
-        String encoding, long readTimeoutMs) throws IOException {
+    static public HttpResult httpGet(String url, List<String> headers, List<String> paramValues, String encoding, long readTimeoutMs) throws IOException {
         String encodedContent = encodingParams(paramValues, encoding);
         url += (null == encodedContent) ? "" : ("?" + encodedContent);
 
@@ -59,6 +58,7 @@ public class HttpTinyClient {
         }
     }
 
+    //key value key value key value ...
     static private String encodingParams(List<String> paramValues, String encoding)
         throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
@@ -76,6 +76,7 @@ public class HttpTinyClient {
         return sb.toString();
     }
 
+    // k v k v k v ...
     static private void setHeaders(HttpURLConnection conn, List<String> headers, String encoding) {
         if (null != headers) {
             for (Iterator<String> iter = headers.iterator(); iter.hasNext(); ) {

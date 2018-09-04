@@ -675,7 +675,7 @@ public class BrokerController {
             this.fastRemotingServer.start();
         }
 
-
+        //netty client启动
         if (this.brokerOuterAPI != null) {
             this.brokerOuterAPI.start();
         }
@@ -684,10 +684,12 @@ public class BrokerController {
             this.pullRequestHoldService.start();
         }
 
+        //清理无效channel
         if (this.clientHousekeepingService != null) {
             this.clientHousekeepingService.start();
         }
 
+        //filterServer
         if (this.filterServerManager != null) {
             this.filterServerManager.start();
         }
@@ -695,6 +697,7 @@ public class BrokerController {
         //向所有的nameServer注册broker自身
         this.registerBrokerAll(true, false);
 
+        //定时任务 向nameServer注册自己
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -711,6 +714,7 @@ public class BrokerController {
             this.brokerStatsManager.start();
         }
 
+        //清除队列里面过期的请求
         if (this.brokerFastFailure != null) {
             this.brokerFastFailure.start();
         }
@@ -719,8 +723,7 @@ public class BrokerController {
     public synchronized void registerBrokerAll(final boolean checkOrderConfig, boolean oneway) {
         TopicConfigSerializeWrapper topicConfigWrapper = this.getTopicConfigManager().buildTopicConfigSerializeWrapper();
 
-        if (!PermName.isWriteable(this.getBrokerConfig().getBrokerPermission())
-            || !PermName.isReadable(this.getBrokerConfig().getBrokerPermission())) {
+        if (!PermName.isWriteable(this.getBrokerConfig().getBrokerPermission()) || !PermName.isReadable(this.getBrokerConfig().getBrokerPermission())) {
             ConcurrentHashMap<String, TopicConfig> topicConfigTable = new ConcurrentHashMap<String, TopicConfig>();
             for (TopicConfig topicConfig : topicConfigWrapper.getTopicConfigTable().values()) {
                 TopicConfig tmp = new TopicConfig(topicConfig.getTopicName(), topicConfig.getReadQueueNums(), topicConfig.getWriteQueueNums(), this.brokerConfig.getBrokerPermission());
@@ -729,16 +732,10 @@ public class BrokerController {
             topicConfigWrapper.setTopicConfigTable(topicConfigTable);
         }
 
+        //向nameServer注册自己，包括该broker的filterServer
         RegisterBrokerResult registerBrokerResult = this.brokerOuterAPI.registerBrokerAll(
-            this.brokerConfig.getBrokerClusterName(),
-            this.getBrokerAddr(),
-            this.brokerConfig.getBrokerName(),
-            this.brokerConfig.getBrokerId(),
-            this.getHAServerAddr(),
-            topicConfigWrapper,
-            this.filterServerManager.buildNewFilterServerList(),
-            oneway,
-            this.brokerConfig.getRegisterBrokerTimeoutMills());
+            this.brokerConfig.getBrokerClusterName(), this.getBrokerAddr(), this.brokerConfig.getBrokerName(), this.brokerConfig.getBrokerId(),
+            this.getHAServerAddr(), topicConfigWrapper, this.filterServerManager.buildNewFilterServerList(), oneway, this.brokerConfig.getRegisterBrokerTimeoutMills());
 
         if (registerBrokerResult != null) {
             if (this.updateMasterHAServerAddrPeriodically && registerBrokerResult.getHaServerAddr() != null) {

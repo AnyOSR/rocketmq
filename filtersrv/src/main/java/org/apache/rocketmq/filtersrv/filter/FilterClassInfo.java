@@ -22,7 +22,7 @@ import org.apache.rocketmq.common.filter.MessageFilter;
 public class FilterClassInfo {
     private String className;
     private int classCRC;
-    private MessageFilter messageFilter;
+    private MessageFilter messageFilter;        //filter实例
 
     public int getClassCRC() {
         return classCRC;

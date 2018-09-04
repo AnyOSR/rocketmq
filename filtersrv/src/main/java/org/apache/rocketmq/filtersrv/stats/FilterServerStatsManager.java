@@ -25,18 +25,17 @@ import org.apache.rocketmq.common.stats.StatsItemSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//filterServer 统计信息
 public class FilterServerStatsManager {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.FILTERSRV_LOGGER_NAME);
-    private final ScheduledExecutorService scheduledExecutorService = Executors
-        .newSingleThreadScheduledExecutor(new ThreadFactoryImpl("FSStatsThread"));
+
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl("FSStatsThread"));
 
     // ConsumerGroup Get Nums
-    private final StatsItemSet groupGetNums = new StatsItemSet("GROUP_GET_NUMS",
-        this.scheduledExecutorService, log);
+    private final StatsItemSet groupGetNums = new StatsItemSet("GROUP_GET_NUMS", this.scheduledExecutorService, log);
 
     // ConsumerGroup Get Size
-    private final StatsItemSet groupGetSize = new StatsItemSet("GROUP_GET_SIZE",
-        this.scheduledExecutorService, log);
+    private final StatsItemSet groupGetSize = new StatsItemSet("GROUP_GET_SIZE", this.scheduledExecutorService, log);
 
     public FilterServerStatsManager() {
     }

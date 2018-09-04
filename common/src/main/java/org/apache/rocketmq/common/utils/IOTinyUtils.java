@@ -35,9 +35,9 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
 
 public class IOTinyUtils {
 
+    //将字节流转换为字符流
     static public String toString(InputStream input, String encoding) throws IOException {
-        return (null == encoding) ? toString(new InputStreamReader(input, RemotingHelper.DEFAULT_CHARSET)) : toString(new InputStreamReader(
-            input, encoding));
+        return (null == encoding) ? toString(new InputStreamReader(input, RemotingHelper.DEFAULT_CHARSET)) : toString(new InputStreamReader(input, encoding));
     }
 
     static public String toString(Reader reader) throws IOException {
@@ -46,6 +46,9 @@ public class IOTinyUtils {
         return sw.toString();
     }
 
+    //这里为什么需要将reader写到buffer然后写到writer？
+    //仅仅是为了利用writer的position？
+    //还是为了以后的可扩展？长度应该不是限制
     static public long copy(Reader input, Writer output) throws IOException {
         char[] buffer = new char[1 << 12];
         long count = 0;
@@ -54,6 +57,16 @@ public class IOTinyUtils {
             count += n;
         }
         return count;
+    }
+
+    static public String copy(Reader input) throws IOException {
+        char[] buffer = new char[1 << 12];
+        int count = 0;
+        int n =0;
+        for (; (n = input.read(buffer,count,100)) >= 0; ) {
+            count += n;
+        }
+        return new String(buffer,0,count);
     }
 
     static public List<String> readLines(Reader input) throws IOException {

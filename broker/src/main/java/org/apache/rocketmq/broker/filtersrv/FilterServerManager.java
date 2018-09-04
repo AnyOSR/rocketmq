@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //新创建的process？怎么用？
+//filterServer
+//broker端的filter管理
 public class FilterServerManager {
 
     public static final long FILTER_SERVER_MAX_IDLE_TIME_MILLS = 30000;
@@ -62,6 +64,7 @@ public class FilterServerManager {
         }, 1000 * 5, 1000 * 30, TimeUnit.MILLISECONDS);
     }
 
+    //定时启动filterServer进程
     public void createFilterServer() {
         int more = this.brokerController.getBrokerConfig().getFilterServerNums() - this.filterServerTable.size();
         String cmd = this.buildStartCommand();
@@ -80,6 +83,7 @@ public class FilterServerManager {
             config += String.format(" -n %s", this.brokerController.getBrokerConfig().getNamesrvAddr());
         }
 
+        // mqfiltersrv.cmd FiltersrvStartup类
         if (RemotingUtil.isWindowsPlatform()) {
             return String.format("start /b %s\\bin\\mqfiltersrv.exe %s", this.brokerController.getBrokerConfig().getRocketmqHome(), config);
         } else {

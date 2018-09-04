@@ -39,20 +39,15 @@ public class FiltersrvController {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.FILTERSRV_LOGGER_NAME);
 
     private final FiltersrvConfig filtersrvConfig;
-
     private final NettyServerConfig nettyServerConfig;
+
+    private final DefaultMQPullConsumer defaultMQPullConsumer = new DefaultMQPullConsumer(MixAll.FILTERSRV_CONSUMER_GROUP);
     private final FilterClassManager filterClassManager;
 
-    private final FilterServerOuterAPI filterServerOuterAPI = new FilterServerOuterAPI();
-    private final DefaultMQPullConsumer defaultMQPullConsumer = new DefaultMQPullConsumer(
-        MixAll.FILTERSRV_CONSUMER_GROUP);
-
-    private final ScheduledExecutorService scheduledExecutorService = Executors
-        .newSingleThreadScheduledExecutor(new ThreadFactoryImpl("FSScheduledThread"));
     private final FilterServerStatsManager filterServerStatsManager = new FilterServerStatsManager();
-
+    private final FilterServerOuterAPI filterServerOuterAPI = new FilterServerOuterAPI();
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl("FSScheduledThread"));
     private RemotingServer remotingServer;
-
     private ExecutorService remotingExecutor;
     private volatile String brokerName = null;
 
@@ -68,12 +63,11 @@ public class FiltersrvController {
 
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig);
 
-        this.remotingExecutor =
-            Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(),
-                new ThreadFactoryImpl("RemotingExecutorThread_"));
+        this.remotingExecutor = Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
         this.registerProcessor();
 
+        //定时任务  注册FilterServer到broker！！
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -82,29 +76,32 @@ public class FiltersrvController {
             }
         }, 3, 10, TimeUnit.SECONDS);
 
-        this.defaultMQPullConsumer.setBrokerSuspendMaxTimeMillis(this.defaultMQPullConsumer
-            .getBrokerSuspendMaxTimeMillis() - 1000);
-        this.defaultMQPullConsumer.setConsumerTimeoutMillisWhenSuspend(this.defaultMQPullConsumer
-            .getConsumerTimeoutMillisWhenSuspend() - 1000);
+        this.defaultMQPullConsumer.setBrokerSuspendMaxTimeMillis(this.defaultMQPullConsumer.getBrokerSuspendMaxTimeMillis() - 1000);
+        this.defaultMQPullConsumer.setConsumerTimeoutMillisWhenSuspend(this.defaultMQPullConsumer.getConsumerTimeoutMillisWhenSuspend() - 1000);
 
+        //将nameServer的地址告知defaultMQPullConsumer
         this.defaultMQPullConsumer.setNamesrvAddr(this.filtersrvConfig.getNamesrvAddr());
         this.defaultMQPullConsumer.setInstanceName(String.valueOf(UtilAll.getPid()));
 
         return true;
     }
 
+    //remotingServer只注册了一个processor
     private void registerProcessor() {
-        this.remotingServer
-            .registerDefaultProcessor(new DefaultRequestProcessor(this), this.remotingExecutor);
+        this.remotingServer.registerDefaultProcessor(new DefaultRequestProcessor(this), this.remotingExecutor);
     }
 
     public void registerFilterServerToBroker() {
         try {
-            RegisterFilterServerResponseHeader responseHeader =
-                this.filterServerOuterAPI.registerFilterServerToBroker(
-                    this.filtersrvConfig.getConnectWhichBroker(), this.localAddr());
-            this.defaultMQPullConsumer.getDefaultMQPullConsumerImpl().getPullAPIWrapper()
-                .setDefaultBrokerId(responseHeader.getBrokerId());
+            //filterServer 只和broker交互？
+            //地址connectWhichBroker 是broker的地址 来源于broker的配置文件(listenPort参数)
+            //filterServerAddr是netty server的监听端口(filterServer监听本地端口后，向broker注册时告知broker) 这有必要？
+            //注册的时候filterServer会将自己的端口信息告知broker，那前面的将listenPort设置为0也就好解释了
+            //只有defaultMQPullConsumer和nameServer打交道，其余组件完全不care nameServer  其余只和broker打交道
+            //filterServer 注册到nameServer 是自己注册的还是通过broker注册的？
+            //FilterServerOuterAPI里面只有注册到broker的代码？通过broker注册到nameServer？
+            RegisterFilterServerResponseHeader responseHeader = this.filterServerOuterAPI.registerFilterServerToBroker(this.filtersrvConfig.getConnectWhichBroker(), this.localAddr());
+            this.defaultMQPullConsumer.getDefaultMQPullConsumerImpl().getPullAPIWrapper().setDefaultBrokerId(responseHeader.getBrokerId());
 
             if (null == this.brokerName) {
                 this.brokerName = responseHeader.getBrokerName();
@@ -117,7 +114,6 @@ public class FiltersrvController {
                 responseHeader.getBrokerId());
         } catch (Exception e) {
             log.warn("register filter server Exception", e);
-
             log.warn("access broker failed, kill oneself");
             System.exit(-1);
         }
@@ -132,8 +128,7 @@ public class FiltersrvController {
         this.defaultMQPullConsumer.start();
         this.remotingServer.start();
         this.filterServerOuterAPI.start();
-        this.defaultMQPullConsumer.getDefaultMQPullConsumerImpl().getPullAPIWrapper()
-            .setConnectBrokerByUser(true);
+        this.defaultMQPullConsumer.getDefaultMQPullConsumerImpl().getPullAPIWrapper().setConnectBrokerByUser(true);
         this.filterClassManager.start();
         this.filterServerStatsManager.start();
     }
