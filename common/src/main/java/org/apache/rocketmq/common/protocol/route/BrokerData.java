@@ -46,6 +46,8 @@ public class BrokerData implements Comparable<BrokerData> {
      *
      * @return Broker address.
      */
+    //首先尝试拿master的地址
+    //如果master地址为null，随机取一个地址(有可能还会取到master的地址)
     public String selectBrokerAddr() {
         String addr = this.brokerAddrs.get(MixAll.MASTER_ID);
 
