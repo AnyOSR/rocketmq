@@ -71,14 +71,15 @@ public class TopicPublishInfo {
         this.haveTopicRouterInfo = haveTopicRouterInfo;
     }
 
-    //该方法是在哪个线程中调用的？
+    //该方法是在哪个线程中调用的？一直只能同一个线程去调这个方法？假如不同的线程去调同一个TopicPublishInfo对象的这个方法？
+    //不同线程都会有对threadlocal的引用？其实也没影响，value的值还是线程隔离的，会不会有内存泄漏？不会
     public MessageQueue selectOneMessageQueue(final String lastBrokerName) {
         if (lastBrokerName == null) {
             return selectOneMessageQueue();
         } else {
             int index = this.sendWhichQueue.getAndIncrement();
             for (int i = 0; i < this.messageQueueList.size(); i++) {
-                int pos = Math.abs(index++) % this.messageQueueList.size();
+                int pos = Math.abs(index++) % this.messageQueueList.size();      //每次从上次停止的地方开始搜索
                 if (pos < 0)
                     pos = 0;
                 MessageQueue mq = this.messageQueueList.get(pos);
@@ -90,6 +91,7 @@ public class TopicPublishInfo {
         }
     }
 
+    //选一个MessageQueue
     public MessageQueue selectOneMessageQueue() {
         int index = this.sendWhichQueue.getAndIncrement();
         int pos = Math.abs(index) % this.messageQueueList.size();
@@ -98,6 +100,7 @@ public class TopicPublishInfo {
         return this.messageQueueList.get(pos);
     }
 
+    //？writeQueueNums  queueId？？
     public int getQueueIdByBroker(final String brokerName) {
         for (int i = 0; i < topicRouteData.getQueueDatas().size(); i++) {
             final QueueData queueData = this.topicRouteData.getQueueDatas().get(i);

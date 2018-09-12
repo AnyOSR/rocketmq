@@ -2814,13 +2814,47 @@
 											"height": 13,
 											"text": "«public MessageQueue selectOneMessageQueue(final String lastBrokerName)»+selectOneMessageQueue()",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlznU1go9I2mM=",
+											"_parent": {
+												"$ref": "AAAAAAFlqShU+q5syAI="
+											},
+											"model": {
+												"$ref": "AAAAAAFlznU1TY9Cfjc="
+											},
+											"font": "Arial;13;0",
+											"left": 1045,
+											"top": 672,
+											"width": 631.19189453125,
+											"height": 13,
+											"text": "«public MessageQueue selectOneMessageQueue()»+selectOneMessageQueue()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAFlznXQdo96kUE=",
+											"_parent": {
+												"$ref": "AAAAAAFlqShU+q5syAI="
+											},
+											"model": {
+												"$ref": "AAAAAAFlznXQRI90I+Q="
+											},
+											"font": "Arial;13;0",
+											"left": 1045,
+											"top": 687,
+											"width": 631.19189453125,
+											"height": 13,
+											"text": "«public int getQueueIdByBroker(final String brokerName)»+getQueueIdByBroker()",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 1040,
 									"top": 652,
 									"width": 641.19189453125,
-									"height": 23
+									"height": 53
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -2860,7 +2894,7 @@
 							"left": 1040,
 							"top": 544,
 							"width": 641.19189453125,
-							"height": 133,
+							"height": 161,
 							"nameCompartment": {
 								"$ref": "AAAAAAFlqShU+a5mADo="
 							},
@@ -5356,6 +5390,24 @@
 							},
 							"name": "selectOneMessageQueue",
 							"stereotype": "public MessageQueue selectOneMessageQueue(final String lastBrokerName)"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlznU1TY9Cfjc=",
+							"_parent": {
+								"$ref": "AAAAAAFlqShU+K5jaWg="
+							},
+							"name": "selectOneMessageQueue",
+							"stereotype": "public MessageQueue selectOneMessageQueue()"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAFlznXQRI90I+Q=",
+							"_parent": {
+								"$ref": "AAAAAAFlqShU+K5jaWg="
+							},
+							"name": "getQueueIdByBroker",
+							"stereotype": "public int getQueueIdByBroker(final String brokerName)"
 						}
 					]
 				},
