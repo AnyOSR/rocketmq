@@ -23,6 +23,7 @@ public class ThreadLocalIndex {
     private final ThreadLocal<Integer> threadLocalIndex = new ThreadLocal<Integer>();
     private final Random random = new Random();
 
+    //该方法是在哪些线程中调用的？
     public int getAndIncrement() {
         Integer index = this.threadLocalIndex.get();
         if (null == index) {

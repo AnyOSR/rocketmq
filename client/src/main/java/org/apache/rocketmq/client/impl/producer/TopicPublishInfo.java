@@ -30,6 +30,8 @@ public class TopicPublishInfo {
 
     //当前topic所有的queue信息
     private List<MessageQueue> messageQueueList = new ArrayList<MessageQueue>();
+
+    //每一个TopicPublishInfo都有一个ThreadLocal
     private volatile ThreadLocalIndex sendWhichQueue = new ThreadLocalIndex();
     private TopicRouteData topicRouteData;
 
@@ -69,6 +71,7 @@ public class TopicPublishInfo {
         this.haveTopicRouterInfo = haveTopicRouterInfo;
     }
 
+    //该方法是在哪个线程中调用的？
     public MessageQueue selectOneMessageQueue(final String lastBrokerName) {
         if (lastBrokerName == null) {
             return selectOneMessageQueue();
