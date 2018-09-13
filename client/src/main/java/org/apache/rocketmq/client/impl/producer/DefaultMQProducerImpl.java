@@ -85,19 +85,21 @@ public class DefaultMQProducerImpl implements MQProducerInner {
     private final Logger log = ClientLogger.getLog();
     private final Random random = new Random();
     private final DefaultMQProducer defaultMQProducer;
+    private ServiceState serviceState = ServiceState.CREATE_JUST;
 
     //topic的分布信息
     private final ConcurrentMap<String/* topic */, TopicPublishInfo> topicPublishInfoTable = new ConcurrentHashMap<String, TopicPublishInfo>();
-    private final ArrayList<SendMessageHook> sendMessageHookList = new ArrayList<SendMessageHook>();
     private final RPCHook rpcHook;
     protected BlockingQueue<Runnable> checkRequestQueue;
     protected ExecutorService checkExecutor;
-    private ServiceState serviceState = ServiceState.CREATE_JUST;
+
     private MQClientInstance mQClientFactory;
+    private MQFaultStrategy mqFaultStrategy = new MQFaultStrategy();
+
+    private final ArrayList<SendMessageHook> sendMessageHookList = new ArrayList<SendMessageHook>();
     private ArrayList<CheckForbiddenHook> checkForbiddenHookList = new ArrayList<CheckForbiddenHook>();
     private int zipCompressLevel = Integer.parseInt(System.getProperty(MixAll.MESSAGE_COMPRESS_LEVEL, "5"));
 
-    private MQFaultStrategy mqFaultStrategy = new MQFaultStrategy();
 
     public DefaultMQProducerImpl(final DefaultMQProducer defaultMQProducer) {
         this(defaultMQProducer, null);

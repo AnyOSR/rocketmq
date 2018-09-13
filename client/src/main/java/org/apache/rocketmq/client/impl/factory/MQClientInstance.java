@@ -86,37 +86,40 @@ public class MQClientInstance {
     private final static long LOCK_TIMEOUT_MILLIS = 3000;
     private final Logger log = ClientLogger.getLog();
     private final ClientConfig clientConfig;
-    private final int instanceIndex;
-    private final String clientId;
-    private final long bootTimestamp = System.currentTimeMillis();
-    private final ConcurrentMap<String/* group */, MQProducerInner> producerTable = new ConcurrentHashMap<String, MQProducerInner>();
-    private final ConcurrentMap<String/* group */, MQConsumerInner> consumerTable = new ConcurrentHashMap<String, MQConsumerInner>();
-    private final ConcurrentMap<String/* group */, MQAdminExtInner> adminExtTable = new ConcurrentHashMap<String, MQAdminExtInner>();
     private final NettyClientConfig nettyClientConfig;
-    private final MQClientAPIImpl mQClientAPIImpl;
-    private final MQAdminImpl mQAdminImpl;
-    private final ConcurrentMap<String/* Topic */, TopicRouteData> topicRouteTable = new ConcurrentHashMap<String, TopicRouteData>();
-    private final Lock lockNamesrv = new ReentrantLock();
-    private final Lock lockHeartbeat = new ReentrantLock();
-    private final ConcurrentMap<String/* Broker Name */, HashMap<Long/* brokerId */, String/* address */>> brokerAddrTable =
-        new ConcurrentHashMap<String, HashMap<Long, String>>();
-    private final ConcurrentMap<String/* Broker Name */, HashMap<String/* address */, Integer>> brokerVersionTable =
-        new ConcurrentHashMap<String, HashMap<String, Integer>>();
+    private final AtomicLong sendHeartbeatTimesTotal = new AtomicLong(0);
+    private ServiceState serviceState = ServiceState.CREATE_JUST;
+    private Random random = new Random();
+    private final DefaultMQProducer defaultMQProducer;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
             return new Thread(r, "MQClientFactoryScheduledThread");
         }
     });
+
+    private final int instanceIndex;
+    private final String clientId;
+    private final long bootTimestamp = System.currentTimeMillis();
+    private final ConcurrentMap<String/* group */, MQProducerInner> producerTable = new ConcurrentHashMap<String, MQProducerInner>();
+    private final ConcurrentMap<String/* group */, MQConsumerInner> consumerTable = new ConcurrentHashMap<String, MQConsumerInner>();
+    private final ConcurrentMap<String/* group */, MQAdminExtInner> adminExtTable = new ConcurrentHashMap<String, MQAdminExtInner>();
+    private final ConcurrentMap<String/* Topic */, TopicRouteData> topicRouteTable = new ConcurrentHashMap<String, TopicRouteData>();
+    private final ConcurrentMap<String/* Broker Name */, HashMap<Long/* brokerId */, String/* address */>> brokerAddrTable = new ConcurrentHashMap<String, HashMap<Long, String>>();
+    private final ConcurrentMap<String/* Broker Name */, HashMap<String/* address */, Integer>> brokerVersionTable = new ConcurrentHashMap<String, HashMap<String, Integer>>();
+
+
+    private final Lock lockNamesrv = new ReentrantLock();
+    private final Lock lockHeartbeat = new ReentrantLock();
+
+    private final MQClientAPIImpl mQClientAPIImpl;
+    private final MQAdminImpl mQAdminImpl;
     private final ClientRemotingProcessor clientRemotingProcessor;
     private final PullMessageService pullMessageService;
     private final RebalanceService rebalanceService;
-    private final DefaultMQProducer defaultMQProducer;
     private final ConsumerStatsManager consumerStatsManager;
-    private final AtomicLong sendHeartbeatTimesTotal = new AtomicLong(0);
-    private ServiceState serviceState = ServiceState.CREATE_JUST;
     private DatagramSocket datagramSocket;
-    private Random random = new Random();
+
 
     public MQClientInstance(ClientConfig clientConfig, int instanceIndex, String clientId) {
         this(clientConfig, instanceIndex, clientId, null);
