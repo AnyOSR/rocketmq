@@ -31,9 +31,9 @@ public class ConsumerRunningInfo extends RemotingSerializable {
     public static final String PROP_NAMESERVER_ADDR = "PROP_NAMESERVER_ADDR";
     public static final String PROP_THREADPOOL_CORE_SIZE = "PROP_THREADPOOL_CORE_SIZE";
     public static final String PROP_CONSUME_ORDERLY = "PROP_CONSUMEORDERLY";
-    public static final String PROP_CONSUME_TYPE = "PROP_CONSUME_TYPE";
+    public static final String PROP_CONSUME_TYPE = "PROP_CONSUME_TYPE";             //push pull
     public static final String PROP_CLIENT_VERSION = "PROP_CLIENT_VERSION";
-    public static final String PROP_CONSUMER_START_TIMESTAMP = "PROP_CONSUMER_START_TIMESTAMP";
+    public static final String PROP_CONSUMER_START_TIMESTAMP = "PROP_CONSUMER_START_TIMESTAMP";                 //static变量作为 properties里面的key
 
     private Properties properties = new Properties();
 
@@ -45,15 +45,17 @@ public class ConsumerRunningInfo extends RemotingSerializable {
 
     private String jstack;
 
+    //判断入参的订阅信息是否一致
     public static boolean analyzeSubscription(final TreeMap<String/* clientId */, ConsumerRunningInfo> criTable) {
         ConsumerRunningInfo prev = criTable.firstEntry().getValue();
+        //只拿出了第一个entry的value？
 
         boolean push = false;
         {
             String property = prev.getProperties().getProperty(ConsumerRunningInfo.PROP_CONSUME_TYPE);
 
             if (property == null) {
-                property = ((ConsumeType) prev.getProperties().get(ConsumerRunningInfo.PROP_CONSUME_TYPE)).name();
+                property = ((ConsumeType) prev.getProperties().get(ConsumerRunningInfo.PROP_CONSUME_TYPE)).name();      //Properties继承了Map  get(Object)
             }
             push = ConsumeType.valueOf(property) == ConsumeType.CONSUME_PASSIVELY;
         }
@@ -65,9 +67,10 @@ public class ConsumerRunningInfo extends RemotingSerializable {
             if (property == null) {
                 property = String.valueOf(prev.getProperties().get(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP));
             }
-            startForAWhile = (System.currentTimeMillis() - Long.parseLong(property)) > (1000 * 60 * 2);
+            startForAWhile = (System.currentTimeMillis() - Long.parseLong(property)) > (1000 * 60 * 2);    // 2 min
         }
 
+        //推模式 以及大于了两分钟才   判断是否有同一个group的consumer有不同的订阅
         if (push && startForAWhile) {
 
             {
