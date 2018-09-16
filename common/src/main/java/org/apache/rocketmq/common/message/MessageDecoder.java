@@ -80,15 +80,15 @@ public class MessageDecoder {
         SocketAddress address;
         long offset;
 
-        byte[] ip = UtilAll.string2bytes(msgId.substring(0, 8));
-        byte[] port = UtilAll.string2bytes(msgId.substring(8, 16));
+        byte[] ip = UtilAll.string2bytes(msgId.substring(0, 8));             //0-8
+        byte[] port = UtilAll.string2bytes(msgId.substring(8, 16));          //8-16
         ByteBuffer bb = ByteBuffer.wrap(port);
-        int portInt = bb.getInt(0);
+        int portInt = bb.getInt(0);                                    //前四字节端口号
         address = new InetSocketAddress(InetAddress.getByAddress(ip), portInt);
 
         // offset
-        byte[] data = UtilAll.string2bytes(msgId.substring(16, 32));
-        bb = ByteBuffer.wrap(data);
+        byte[] data = UtilAll.string2bytes(msgId.substring(16, 32));           //16-32
+        bb = ByteBuffer.wrap(data);                                            //前八个字节 offset
         offset = bb.getLong(0);
 
         return new MessageId(address, offset);
