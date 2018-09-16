@@ -107,6 +107,7 @@ public class ConsumerRunningInfo extends RemotingSerializable {
 
     public static String analyzeProcessQueue(final String clientId, ConsumerRunningInfo info) {
         StringBuilder sb = new StringBuilder();
+
         boolean push = false;
         {
             String property = info.getProperties().getProperty(ConsumerRunningInfo.PROP_CONSUME_TYPE);

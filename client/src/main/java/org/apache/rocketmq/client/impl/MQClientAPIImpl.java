@@ -155,8 +155,7 @@ import org.slf4j.Logger;
 public class MQClientAPIImpl {
 
     private final static Logger log = ClientLogger.getLog();
-    public static boolean sendSmartMsg =
-        Boolean.parseBoolean(System.getProperty("org.apache.rocketmq.client.sendSmartMsg", "true"));
+    public static boolean sendSmartMsg = Boolean.parseBoolean(System.getProperty("org.apache.rocketmq.client.sendSmartMsg", "true"));
 
     static {
         System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
@@ -168,9 +167,7 @@ public class MQClientAPIImpl {
     private String nameSrvAddr = null;
     private ClientConfig clientConfig;
 
-    public MQClientAPIImpl(final NettyClientConfig nettyClientConfig,
-        final ClientRemotingProcessor clientRemotingProcessor,
-        RPCHook rpcHook, final ClientConfig clientConfig) {
+    public MQClientAPIImpl(final NettyClientConfig nettyClientConfig, final ClientRemotingProcessor clientRemotingProcessor, RPCHook rpcHook, final ClientConfig clientConfig) {
         this.clientConfig = clientConfig;
         topAddressing = new TopAddressing(MixAll.getWSAddr(), clientConfig.getUnitName());
         this.remotingClient = new NettyRemotingClient(nettyClientConfig, null);
