@@ -77,7 +77,7 @@ public class TopicPublishInfo {
         if (lastBrokerName == null) {
             return selectOneMessageQueue();
         } else {
-            int index = this.sendWhichQueue.getAndIncrement();
+            int index = this.sendWhichQueue.getAndIncrement();                    //只被调用一次
             for (int i = 0; i < this.messageQueueList.size(); i++) {
                 int pos = Math.abs(index++) % this.messageQueueList.size();      //每次从上次停止的地方开始搜索
                 if (pos < 0)

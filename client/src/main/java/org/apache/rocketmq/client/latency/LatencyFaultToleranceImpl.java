@@ -26,17 +26,20 @@ import org.apache.rocketmq.client.common.ThreadLocalIndex;
 
 public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> {
     private final ConcurrentHashMap<String, FaultItem> faultItemTable = new ConcurrentHashMap<String, FaultItem>(16);
+    //<brokerName,FaultItem >
+    //brokername的Latency
 
     private final ThreadLocalIndex whichItemWorst = new ThreadLocalIndex();
 
+    //更新
     @Override
     public void updateFaultItem(final String name, final long currentLatency, final long notAvailableDuration) {
         FaultItem old = this.faultItemTable.get(name);
         if (null == old) {
             final FaultItem faultItem = new FaultItem(name);
             faultItem.setCurrentLatency(currentLatency);
-            faultItem.setStartTimestamp(System.currentTimeMillis() + notAvailableDuration);
-
+            faultItem.setStartTimestamp(System.currentTimeMillis() + notAvailableDuration);        //当前时间 + 一个时间段(不可用持续时间)  为  startTimestamp
+                                                                                                   //startTimestamp之后才可用
             old = this.faultItemTable.putIfAbsent(name, faultItem);
             if (old != null) {
                 old.setCurrentLatency(currentLatency);
@@ -48,6 +51,7 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
         }
     }
 
+    //可用 则当前时间大于startTimestamp
     @Override
     public boolean isAvailable(final String name) {
         final FaultItem faultItem = this.faultItemTable.get(name);
@@ -62,6 +66,7 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
         this.faultItemTable.remove(name);
     }
 
+    //哪个线程调的？
     @Override
     public String pickOneAtLeast() {
         final Enumeration<FaultItem> elements = this.faultItemTable.elements();
@@ -74,7 +79,7 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
         if (!tmpList.isEmpty()) {
             Collections.shuffle(tmpList);
 
-            Collections.sort(tmpList);
+            Collections.sort(tmpList);             //shuffle？高效？ FaultItem的compareTo函数
 
             final int half = tmpList.size() / 2;
             if (half <= 0) {
@@ -107,7 +112,7 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
 
         @Override
         public int compareTo(final FaultItem other) {
-            if (this.isAvailable() != other.isAvailable()) {
+            if (this.isAvailable() != other.isAvailable()) {    //是否可用 如果可用性不一致 一个可用 一个不可用  可用的小于不可用的 都得有值吧？
                 if (this.isAvailable())
                     return -1;
 
@@ -115,13 +120,13 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
                     return 1;
             }
 
-            if (this.currentLatency < other.currentLatency)
+            if (this.currentLatency < other.currentLatency)       //currentLatency 可用性一致 currentLatency小的小
                 return -1;
             else if (this.currentLatency > other.currentLatency) {
                 return 1;
             }
 
-            if (this.startTimestamp < other.startTimestamp)
+            if (this.startTimestamp < other.startTimestamp)      //startTimestamp
                 return -1;
             else if (this.startTimestamp > other.startTimestamp) {
                 return 1;
@@ -130,6 +135,7 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
             return 0;
         }
 
+        //当前时间大于startTimestamp
         public boolean isAvailable() {
             return (System.currentTimeMillis() - startTimestamp) >= 0;
         }

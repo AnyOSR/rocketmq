@@ -55,6 +55,7 @@ public class MQFaultStrategy {
         this.sendLatencyFaultEnable = sendLatencyFaultEnable;
     }
 
+    //哪个线程调的？TopicPublishInfo对应于一个topic，一个topic分布在多个broker messageQueue ConsumeQueue
     public MessageQueue selectOneMessageQueue(final TopicPublishInfo tpInfo, final String lastBrokerName) {
         if (this.sendLatencyFaultEnable) {
             try {
@@ -64,18 +65,19 @@ public class MQFaultStrategy {
                     if (pos < 0)
                         pos = 0;
                     MessageQueue mq = tpInfo.getMessageQueueList().get(pos);
-                    if (latencyFaultTolerance.isAvailable(mq.getBrokerName())) {
+                    if (latencyFaultTolerance.isAvailable(mq.getBrokerName())) {     //当前时间已经大于startTimestamp
                         if (null == lastBrokerName || mq.getBrokerName().equals(lastBrokerName))
                             return mq;
                     }
                 }
 
+                //选择一个brokerName，不考虑isAvailable
                 final String notBestBroker = latencyFaultTolerance.pickOneAtLeast();
                 int writeQueueNums = tpInfo.getQueueIdByBroker(notBestBroker);
                 if (writeQueueNums > 0) {
                     final MessageQueue mq = tpInfo.selectOneMessageQueue();
                     if (notBestBroker != null) {
-                        mq.setBrokerName(notBestBroker);
+                        mq.setBrokerName(notBestBroker);                   //将notBestBroker设置为 返回结果mq的brokerName
                         mq.setQueueId(tpInfo.getSendWhichQueue().getAndIncrement() % writeQueueNums);
                     }
                     return mq;
@@ -85,10 +87,11 @@ public class MQFaultStrategy {
             } catch (Exception e) {
                 log.error("Error occurred when selecting message queue", e);
             }
-
+            //随便返回一个mq 但是不设置其brokerName和queueId
             return tpInfo.selectOneMessageQueue();
         }
 
+        //找到一个brokerName不等于lastBrokerName的mq
         return tpInfo.selectOneMessageQueue(lastBrokerName);
     }
 
@@ -99,6 +102,7 @@ public class MQFaultStrategy {
         }
     }
 
+    //从后遍历，找到一个大于currentLatency的pos，返回pos处的不可用持续时间
     private long computeNotAvailableDuration(final long currentLatency) {
         for (int i = latencyMax.length - 1; i >= 0; i--) {
             if (currentLatency >= latencyMax[i])

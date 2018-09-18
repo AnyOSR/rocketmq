@@ -32,7 +32,7 @@ public class Producer {
          * Instantiate with a producer group name.
          */
         DefaultMQProducer producer = new DefaultMQProducer("wj_producer_group");
-
+        producer.setNamesrvAddr("127.0.0.1:9871");
         /*
          * Specify name server addresses.
          * <p/>
