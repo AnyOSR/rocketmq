@@ -55,10 +55,19 @@ public class MQFaultStrategy {
         this.sendLatencyFaultEnable = sendLatencyFaultEnable;
     }
 
+    //发送消息的线程会调用这个方法
     //哪个线程调的？TopicPublishInfo对应于一个topic，一个topic分布在多个broker messageQueue ConsumeQueue
+
+    //假如开启，返回一个messageQueue
+    //1.可用 （且其brokerName为传入的参数 或者 传入的brokerName为null ）
+    //2.(假)随机选择一个brokerName，得到该brokerName的writeQueueNums，大于0，则
+    //
+    //
     public MessageQueue selectOneMessageQueue(final TopicPublishInfo tpInfo, final String lastBrokerName) {
+        //开启sendLatencyFaultEnable
         if (this.sendLatencyFaultEnable) {
             try {
+                // 获取一个 mq ，可用且传入的lastBrokerName为null||mq的brokerName为lastBrokerName
                 int index = tpInfo.getSendWhichQueue().getAndIncrement();
                 for (int i = 0; i < tpInfo.getMessageQueueList().size(); i++) {
                     int pos = Math.abs(index++) % tpInfo.getMessageQueueList().size();
@@ -71,7 +80,7 @@ public class MQFaultStrategy {
                     }
                 }
 
-                //选择一个brokerName，不考虑isAvailable
+                //否则 选择一个brokerName，不考虑isAvailable
                 final String notBestBroker = latencyFaultTolerance.pickOneAtLeast();
                 int writeQueueNums = tpInfo.getQueueIdByBroker(notBestBroker);
                 if (writeQueueNums > 0) {
