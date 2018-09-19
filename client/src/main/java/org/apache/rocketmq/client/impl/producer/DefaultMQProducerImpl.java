@@ -141,20 +141,30 @@ public class DefaultMQProducerImpl implements MQProducerInner {
         this.start(true);
     }
 
+    //简而言之 DefaultMQProducer生成的时候会生成DefaultMQProducerImpl，此时并不生成MQClientInstance的实例
+    //调用DefaultMQProducerImpl的start方法，会生成 或者 拿到之前生成 的一个MQClientInstance的实例，新生成该实例时会生成MQClientInstance自己内部的DefaultMQProducer以及DefaultMQProducerImpl
+    //且MQClientInstance自己内部的DefaultMQProducer的配置和MQClientInstance所属的外部DefaultMQProducer的配置是一样的，除了producerGroup，最重要的是，instanceName和unitName也一样(导致ClientId一样)
+    //MQClientInstance的start方法会调用自己内部DefaultMQProducer.DefaultMQProducerImpl的start方法，入参为false（入参为false的话，只会给this.mQClientFactory赋值，不会生成新的MQClientInstance）
+    //对于每一个最外层的producer，最终会有两个DefaultMQProducerImpl 一个MQClientInstance实例(正常配置的话 clientId一样)
     public void start(final boolean startFactory) throws MQClientException {
         switch (this.serviceState) {
             case CREATE_JUST:
                 this.serviceState = ServiceState.START_FAILED;
 
+                //检查配置
                 this.checkConfig();
 
+                //如果producerGroup为MixAll.CLIENT_INNER_PRODUCER_GROUP，则不改变instanceName   而MQClientInstance实例内部DefaultMQProducer的producerGroup就为MixAll.CLIENT_INNER_PRODUCER_GROUP
                 if (!this.defaultMQProducer.getProducerGroup().equals(MixAll.CLIENT_INNER_PRODUCER_GROUP)) {
                     this.defaultMQProducer.changeInstanceNameToPID();
                 }
 
+                //创建MQClientInstance并赋值给this.mQClientFactory
                 this.mQClientFactory = MQClientManager.getInstance().getAndCreateMQClientInstance(this.defaultMQProducer, rpcHook);
-
                 boolean registerOK = mQClientFactory.registerProducer(this.defaultMQProducer.getProducerGroup(), this);
+                //从上面两句可以知道，如果一个DefaultMQProducerImpl的mQClientFactory为A
+                //则A的producerTable中必然有DefaultMQProducerImpl的信息
+
                 if (!registerOK) {
                     this.serviceState = ServiceState.CREATE_JUST;
                     throw new MQClientException("The producer group[" + this.defaultMQProducer.getProducerGroup()
@@ -194,8 +204,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
         }
 
         if (this.defaultMQProducer.getProducerGroup().equals(MixAll.DEFAULT_PRODUCER_GROUP)) {
-            throw new MQClientException("producerGroup can not equal " + MixAll.DEFAULT_PRODUCER_GROUP + ", please specify another one.",
-                null);
+            throw new MQClientException("producerGroup can not equal " + MixAll.DEFAULT_PRODUCER_GROUP + ", please specify another one.", null);
         }
     }
 
@@ -563,29 +572,31 @@ public class DefaultMQProducerImpl implements MQProducerInner {
             null).setResponseCode(ClientErrorCode.NOT_FOUND_TOPIC_EXCEPTION);
     }
 
+    //获取可用的topic路由信息
     private TopicPublishInfo tryToFindTopicPublishInfo(final String topic) {
+
+        //从本地获取缓存信息
         TopicPublishInfo topicPublishInfo = this.topicPublishInfoTable.get(topic);
+        //本地缓存没有或者不ok
         if (null == topicPublishInfo || !topicPublishInfo.ok()) {
             this.topicPublishInfoTable.putIfAbsent(topic, new TopicPublishInfo());
-            this.mQClientFactory.updateTopicRouteInfoFromNameServer(topic);
+            //只传了一个topic信息，则直接从nameServer拉取topic对应的路由信息
+            this.mQClientFactory.updateTopicRouteInfoFromNameServer(topic);  //有可能的话，会更新this.topicPublishInfoTable的内容
             topicPublishInfo = this.topicPublishInfoTable.get(topic);
         }
 
+        //返回的topicPublishInfo可用
         if (topicPublishInfo.isHaveTopicRouterInfo() || topicPublishInfo.ok()) {
             return topicPublishInfo;
         } else {
+            //否则，从this.defaultMQProducer.getCreateTopicKey() 上读取route信息
             this.mQClientFactory.updateTopicRouteInfoFromNameServer(topic, true, this.defaultMQProducer);
             topicPublishInfo = this.topicPublishInfoTable.get(topic);
-            return topicPublishInfo;
+            return topicPublishInfo;       //可能不可用
         }
     }
 
-    private SendResult sendKernelImpl(final Message msg,
-        final MessageQueue mq,
-        final CommunicationMode communicationMode,
-        final SendCallback sendCallback,
-        final TopicPublishInfo topicPublishInfo,
-        final long timeout) throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
+    private SendResult sendKernelImpl(final Message msg, final MessageQueue mq, final CommunicationMode communicationMode, final SendCallback sendCallback, final TopicPublishInfo topicPublishInfo, final long timeout) throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
         String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
         if (null == brokerAddr) {
             tryToFindTopicPublishInfo(mq.getTopic());

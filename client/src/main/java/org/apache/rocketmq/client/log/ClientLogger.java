@@ -33,17 +33,13 @@ public class ClientLogger {
 
     private static Logger createLogger(final String loggerName) {
         String logConfigFilePath = System.getProperty("rocketmq.client.log.configFile", System.getenv("ROCKETMQ_CLIENT_LOG_CONFIGFILE"));
-        Boolean isloadconfig =
-                Boolean.parseBoolean(System.getProperty("rocketmq.client.log.loadconfig", "true"));
+        Boolean isloadconfig = Boolean.parseBoolean(System.getProperty("rocketmq.client.log.loadconfig", "true"));
 
-        final String log4JResourceFile =
-                System.getProperty("rocketmq.client.log4j.resource.fileName", "log4j_rocketmq_client.xml");
+        final String log4JResourceFile = System.getProperty("rocketmq.client.log4j.resource.fileName", "log4j_rocketmq_client.xml");
 
-        final String logbackResourceFile =
-                System.getProperty("rocketmq.client.logback.resource.fileName", "logback_rocketmq_client.xml");
+        final String logbackResourceFile = System.getProperty("rocketmq.client.logback.resource.fileName", "logback_rocketmq_client.xml");
 
-        final String log4J2ResourceFile =
-                System.getProperty("rocketmq.client.log4j2.resource.fileName", "log4j2_rocketmq_client.xml");
+        final String log4J2ResourceFile = System.getProperty("rocketmq.client.log4j2.resource.fileName", "log4j2_rocketmq_client.xml");
 
         String clientLogRoot = System.getProperty(CLIENT_LOG_ROOT, System.getProperty("user.home") + "/logs/rocketmqlogs");
         System.setProperty("client.logRoot", clientLogRoot);

@@ -48,6 +48,8 @@ public class ClientConfig {
 
     private boolean useTLS = TlsSystemConfig.tlsEnable;
 
+    //生成clientId   为了能在一个jvm进程里面使用多个client，每个client最好自己设置自己的instanceName
+    //clientIp instanceName unitName
     public String buildMQClientId() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClientIP());
@@ -78,6 +80,7 @@ public class ClientConfig {
         this.instanceName = instanceName;
     }
 
+    //改变instanceName
     public void changeInstanceNameToPID() {
         if (this.instanceName.equals("DEFAULT")) {
             this.instanceName = String.valueOf(UtilAll.getPid());
