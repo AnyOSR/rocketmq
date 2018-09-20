@@ -224,12 +224,14 @@ public class UtilAll {
         return (int) (crc32.getValue() & 0x7FFFFFFF);
     }
 
+    //没四位一编码
+    //输入 输出 一一映射
     public static String bytes2string(byte[] src) {
         char[] hexChars = new char[src.length * 2];
         for (int j = 0; j < src.length; j++) {
-            int v = src[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+            int v = src[j] & 0xFF;                      //忽略src[j] 最前面可能的1
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];       //src[j] 前四位
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];  //src[j] 后四位
         }
         return new String(hexChars);
     }
@@ -403,6 +405,7 @@ public class UtilAll {
         return result.toString();
     }
 
+    //是否是私有地址
     public static boolean isInternalIP(byte[] ip) {
         if (ip.length != 4) {
             throw new RuntimeException("illegal ipv4 bytes");
@@ -433,28 +436,27 @@ public class UtilAll {
 
 //        if (ip[0] == (byte)30 && ip[1] == (byte)10 && ip[2] == (byte)163 && ip[3] == (byte)120) {
 //        }
-
-        if (ip[0] >= (byte) 1 && ip[0] <= (byte) 126) {
-            if (ip[1] == (byte) 1 && ip[2] == (byte) 1 && ip[3] == (byte) 1) {
+        if (ip[0] >= (byte) 1 && ip[0] <= (byte) 126) {                         //  1~126     A类
+            if (ip[1] == (byte) 1 && ip[2] == (byte) 1 && ip[3] == (byte) 1) {  //  1.1.1
                 return false;
             }
-            if (ip[1] == (byte) 0 && ip[2] == (byte) 0 && ip[3] == (byte) 0) {
+            if (ip[1] == (byte) 0 && ip[2] == (byte) 0 && ip[3] == (byte) 0) {  //  0.0.0
                 return false;
             }
             return true;
-        } else if (ip[0] >= (byte) 128 && ip[0] <= (byte) 191) {
-            if (ip[2] == (byte) 1 && ip[3] == (byte) 1) {
+        } else if (ip[0] >= (byte) 128 && ip[0] <= (byte) 191) {   // 128~191                  B类
+            if (ip[2] == (byte) 1 && ip[3] == (byte) 1) {          // ..1.1
                 return false;
             }
             if (ip[2] == (byte) 0 && ip[3] == (byte) 0) {
-                return false;
+                return false;                                      // ..0.0
             }
             return true;
-        } else if (ip[0] >= (byte) 192 && ip[0] <= (byte) 223) {
-            if (ip[3] == (byte) 1) {
+        } else if (ip[0] >= (byte) 192 && ip[0] <= (byte) 223) {   // 192~223                  C类
+            if (ip[3] == (byte) 1) {                               // ...1
                 return false;
             }
-            if (ip[3] == (byte) 0) {
+            if (ip[3] == (byte) 0) {                                // ...0
                 return false;
             }
             return true;
@@ -473,11 +475,15 @@ public class UtilAll {
 
     public static byte[] getIP() {
         try {
+
+            //本机所有的网络接口
             Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces();
             InetAddress ip = null;
             byte[] internalIP = null;
             while (allNetInterfaces.hasMoreElements()) {
                 NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement();
+
+                //获取绑定到该网络接口的所有InetAddresses
                 Enumeration addresses = netInterface.getInetAddresses();
                 while (addresses.hasMoreElements()) {
                     ip = (InetAddress) addresses.nextElement();
@@ -495,6 +501,7 @@ public class UtilAll {
                     }
                 }
             }
+            //还没找到有效的ip地址
             if (internalIP != null) {
                 return internalIP;
             } else {

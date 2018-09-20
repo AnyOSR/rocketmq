@@ -472,6 +472,9 @@ public class DefaultMQProducerImpl implements MQProducerInner {
                         beginTimestampPrev = System.currentTimeMillis();
                         sendResult = this.sendKernelImpl(msg, mq, communicationMode, sendCallback, topicPublishInfo, timeout);
                         endTimestamp = System.currentTimeMillis();
+                        // currentLatency = 发送完时间 - 开始发送时间
+                        //isolation为false时，根据实际的currentLatency计算notAvailableDuration
+                        //更新当前brokerName的latent信息
                         this.updateFaultItem(mq.getBrokerName(), endTimestamp - beginTimestampPrev, false);
                         switch (communicationMode) {
                             case ASYNC:
@@ -617,12 +620,12 @@ public class DefaultMQProducerImpl implements MQProducerInner {
 
                 int sysFlag = 0;
                 if (this.tryToCompressMessage(msg)) {
-                    sysFlag |= MessageSysFlag.COMPRESSED_FLAG;
+                    sysFlag |= MessageSysFlag.COMPRESSED_FLAG;      //设置压缩标志位
                 }
 
                 final String tranMsg = msg.getProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED);
                 if (tranMsg != null && Boolean.parseBoolean(tranMsg)) {
-                    sysFlag |= MessageSysFlag.TRANSACTION_PREPARED_TYPE;
+                    sysFlag |= MessageSysFlag.TRANSACTION_PREPARED_TYPE;   //transaction prepare 标志位
                 }
 
                 if (hasCheckForbiddenHook()) {
@@ -670,7 +673,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
                 requestHeader.setReconsumeTimes(0);
                 requestHeader.setUnitMode(this.isUnitMode());
                 requestHeader.setBatch(msg instanceof MessageBatch);
-                if (requestHeader.getTopic().startsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX)) {
+                if (requestHeader.getTopic().startsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX)) {      //消息重发topic？
                     String reconsumeTimes = MessageAccessor.getReconsumeTime(msg);
                     if (reconsumeTimes != null) {
                         requestHeader.setReconsumeTimes(Integer.valueOf(reconsumeTimes));
@@ -684,6 +687,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
                     }
                 }
 
+                //发送消息
                 SendResult sendResult = null;
                 switch (communicationMode) {
                     case ASYNC:
@@ -754,6 +758,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
         return mQClientFactory;
     }
 
+    //是否压缩以及压缩是否成功
     private boolean tryToCompressMessage(final Message msg) {
         if (msg instanceof MessageBatch) {
             //batch dose not support compressing right now

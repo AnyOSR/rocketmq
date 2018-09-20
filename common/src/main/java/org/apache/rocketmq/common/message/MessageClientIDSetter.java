@@ -25,13 +25,13 @@ import org.apache.rocketmq.common.UtilAll;
 public class MessageClientIDSetter {
     private static final String TOPIC_KEY_SPLITTER = "#";
     private static final int LEN;
-    private static final String FIX_STRING;
+    private static final String FIX_STRING;                      //length为20
     private static final AtomicInteger COUNTER;
     private static long startTime;
     private static long nextStartTime;
 
     static {
-        LEN = 4 + 2 + 4 + 4 + 2;
+        LEN = 4 + 2 + 4 + 4 + 2;                   //ip  pid的后两位  hashcode   当前时间-startTime  COUNTER
         ByteBuffer tempBuffer = ByteBuffer.allocate(10);
         tempBuffer.position(2);
         tempBuffer.putInt(UtilAll.getPid());
@@ -43,9 +43,13 @@ public class MessageClientIDSetter {
         }
         tempBuffer.position(6);
         tempBuffer.putInt(MessageClientIDSetter.class.getClassLoader().hashCode());
-        FIX_STRING = UtilAll.bytes2string(tempBuffer.array());
+        FIX_STRING = UtilAll.bytes2string(tempBuffer.array());              // tempBuffer里面包含ip信息(优先外网ip 其次私有ip) pid信息 class的hashcode()
         setStartTime(System.currentTimeMillis());
         COUNTER = new AtomicInteger(0);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(MessageClientIDSetter.class.getClassLoader().hashCode());
     }
 
     private synchronized static void setStartTime(long millis) {
@@ -100,7 +104,7 @@ public class MessageClientIDSetter {
     }
 
     public static String createUniqID() {
-        StringBuilder sb = new StringBuilder(LEN * 2);
+        StringBuilder sb = new StringBuilder(LEN * 2);        //len*2是有原因的 bytes2string
         sb.append(FIX_STRING);
         sb.append(UtilAll.bytes2string(createUniqIDBuffer()));
         return sb.toString();
