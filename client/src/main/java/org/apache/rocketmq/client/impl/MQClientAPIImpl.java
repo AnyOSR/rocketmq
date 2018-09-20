@@ -318,7 +318,7 @@ public class MQClientAPIImpl {
                 final AtomicInteger times = new AtomicInteger();
                 this.sendMessageAsync(addr, brokerName, msg, timeoutMillis, request, sendCallback, topicPublishInfo, instance, retryTimesWhenSendFailed, times, context, producer);
                 return null;
-            case SYNC:
+            case SYNC:       //实际同步调用的时候，用不了多少参数 看一些
                 return this.sendMessageSync(addr, brokerName, msg, timeoutMillis, request);
             default:
                 assert false;
@@ -329,13 +329,7 @@ public class MQClientAPIImpl {
     }
 
     //同步发送
-    private SendResult sendMessageSync(
-        final String addr,
-        final String brokerName,
-        final Message msg,
-        final long timeoutMillis,
-        final RemotingCommand request
-    ) throws RemotingException, MQBrokerException, InterruptedException {
+    private SendResult sendMessageSync(final String addr, final String brokerName, final Message msg, final long timeoutMillis, final RemotingCommand request) throws RemotingException, MQBrokerException, InterruptedException {
         RemotingCommand response = this.remotingClient.invokeSync(addr, request, timeoutMillis);
         assert response != null;
         return this.processSendResponse(brokerName, msg, response);
