@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Random;
 import org.apache.rocketmq.common.MixAll;
 
+//一个cluster可以拥有多个brokerName
+//同一组的master和slave的brokerName一致
 public class BrokerData implements Comparable<BrokerData> {
     private String cluster;
     private String brokerName;
