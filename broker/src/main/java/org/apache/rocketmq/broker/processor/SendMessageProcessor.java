@@ -86,10 +86,10 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
         }
     }
 
+    //如果操作系统繁忙  或者pool里面已经没有可用的
     @Override
     public boolean rejectRequest() {
-        return this.brokerController.getMessageStore().isOSPageCacheBusy() ||
-            this.brokerController.getMessageStore().isTransientStorePoolDeficient();
+        return this.brokerController.getMessageStore().isOSPageCacheBusy() || this.brokerController.getMessageStore().isTransientStorePoolDeficient();
     }
 
     private RemotingCommand consumerSendMsgBack(final ChannelHandlerContext ctx, final RemotingCommand request)

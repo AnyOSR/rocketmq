@@ -218,7 +218,7 @@ public class RemotingCommand {
         return result;
     }
 
-    //设置flag最后一位为1
+    //设置flag最后一位为1  为responseType
     public void markResponseType() {
         int bits = 1 << RPC_TYPE;
         this.flag |= bits;
@@ -469,6 +469,7 @@ public class RemotingCommand {
     }
 
     //检测flag最后一位是否为1
+    //最后一位为1 为responseType
     @JSONField(serialize = false)
     public boolean isResponseType() {
         int bits = 1 << RPC_TYPE;

@@ -63,13 +63,10 @@ public abstract class AbstractSendMessageProcessor implements NettyRequestProces
 
     public AbstractSendMessageProcessor(final BrokerController brokerController) {
         this.brokerController = brokerController;
-        this.storeHost =
-            new InetSocketAddress(brokerController.getBrokerConfig().getBrokerIP1(), brokerController
-                .getNettyServerConfig().getListenPort());
+        this.storeHost = new InetSocketAddress(brokerController.getBrokerConfig().getBrokerIP1(), brokerController.getNettyServerConfig().getListenPort());
     }
 
-    protected SendMessageContext buildMsgContext(ChannelHandlerContext ctx,
-        SendMessageRequestHeader requestHeader) {
+    protected SendMessageContext buildMsgContext(ChannelHandlerContext ctx, SendMessageRequestHeader requestHeader) {
         if (!this.hasSendMessageHook()) {
             return null;
         }
@@ -274,23 +271,21 @@ public abstract class AbstractSendMessageProcessor implements NettyRequestProces
         }
     }
 
-    protected SendMessageRequestHeader parseRequestHeader(RemotingCommand request)
-        throws RemotingCommandException {
+    protected SendMessageRequestHeader parseRequestHeader(RemotingCommand request) throws RemotingCommandException {
 
         SendMessageRequestHeaderV2 requestHeaderV2 = null;
         SendMessageRequestHeader requestHeader = null;
         switch (request.getCode()) {
+            //320 和310 都是  SendMessageRequestHeaderV2  MessageBatch Message
             case RequestCode.SEND_BATCH_MESSAGE:
             case RequestCode.SEND_MESSAGE_V2:
-                requestHeaderV2 =
-                    (SendMessageRequestHeaderV2) request
-                        .decodeCommandCustomHeader(SendMessageRequestHeaderV2.class);
+                requestHeaderV2 = (SendMessageRequestHeaderV2) request.decodeCommandCustomHeader(SendMessageRequestHeaderV2.class);
+            //Message       10   SendMessageRequestHeader
             case RequestCode.SEND_MESSAGE:
                 if (null == requestHeaderV2) {
-                    requestHeader =
-                        (SendMessageRequestHeader) request
-                            .decodeCommandCustomHeader(SendMessageRequestHeader.class);
+                    requestHeader = (SendMessageRequestHeader) request.decodeCommandCustomHeader(SendMessageRequestHeader.class);
                 } else {
+                    //根据v1得到v1
                     requestHeader = SendMessageRequestHeaderV2.createSendMessageRequestHeaderV1(requestHeaderV2);
                 }
             default:

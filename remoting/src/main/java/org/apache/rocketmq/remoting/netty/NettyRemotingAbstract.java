@@ -166,6 +166,7 @@ public abstract class NettyRemotingAbstract {
         final int opaque = cmd.getOpaque();
 
         if (pair != null) {
+            //创建任务
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
@@ -209,9 +210,9 @@ public abstract class NettyRemotingAbstract {
                 }
             };
 
+            //是否要拒绝任务 并返回
             if (pair.getObject1().rejectRequest()) {
-                final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY,
-                        "[REJECTREQUEST]system busy, start flow control for a while");
+                final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY, "[REJECTREQUEST]system busy, start flow control for a while");
                 response.setOpaque(opaque);
                 ctx.writeAndFlush(response);
                 return;
@@ -219,26 +220,24 @@ public abstract class NettyRemotingAbstract {
 
             try {
                 final RequestTask requestTask = new RequestTask(run, ctx.channel(), cmd);
+                //提交任务
                 pair.getObject2().submit(requestTask);
             } catch (RejectedExecutionException e) {
                 if ((System.currentTimeMillis() % 10000) == 0) {
                     log.warn(RemotingHelper.parseChannelRemoteAddr(ctx.channel())
                             + ", too many requests and system thread pool busy, RejectedExecutionException "
-                            + pair.getObject2().toString()
-                            + " request code: " + cmd.getCode());
+                            + pair.getObject2().toString() + " request code: " + cmd.getCode());
                 }
 
                 if (!cmd.isOnewayRPC()) {
-                    final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY,
-                            "[OVERLOAD]system busy, start flow control for a while");
+                    final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY, "[OVERLOAD]system busy, start flow control for a while");
                     response.setOpaque(opaque);
                     ctx.writeAndFlush(response);
                 }
             }
-        } else {
+        } else {    //code 不支持
             String error = " request type " + cmd.getCode() + " not supported";
-            final RemotingCommand response =
-                    RemotingCommand.createResponseCommand(RemotingSysResponseCode.REQUEST_CODE_NOT_SUPPORTED, error);
+            final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.REQUEST_CODE_NOT_SUPPORTED, error);
             response.setOpaque(opaque);
             ctx.writeAndFlush(response);
             log.error(RemotingHelper.parseChannelRemoteAddr(ctx.channel()) + error);

@@ -415,11 +415,15 @@ public class DefaultMessageStore implements MessageStore {
         return result;
     }
 
+    //检测操作系统是否繁忙
     @Override
     public boolean isOSPageCacheBusy() {
         long begin = this.getCommitLog().getBeginTimeInLock();
         long diff = this.systemClock.now() - begin;
 
+        // (1000 ~ 10000000) 为什么是这个区间（1s  -  10000s）
+        //一般情况下 begin为0,diff就是当前毫秒数   (diff肯定大于10000)
+        //如果有线程获取了putMessageLock，diff就是当前时间距离上次别的线程获取锁的时间，1000毫秒(1秒应该够处理了)
         return diff < 10000000 && diff > this.messageStoreConfig.getOsPageCacheBusyTimeOutMills();
     }
 
