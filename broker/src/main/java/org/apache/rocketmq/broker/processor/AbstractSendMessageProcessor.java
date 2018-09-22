@@ -243,8 +243,7 @@ public abstract class AbstractSendMessageProcessor implements NettyRequestProces
         }
     }
 
-    public void executeSendMessageHookBefore(final ChannelHandlerContext ctx, final RemotingCommand request,
-        SendMessageContext context) {
+    public void executeSendMessageHookBefore(final ChannelHandlerContext ctx, final RemotingCommand request, SendMessageContext context) {
         if (hasSendMessageHook()) {
             for (SendMessageHook hook : this.sendMessageHookList) {
                 try {
@@ -299,8 +298,7 @@ public abstract class AbstractSendMessageProcessor implements NettyRequestProces
             for (SendMessageHook hook : this.sendMessageHookList) {
                 try {
                     if (response != null) {
-                        final SendMessageResponseHeader responseHeader =
-                            (SendMessageResponseHeader) response.readCustomHeader();
+                        final SendMessageResponseHeader responseHeader = (SendMessageResponseHeader) response.readCustomHeader();
                         context.setMsgId(responseHeader.getMsgId());
                         context.setQueueId(responseHeader.getQueueId());
                         context.setQueueOffset(responseHeader.getQueueOffset());

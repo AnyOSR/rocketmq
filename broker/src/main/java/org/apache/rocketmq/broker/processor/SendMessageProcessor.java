@@ -71,6 +71,7 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
                     return null;
                 }
 
+                //构造SendMessageContext 以及给requestHeader增加properties属性
                 mqtraceContext = buildMsgContext(ctx, requestHeader);
                 this.executeSendMessageHookBefore(ctx, request, mqtraceContext);
 
@@ -289,10 +290,7 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
         return true;
     }
 
-    private RemotingCommand sendMessage(final ChannelHandlerContext ctx,
-        final RemotingCommand request,
-        final SendMessageContext sendMessageContext,
-        final SendMessageRequestHeader requestHeader) throws RemotingCommandException {
+    private RemotingCommand sendMessage(final ChannelHandlerContext ctx, final RemotingCommand request, final SendMessageContext sendMessageContext, final SendMessageRequestHeader requestHeader) throws RemotingCommandException {
 
         final RemotingCommand response = RemotingCommand.createResponseCommand(SendMessageResponseHeader.class);
         final SendMessageResponseHeader responseHeader = (SendMessageResponseHeader) response.readCustomHeader();
@@ -464,10 +462,7 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
         return response;
     }
 
-    private RemotingCommand sendBatchMessage(final ChannelHandlerContext ctx,
-        final RemotingCommand request,
-        final SendMessageContext sendMessageContext,
-        final SendMessageRequestHeader requestHeader) throws RemotingCommandException {
+    private RemotingCommand sendBatchMessage(final ChannelHandlerContext ctx, final RemotingCommand request, final SendMessageContext sendMessageContext, final SendMessageRequestHeader requestHeader) throws RemotingCommandException {
 
         final RemotingCommand response = RemotingCommand.createResponseCommand(SendMessageResponseHeader.class);
         final SendMessageResponseHeader responseHeader = (SendMessageResponseHeader) response.readCustomHeader();
