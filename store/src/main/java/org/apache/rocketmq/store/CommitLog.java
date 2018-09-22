@@ -60,6 +60,9 @@ public class CommitLog {
     private HashMap<String/* topic-queueid */, Long/* offset */> topicQueueTable = new HashMap<String, Long>(1024);
     private volatile long confirmOffset = -1L;
 
+    //获得putMessageLock锁后设置为当前时间，释放锁之前置为0
+    // 如果该值不为0，则说明一定有线程获得了putMessageLock锁，正在进行写入任务
+    // 如果该值为0，说明不了什么(也有可能别的线程已经获取了锁)
     private volatile long beginTimeInLock = 0;
     private final PutMessageLock putMessageLock;
 

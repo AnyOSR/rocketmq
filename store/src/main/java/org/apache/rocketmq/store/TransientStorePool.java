@@ -84,7 +84,7 @@ public class TransientStorePool {
 
     //返回剩下的池子数
     public int remainBufferNumbs() {
-        if (storeConfig.isTransientStorePoolEnable()) {
+        if (storeConfig.isTransientStorePoolEnable()) {   //如果用了transientStorePool
             return availableBuffers.size();
         }
         return Integer.MAX_VALUE;
