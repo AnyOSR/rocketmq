@@ -460,7 +460,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
             int timesTotal = communicationMode == CommunicationMode.SYNC ? 1 + this.defaultMQProducer.getRetryTimesWhenSendFailed() : 1;
             int times = 0;
             String[] brokersSent = new String[timesTotal];
-            for (; times < timesTotal; times++) {
+            for (; times < timesTotal; times++) {            //重发的时候也没有改变成 %RETRY% 这样的topicName啊？怎么才算重发？？ %RETRY%是自己创建的吗？
                 String lastBrokerName = null == mq ? null : mq.getBrokerName();
 
                 //选择一个messageQueue
