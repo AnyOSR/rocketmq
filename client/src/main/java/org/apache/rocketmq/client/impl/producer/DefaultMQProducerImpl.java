@@ -666,13 +666,13 @@ public class DefaultMQProducerImpl implements MQProducerInner {
                 requestHeader.setDefaultTopic(this.defaultMQProducer.getCreateTopicKey());
                 requestHeader.setDefaultTopicQueueNums(this.defaultMQProducer.getDefaultTopicQueueNums());
                 requestHeader.setQueueId(mq.getQueueId());
-                requestHeader.setSysFlag(sysFlag);
+                requestHeader.setSysFlag(sysFlag);                                                      //sysFlag   MessageSysFlag
                 requestHeader.setBornTimestamp(System.currentTimeMillis());
-                requestHeader.setFlag(msg.getFlag());
+                requestHeader.setFlag(msg.getFlag());                                                   //message   flag
                 requestHeader.setProperties(MessageDecoder.messageProperties2String(msg.getProperties()));
                 requestHeader.setReconsumeTimes(0);
-                requestHeader.setUnitMode(this.isUnitMode());
-                requestHeader.setBatch(msg instanceof MessageBatch);
+                requestHeader.setUnitMode(this.isUnitMode());                                           //unitMode ??
+                requestHeader.setBatch(msg instanceof MessageBatch);                                    //batch
                 if (requestHeader.getTopic().startsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX)) {      //消息重发topic？
                     String reconsumeTimes = MessageAccessor.getReconsumeTime(msg);
                     if (reconsumeTimes != null) {
