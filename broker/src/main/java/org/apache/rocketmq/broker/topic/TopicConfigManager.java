@@ -139,6 +139,7 @@ public class TopicConfigManager extends ConfigManager {
         return this.topicConfigTable.get(topic);
     }
 
+    //创建topicConfig
     public TopicConfig createTopicInSendMessageMethod(final String topic, final String defaultTopic, final String remoteAddress, final int clientDefaultTopicQueueNums, final int topicSysFlag) {
         TopicConfig topicConfig = null;
         boolean createNew = false;
@@ -150,9 +151,12 @@ public class TopicConfigManager extends ConfigManager {
                     if (topicConfig != null)
                         return topicConfig;
 
+                    //麻蛋，这里创建topic也要defaultTopic信息
                     TopicConfig defaultTopicConfig = this.topicConfigTable.get(defaultTopic);
                     if (defaultTopicConfig != null) {
+
                         if (defaultTopic.equals(MixAll.DEFAULT_TOPIC)) {
+                            //如果不是自动创建的
                             if (!this.brokerController.getBrokerConfig().isAutoCreateTopicEnable()) {
                                 defaultTopicConfig.setPerm(PermName.PERM_READ | PermName.PERM_WRITE);
                             }
@@ -170,7 +174,7 @@ public class TopicConfigManager extends ConfigManager {
                             topicConfig.setReadQueueNums(queueNums);
                             topicConfig.setWriteQueueNums(queueNums);
                             int perm = defaultTopicConfig.getPerm();
-                            perm &= ~PermName.PERM_INHERIT;
+                            perm &= ~PermName.PERM_INHERIT;                //去掉PERM_INHERIT权限 其余权限不变
                             topicConfig.setPerm(perm);
                             topicConfig.setTopicSysFlag(topicSysFlag);
                             topicConfig.setTopicFilterType(defaultTopicConfig.getTopicFilterType());
@@ -207,6 +211,7 @@ public class TopicConfigManager extends ConfigManager {
         return topicConfig;
     }
 
+    //与createTopicInSendMessageMethod不同的是，这里不需要defaultTopic
     public TopicConfig createTopicInSendMessageBackMethod(final String topic, final int clientDefaultTopicQueueNums, final int perm, final int topicSysFlag) {
         TopicConfig topicConfig = this.topicConfigTable.get(topic);
         if (topicConfig != null)
@@ -217,7 +222,7 @@ public class TopicConfigManager extends ConfigManager {
         try {
             if (this.lockTopicConfigTable.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 try {
-                    topicConfig = this.topicConfigTable.get(topic);
+                    topicConfig = this.topicConfigTable.get(topic);           //获取锁之后，必须得再去获取一遍
                     if (topicConfig != null)
                         return topicConfig;
 
