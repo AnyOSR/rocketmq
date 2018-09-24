@@ -1094,13 +1094,9 @@ public class DefaultMessageStore implements MessageStore {
         }
 
         ConsumeQueue logic = map.get(queueId);
+        //cq不存在，则创建
         if (null == logic) {
-            ConsumeQueue newLogic = new ConsumeQueue(
-                topic,
-                queueId,
-                StorePathConfigHelper.getStorePathConsumeQueue(this.messageStoreConfig.getStorePathRootDir()),
-                this.getMessageStoreConfig().getMapedFileSizeConsumeQueue(),
-                this);
+            ConsumeQueue newLogic = new ConsumeQueue(topic, queueId, StorePathConfigHelper.getStorePathConsumeQueue(this.messageStoreConfig.getStorePathRootDir()), this.getMessageStoreConfig().getMapedFileSizeConsumeQueue(), this);
             ConsumeQueue oldLogic = map.putIfAbsent(queueId, newLogic);
             if (oldLogic != null) {
                 logic = oldLogic;
@@ -1718,7 +1714,7 @@ public class DefaultMessageStore implements MessageStore {
         }
     }
 
-    //重放commitLog来写入index和consumeQueue？
+    //重放commitLog来写入index和consumeQueue
     class ReputMessageService extends ServiceThread {
 
         private volatile long reputFromOffset = 0;
@@ -1757,6 +1753,7 @@ public class DefaultMessageStore implements MessageStore {
         }
 
         //消息写入的时候，并不建立index和cq，此定时任务专门去写
+        //不在写入commitLog的时候去写入index和cq，能提高消息写入能力
         private void doReput() {
             for (boolean doNext = true; this.isCommitLogAvailable() && doNext; ) {
 
@@ -1773,25 +1770,32 @@ public class DefaultMessageStore implements MessageStore {
                         this.reputFromOffset = result.getStartOffset();
 
                         for (int readSize = 0; readSize < result.getSize() && doNext; ) {
-                            //创建DispatchRequest
+                            //从commotLog读取数据并拿到必要的信息以及检验数据  创建DispatchRequest
                             DispatchRequest dispatchRequest = DefaultMessageStore.this.commitLog.checkMessageAndReturnSize(result.getByteBuffer(), false, false);
                             int size = dispatchRequest.getMsgSize();
 
                             if (dispatchRequest.isSuccess()) {
                                 if (size > 0) {
                                     //两个CommitLogDispatcher  一个consumeQueue  一个index
+                                    //任务分发 并且是同步的
                                     DefaultMessageStore.this.doDispatch(dispatchRequest);
 
+                                    //如果当前broker是master
                                     if (BrokerRole.SLAVE != DefaultMessageStore.this.getMessageStoreConfig().getBrokerRole()
                                         && DefaultMessageStore.this.brokerConfig.isLongPollingEnable()) {
+                                        //longPollingEnable 是干啥的？长轮询？
+                                        //通知？？
                                         DefaultMessageStore.this.messageArrivingListener.arriving(dispatchRequest.getTopic(),
                                             dispatchRequest.getQueueId(), dispatchRequest.getConsumeQueueOffset() + 1,
                                             dispatchRequest.getTagsCode(), dispatchRequest.getStoreTimestamp(),
                                             dispatchRequest.getBitMap(), dispatchRequest.getPropertiesMap());
                                     }
 
+                                    //更新reputFromOffset的值
                                     this.reputFromOffset += size;
                                     readSize += size;
+
+                                    //如果是salve，则更新统计信息
                                     if (DefaultMessageStore.this.getMessageStoreConfig().getBrokerRole() == BrokerRole.SLAVE) {
                                         DefaultMessageStore.this.storeStatsService.getSinglePutMessageTopicTimesTotal(dispatchRequest.getTopic()).incrementAndGet();
                                         DefaultMessageStore.this.storeStatsService.getSinglePutMessageTopicSizeTotal(dispatchRequest.getTopic()).addAndGet(dispatchRequest.getMsgSize());
@@ -1803,13 +1807,14 @@ public class DefaultMessageStore implements MessageStore {
                             } else if (!dispatchRequest.isSuccess()) {
 
                                 if (size > 0) {
+                                    //如果size大于0，从下个位置开始重试
                                     log.error("[BUG]read total count not equals msg total size. reputFromOffset={}", reputFromOffset);
                                     this.reputFromOffset += size;
                                 } else {
+                                    //如果size为0 ，跳出当前循环，并将reputFromOffset复原(到刚进入循环的时候)
                                     doNext = false;
                                     if (DefaultMessageStore.this.brokerConfig.getBrokerId() == MixAll.MASTER_ID) {
                                         log.error("[BUG]the master dispatch message to consume queue error, COMMITLOG OFFSET: {}", this.reputFromOffset);
-
                                         this.reputFromOffset += result.getSize() - readSize;
                                     }
                                 }

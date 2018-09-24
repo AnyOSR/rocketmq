@@ -137,6 +137,8 @@ public class IndexFile {
                 //但是对于不同的key也有可能生成相同的keyhash，这个冲突怎么解决？根据index数据里面的哪个字段去解决？需要去看get方法
                 int absIndexPos = IndexHeader.INDEX_HEADER_SIZE + this.hashSlotNum * hashSlotSize + this.indexHeader.getIndexCount() * indexSize;
 
+                //index顺序写 不会被覆盖 ，slot随机写，会被覆盖，但是可以找到被覆盖的信息
+                //查找的时候根据key，计算其hashcode，计算其slot，拿到slot存取的值，计算index位置，读取indexfile内容，timeDiff能解决读取冲突？
                 //哈希值(4) 物理偏移(8) 时间interval(4) 桶的slot值(4)
                 this.mappedByteBuffer.putInt(absIndexPos, keyHash);
                 this.mappedByteBuffer.putLong(absIndexPos + 4, phyOffset);

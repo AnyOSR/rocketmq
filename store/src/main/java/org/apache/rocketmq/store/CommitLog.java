@@ -228,6 +228,10 @@ public class CommitLog {
      *
      * @return 0 Come the end of the file // >0 Normal messages // -1 Message checksum failure
      */
+    //根据byteBuffer构建DispatchRequest(按照CommitLog解析byteBuffer信息)
+    //总长度(4) 魔法码(4) CRC校验值(4) queueId(4) flag(4) queueOffset(8) physicOffset(8) sysFlag bornTimeStamp
+    //8 storeTimestamp 8 reconsumeTimes preparedTransactionOffset bodyLen body topicLen topic propertiesLength
+    //properties
     public DispatchRequest checkMessageAndReturnSize(java.nio.ByteBuffer byteBuffer, final boolean checkCRC, final boolean readBody) {
         try {
             // 1 TOTAL SIZE
@@ -253,9 +257,9 @@ public class CommitLog {
 
             int flag = byteBuffer.getInt();
 
-            long queueOffset = byteBuffer.getLong();
+            long queueOffset = byteBuffer.getLong();       //index++
 
-            long physicOffset = byteBuffer.getLong();
+            long physicOffset = byteBuffer.getLong();    //物理偏移commotlog
 
             int sysFlag = byteBuffer.getInt();
 
@@ -310,12 +314,14 @@ public class CommitLog {
 
                 String tags = propertiesMap.get(MessageConst.PROPERTY_TAGS);
                 if (tags != null && tags.length() > 0) {
+                    //tags的哈希值
                     tagsCode = MessageExtBrokerInner.tagsString2tagsCode(MessageExt.parseTopicFilterType(sysFlag), tags);
                 }
 
                 // Timing message processing
                 {
                     String t = propertiesMap.get(MessageConst.PROPERTY_DELAY_TIME_LEVEL);
+                    //delay
                     if (ScheduleMessageService.SCHEDULE_TOPIC.equals(topic) && t != null) {
                         int delayLevel = Integer.parseInt(t);
 
@@ -329,8 +335,11 @@ public class CommitLog {
                     }
                 }
             }
+            //一般情况下，tagsCode为tags的哈希值
+            //delay时，用于重放的tagsCode为deliverTimeStamp
 
             int readLength = calMsgLength(bodyLen, topicLen, propertiesLength);
+            //长度错误
             if (totalSize != readLength) {
                 doNothingForDeadCode(reconsumeTimes);
                 doNothingForDeadCode(flag);
@@ -342,6 +351,7 @@ public class CommitLog {
                 return new DispatchRequest(totalSize, false/* success */);
             }
 
+            //否则将commitLog中的信息包装在DispatchRequest中
             return new DispatchRequest(
                 topic,
                 queueId,

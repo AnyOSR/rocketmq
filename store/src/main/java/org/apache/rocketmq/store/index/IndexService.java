@@ -205,7 +205,7 @@ public class IndexService {
             DispatchRequest msg = req;
             String topic = msg.getTopic();
             String keys = msg.getKeys();
-            //不用再写入了
+            //当前req的偏移小于 index记录的最大偏移  不用再写入了
             if (msg.getCommitLogOffset() < endPhyOffset) {
                 return;
             }
@@ -235,6 +235,7 @@ public class IndexService {
                 }
             }
 
+            //keys是别名？
             if (keys != null && keys.length() > 0) {
                 String[] keyset = keys.split(MessageConst.KEY_SEPARATOR);
                 for (int i = 0; i < keyset.length; i++) {
@@ -254,6 +255,7 @@ public class IndexService {
     }
 
     private IndexFile putKey(IndexFile indexFile, DispatchRequest msg, String idxKey) {
+        //topic@uniqueKey 偏移 storeTimeStamp
         for (boolean ok = indexFile.putKey(idxKey, msg.getCommitLogOffset(), msg.getStoreTimestamp()); !ok; ) {
             log.warn("Index file [" + indexFile.getFileName() + "] is full, trying to create another one");
 
@@ -278,6 +280,7 @@ public class IndexService {
         IndexFile indexFile = null;
 
         for (int times = 0; null == indexFile && times < MAX_TRY_IDX_CREATE; times++) {
+            //拿到当前可写的indexFile
             indexFile = this.getAndCreateLastIndexFile();
             if (null != indexFile)
                 break;
@@ -326,6 +329,7 @@ public class IndexService {
         //创建新的file
         if (indexFile == null) {
             try {
+                //index 的fileName不是偏移量
                 String fileName = this.storePath + File.separator + UtilAll.timeMillisToHumanString(System.currentTimeMillis());
                 indexFile = new IndexFile(fileName, this.hashSlotNum, this.indexNum, lastUpdateEndPhyOffset, lastUpdateIndexTimestamp);
                 this.readWriteLock.writeLock().lock();

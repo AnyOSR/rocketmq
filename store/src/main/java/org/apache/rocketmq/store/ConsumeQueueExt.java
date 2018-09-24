@@ -240,7 +240,7 @@ public class ConsumeQueueExt {
 
                 //返回扩展地址 是负的 小于0
                 if (mappedFile.appendMessage(cqExtUnit.write(this.tempContainer), 0, size)) {
-                    return decorate(wrotePosition + mappedFile.getFileFromOffset());
+                    return decorate(wrotePosition + mappedFile.getFileFromOffset());           //写入后的offset 不过是decode后的
                 }
             }
         } catch (Throwable e) {
