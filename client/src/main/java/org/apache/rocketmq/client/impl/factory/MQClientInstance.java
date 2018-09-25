@@ -1018,11 +1018,8 @@ public class MQClientInstance {
         return null;
     }
 
-    public FindBrokerResult findBrokerAddressInSubscribe(
-        final String brokerName,
-        final long brokerId,
-        final boolean onlyThisBroker
-    ) {
+    //从本地缓存找数据
+    public FindBrokerResult findBrokerAddressInSubscribe(final String brokerName, final long brokerId, final boolean onlyThisBroker) {
         String brokerAddr = null;
         boolean slave = false;
         boolean found = false;
@@ -1066,6 +1063,8 @@ public class MQClientInstance {
 
         if (null != brokerAddr) {
             try {
+                //集群模式下，broker会保存所有的consumerId信息？应该会
+                //广播模式应该也会
                 return this.mQClientAPIImpl.getConsumerIdListByGroup(brokerAddr, group, 3000);
             } catch (Exception e) {
                 log.warn("getConsumerIdListByGroup exception, " + brokerAddr + " " + group, e);

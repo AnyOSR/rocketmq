@@ -68,6 +68,8 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      *
      * See <a href="http://rocketmq.apache.org/docs/core-concept/">here</a> for further discussion.
      */
+    //一个consumerGroup里面的所有consumer，必须得有相同的订阅信息
+    //负载均衡
     private String consumerGroup;
 
     /**
@@ -82,6 +84,8 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      *
      * This field defaults to clustering.
      */
+    //集群 每个消息只会被某一个consumer消费一次
+    //广播 每个消息都会被所有的consumer消费
     private MessageModel messageModel = MessageModel.CLUSTERING;
 
     /**
@@ -115,6 +119,9 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      * </li>
      * </ul>
      */
+    //CONSUME_FROM_LAST_OFFSET  1:最早的消息还没有过期，从最开始消费   2：否则，从最新的消息开始消费，在启动timestamp之前的消息都会被忽略
+    //CONSUME_FROM_FIRST_OFFSET 从最早可用的消息开始消费
+    //CONSUME_FROM_TIMESTAMP
     private ConsumeFromWhere consumeFromWhere = ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET;
 
     /**
@@ -123,11 +130,13 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      * Implying Seventeen twelve and 01 seconds on December 23, 2013 year<br>
      * Default backtracking consumption time Half an hour ago.
      */
+    //消息回溯
     private String consumeTimestamp = UtilAll.timeMillisToHumanString3(System.currentTimeMillis() - (1000 * 60 * 30));
 
     /**
      * Queue allocation algorithm specifying how message queues are allocated to each consumer clients.
      */
+    //messageQueue 分派算法
     private AllocateMessageQueueStrategy allocateMessageQueueStrategy;
 
     /**
@@ -169,6 +178,7 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      * Flow control threshold on queue level, each message queue will cache at most 1000 messages by default,
      * Consider the {@code pullBatchSize}, the instantaneous value may exceed the limit
      */
+    //流程控制阈值？存储1000条？
     private int pullThresholdForQueue = 1000;
 
     /**
@@ -178,6 +188,7 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      * <p>
      * The size of a message only measured by message body, so it's not accurate
      */
+    //每个message queue最多缓存100M的消息？
     private int pullThresholdSizeForQueue = 100;
 
     /**
@@ -225,6 +236,7 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
     /**
      * Whether the unit of subscription group
      */
+    //unitMode？
     private boolean unitMode = false;
 
     /**
@@ -244,6 +256,7 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
     /**
      * Maximum amount of time in minutes a message may block the consuming thread.
      */
+    //消息会阻塞消费线程？
     private long consumeTimeout = 15;
 
     /**
@@ -260,8 +273,7 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      * @param rpcHook RPC hook to execute before each remoting command.
      * @param allocateMessageQueueStrategy message queue allocating algorithm.
      */
-    public DefaultMQPushConsumer(final String consumerGroup, RPCHook rpcHook,
-        AllocateMessageQueueStrategy allocateMessageQueueStrategy) {
+    public DefaultMQPushConsumer(final String consumerGroup, RPCHook rpcHook, AllocateMessageQueueStrategy allocateMessageQueueStrategy) {
         this.consumerGroup = consumerGroup;
         this.allocateMessageQueueStrategy = allocateMessageQueueStrategy;
         defaultMQPushConsumerImpl = new DefaultMQPushConsumerImpl(this, rpcHook);
@@ -316,20 +328,17 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
     }
 
     @Override
-    public MessageExt viewMessage(
-        String offsetMsgId) throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
+    public MessageExt viewMessage(String offsetMsgId) throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
         return this.defaultMQPushConsumerImpl.viewMessage(offsetMsgId);
     }
 
     @Override
-    public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
-        throws MQClientException, InterruptedException {
+    public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end) throws MQClientException, InterruptedException {
         return this.defaultMQPushConsumerImpl.queryMessage(topic, key, maxNum, begin, end);
     }
 
     @Override
-    public MessageExt viewMessage(String topic,
-        String msgId) throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
+    public MessageExt viewMessage(String topic, String msgId) throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
         try {
             MessageDecoder.decodeMessageId(msgId);
             return this.viewMessage(msgId);
@@ -482,8 +491,7 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      * @throws MQClientException if there is any client error.
      */
     @Override
-    public void sendMessageBack(MessageExt msg, int delayLevel)
-        throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
+    public void sendMessageBack(MessageExt msg, int delayLevel) throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
         this.defaultMQPushConsumerImpl.sendMessageBack(msg, delayLevel, null);
     }
 
@@ -500,8 +508,7 @@ public class DefaultMQPushConsumer extends ClientConfig implements MQPushConsume
      * @throws MQClientException if there is any client error.
      */
     @Override
-    public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName)
-        throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
+    public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName) throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
         this.defaultMQPushConsumerImpl.sendMessageBack(msg, delayLevel, brokerName);
     }
 

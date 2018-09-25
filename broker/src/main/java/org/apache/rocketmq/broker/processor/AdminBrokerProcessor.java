@@ -454,15 +454,11 @@ public class AdminBrokerProcessor implements NettyRequestProcessor {
         return response;
     }
 
-    private RemotingCommand unlockBatchMQ(ChannelHandlerContext ctx,
-        RemotingCommand request) throws RemotingCommandException {
+    private RemotingCommand unlockBatchMQ(ChannelHandlerContext ctx, RemotingCommand request) throws RemotingCommandException {
         final RemotingCommand response = RemotingCommand.createResponseCommand(null);
         UnlockBatchRequestBody requestBody = UnlockBatchRequestBody.decode(request.getBody(), UnlockBatchRequestBody.class);
 
-        this.brokerController.getRebalanceLockManager().unlockBatch(
-            requestBody.getConsumerGroup(),
-            requestBody.getMqSet(),
-            requestBody.getClientId());
+        this.brokerController.getRebalanceLockManager().unlockBatch(requestBody.getConsumerGroup(), requestBody.getMqSet(), requestBody.getClientId());
 
         response.setCode(ResponseCode.SUCCESS);
         response.setRemark(null);

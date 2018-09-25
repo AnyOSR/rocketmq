@@ -91,23 +91,24 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
     private static final long PULL_TIME_DELAY_MILLS_WHEN_SUSPEND = 1000;
     private static final long BROKER_SUSPEND_MAX_TIME_MILLIS = 1000 * 15;
     private static final long CONSUMER_TIMEOUT_MILLIS_WHEN_SUSPEND = 1000 * 30;
-    private final Logger log = ClientLogger.getLog();
-    private final DefaultMQPushConsumer defaultMQPushConsumer;
-    private final RebalanceImpl rebalanceImpl = new RebalancePushImpl(this);
-    private final ArrayList<FilterMessageHook> filterMessageHookList = new ArrayList<FilterMessageHook>();
     private final long consumerStartTimestamp = System.currentTimeMillis();
-    private final ArrayList<ConsumeMessageHook> consumeMessageHookList = new ArrayList<ConsumeMessageHook>();
     private final RPCHook rpcHook;
     private volatile ServiceState serviceState = ServiceState.CREATE_JUST;
-    private MQClientInstance mQClientFactory;
-    private PullAPIWrapper pullAPIWrapper;
+    private final Logger log = ClientLogger.getLog();
+    private final DefaultMQPushConsumer defaultMQPushConsumer;
+    private MessageListener messageListenerInner;
     private volatile boolean pause = false;
     private boolean consumeOrderly = false;
-    private MessageListener messageListenerInner;
-    private OffsetStore offsetStore;
-    private ConsumeMessageService consumeMessageService;
     private long queueFlowControlTimes = 0;
     private long queueMaxSpanFlowControlTimes = 0;
+
+    private final ArrayList<FilterMessageHook> filterMessageHookList = new ArrayList<FilterMessageHook>();
+    private final ArrayList<ConsumeMessageHook> consumeMessageHookList = new ArrayList<ConsumeMessageHook>();
+    private final RebalanceImpl rebalanceImpl = new RebalancePushImpl(this);
+    private MQClientInstance mQClientFactory;
+    private PullAPIWrapper pullAPIWrapper;
+    private OffsetStore offsetStore;
+    private ConsumeMessageService consumeMessageService;
 
     public DefaultMQPushConsumerImpl(DefaultMQPushConsumer defaultMQPushConsumer, RPCHook rpcHook) {
         this.defaultMQPushConsumer = defaultMQPushConsumer;

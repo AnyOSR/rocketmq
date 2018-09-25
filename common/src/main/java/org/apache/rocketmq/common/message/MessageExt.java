@@ -29,7 +29,7 @@ public class MessageExt extends Message {
 
     private int storeSize;
 
-    private long queueOffset;
+    private long queueOffset;               //index++
     private int sysFlag;
     private long bornTimestamp;
     private SocketAddress bornHost;
