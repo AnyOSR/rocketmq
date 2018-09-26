@@ -426,6 +426,8 @@ public class MixAll {
         return null;
     }
 
+    //一直更新，直到更新成功，或者value的值小于等于target的值
+    //返回是否更新成功
     public static boolean compareAndIncreaseOnly(final AtomicLong target, final long value) {
         long prev = target.get();
         while (value > prev) {

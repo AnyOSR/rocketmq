@@ -243,8 +243,7 @@ public class MessageDecoder {
         return decode(byteBuffer, readBody, deCompressBody, false);
     }
 
-    public static MessageExt decode(
-        java.nio.ByteBuffer byteBuffer, final boolean readBody, final boolean deCompressBody, final boolean isClient) {
+    public static MessageExt decode(java.nio.ByteBuffer byteBuffer, final boolean readBody, final boolean deCompressBody, final boolean isClient) {
         try {
 
             MessageExt msgExt;

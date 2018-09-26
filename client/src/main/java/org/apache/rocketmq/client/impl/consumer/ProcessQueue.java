@@ -53,6 +53,11 @@ public class ProcessQueue {
     /**
      * A subset of msgTreeMap, will only be used when orderly consume
      */
+    //msgTreeMap 和consumingMsgOrderlyTreeMap的关系？
+    //为了保证顺序消费，开始消费时，将取出的数据放到consumingMsgOrderlyTreeMap里面，
+    //如果消费成功，直接清空consumingMsgOrderlyTreeMap里面的数据就好了，
+    //如果消费失败，会重新将consumingMsgOrderlyTreeMap里面的数据加入到 msgTreeMap中，重新取出消费
+    //但是这样会有一个问题，如果之前的消息一直没有消费成功，会影响之后消息的消费，直到该条消息被加入到RETRY队列
     private final TreeMap<Long, MessageExt> consumingMsgOrderlyTreeMap = new TreeMap<Long, MessageExt>();
     private volatile long lastPullTimestamp = System.currentTimeMillis();
     private volatile long lastConsumeTimestamp = System.currentTimeMillis();
@@ -257,6 +262,7 @@ public class ProcessQueue {
     }
 
     //interest  consumingMsgOrderlyTreeMap--->msgTreeMap
+    //将consumingMsgOrderlyTreeMap里面的数据重新放到msgTreeMap，并清空consumingMsgOrderlyTreeMap
     public void rollback() {
         try {
             this.lockTreeMap.writeLock().lockInterruptibly();
@@ -271,7 +277,7 @@ public class ProcessQueue {
         }
     }
 
-    //interest  只是更新了一些状态数据
+    //interest  只是更新了一些状态数据 and  将consumingMsgOrderlyTreeMap里面的数据清空了
     public long commit() {
         try {
             this.lockTreeMap.writeLock().lockInterruptibly();
@@ -312,6 +318,8 @@ public class ProcessQueue {
     }
 
     //有点rollback的意思
+    //开始消费，从msgTreeMap取数据，那msgTreeMap里面的数据是谁塞得？没有看到有这样一个任务啊？
+    //并将取出的数据放入consumingMsgOrderlyTreeMap中
     public List<MessageExt> takeMessags(final int batchSize) {
         List<MessageExt> result = new ArrayList<MessageExt>(batchSize);
         final long now = System.currentTimeMillis();
@@ -331,6 +339,7 @@ public class ProcessQueue {
                     }
                 }
 
+                //如果没有取到数据，则没有在消费
                 if (result.isEmpty()) {
                     consuming = false;
                 }

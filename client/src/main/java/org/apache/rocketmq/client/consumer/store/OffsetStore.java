@@ -26,6 +26,7 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 /**
  * Offset store interface
  */
+//不可以搞成一个抽象类？
 public interface OffsetStore {
     /**
      * Load
@@ -69,6 +70,5 @@ public interface OffsetStore {
      * @param offset
      * @param isOneway
      */
-    void updateConsumeOffsetToBroker(MessageQueue mq, long offset, boolean isOneway) throws RemotingException,
-        MQBrokerException, InterruptedException, MQClientException;
+    void updateConsumeOffsetToBroker(MessageQueue mq, long offset, boolean isOneway) throws RemotingException, MQBrokerException, InterruptedException, MQClientException;
 }

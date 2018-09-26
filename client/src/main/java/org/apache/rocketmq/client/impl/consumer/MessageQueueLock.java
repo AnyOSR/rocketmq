@@ -24,8 +24,7 @@ import org.apache.rocketmq.common.message.MessageQueue;
  * Message lock,strictly ensure the single queue only one thread at a time consuming
  */
 public class MessageQueueLock {
-    private ConcurrentMap<MessageQueue, Object> mqLockTable =
-        new ConcurrentHashMap<MessageQueue, Object>();
+    private ConcurrentMap<MessageQueue, Object> mqLockTable = new ConcurrentHashMap<MessageQueue, Object>();
 
     public Object fetchLockObject(final MessageQueue mq) {
         Object objLock = this.mqLockTable.get(mq);

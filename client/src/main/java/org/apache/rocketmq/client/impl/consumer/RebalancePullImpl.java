@@ -39,6 +39,7 @@ public class RebalancePullImpl extends RebalanceImpl {
         this.defaultMQPullConsumerImpl = defaultMQPullConsumerImpl;
     }
 
+    //pull模式下，触发一个mq变更了的通知
     @Override
     public void messageQueueChanged(String topic, Set<MessageQueue> mqAll, Set<MessageQueue> mqDivided) {
         MessageQueueListener messageQueueListener = this.defaultMQPullConsumerImpl.getDefaultMQPullConsumer().getMessageQueueListener();
@@ -68,11 +69,13 @@ public class RebalancePullImpl extends RebalanceImpl {
         this.defaultMQPullConsumerImpl.getOffsetStore().removeOffset(mq);
     }
 
+    //直接是0？
     @Override
     public long computePullFromWhere(MessageQueue mq) {
         return 0;
     }
 
+    //啥事都不干啊？
     @Override
     public void dispatchPullRequest(List<PullRequest> pullRequestList) {
     }

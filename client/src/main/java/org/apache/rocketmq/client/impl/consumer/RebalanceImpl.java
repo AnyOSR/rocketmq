@@ -128,12 +128,13 @@ public abstract class RebalanceImpl {
         return result;
     }
 
+    //在broker上尝试锁定messagequeue
     public boolean lock(final MessageQueue mq) {
         FindBrokerResult findBrokerResult = this.mQClientFactory.findBrokerAddressInSubscribe(mq.getBrokerName(), MixAll.MASTER_ID, true);
         if (findBrokerResult != null) {
             LockBatchRequestBody requestBody = new LockBatchRequestBody();
             requestBody.setConsumerGroup(this.consumerGroup);
-            requestBody.setClientId(this.mQClientFactory.getClientId());
+            requestBody.setClientId(this.mQClientFactory.getClientId());    //当前MQClientInstance的Id
             requestBody.getMqSet().add(mq);
 
             try {
@@ -234,7 +235,7 @@ public abstract class RebalanceImpl {
     private void rebalanceByTopic(final String topic, final boolean isOrder) {
         switch (messageModel) {
             case BROADCASTING: {
-                //拿到当前topic的MessageQueue集合
+                //广播模式 拿到当前topic的MessageQueue集合
                 Set<MessageQueue> mqSet = this.topicSubscribeInfoTable.get(topic);
                 if (mqSet != null) {
                     boolean changed = this.updateProcessQueueTableInRebalance(topic, mqSet, isOrder);
@@ -358,7 +359,14 @@ public abstract class RebalanceImpl {
 
             //如果processQueueTable中没有mqSet中的某些MessageQueue
             if (!this.processQueueTable.containsKey(mq)) {
-                if (isOrder && !this.lock(mq)) {       //如果当前MessageQueue没有锁住且isOrder
+                //如果是顺序消费
+                //必须要获取 当前clientId(MQClientInstance) 当前ConsumerGroup 的锁，才能拉取数据（也就是确定了全局唯一的一个consumer）
+                // 没有consumerName 只有consumerGroupName   没有consumerName 只有consumerGroupName    没有consumerName 只有consumerGroupName
+                //  一个MQClientInstance里面所管理的consumer都必须有自己唯一的consumerGroupName，即对于某一个MQClientInstance来说，consumerGroupName为特定值的consumer只会有一个，不会有多个（坑啊。。）
+                //如果没有特别设置，同一个jvm进程不同消费组的clientId是一样的
+                //即MQClientInstance和consumer(这些consumerGroupName不一样)是一对多的关系
+                //而不同机器上的clientIp肯定不一样，同一个机器上的多个consumer进程的clientIp可能一样
+                if (isOrder && !this.lock(mq)) {
                     log.warn("doRebalance, {}, add a new mq failed, {}, because lock failed", consumerGroup, mq);
                     continue;
                 }
@@ -392,8 +400,7 @@ public abstract class RebalanceImpl {
         return changed;
     }
 
-    public abstract void messageQueueChanged(final String topic, final Set<MessageQueue> mqAll,
-        final Set<MessageQueue> mqDivided);
+    public abstract void messageQueueChanged(final String topic, final Set<MessageQueue> mqAll, final Set<MessageQueue> mqDivided);
 
     public abstract boolean removeUnnecessaryMessageQueue(final MessageQueue mq, final ProcessQueue pq);
 
