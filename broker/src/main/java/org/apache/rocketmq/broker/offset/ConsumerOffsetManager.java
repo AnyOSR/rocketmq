@@ -33,7 +33,7 @@ import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//方法体里面有brokerController的函数？
+//RemoteBrokerOffsetStore在broker上的数据来源
 public class ConsumerOffsetManager extends ConfigManager {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.BROKER_LOGGER_NAME);
     private static final String TOPIC_GROUP_SEPARATOR = "@";
@@ -41,7 +41,7 @@ public class ConsumerOffsetManager extends ConfigManager {
 
     //key:topic@consumerGroup
     //value:queueId,offset
-    private ConcurrentMap<String/* topic@group */, ConcurrentMap<Integer, Long>> offsetTable = new ConcurrentHashMap<String, ConcurrentMap<Integer, Long>>(512);
+    private ConcurrentMap<String/* topic@consumerGroup */, ConcurrentMap<Integer, Long>> offsetTable = new ConcurrentHashMap<String, ConcurrentMap<Integer, Long>>(512);
     public ConsumerOffsetManager() {
     }
 
