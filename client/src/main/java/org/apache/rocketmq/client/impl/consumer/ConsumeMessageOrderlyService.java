@@ -83,8 +83,9 @@ public class ConsumeMessageOrderlyService implements ConsumeMessageService {
 
     public void start() {
         //如果是集群模式 messagequeue只能被一个消费者(consumerGroup)锁定
-        //一个MQClientInstance里面有多个consumer，这些consumer的groupName都不一样
+        //一个MQClientInstance里面有多个consumer，这些consumer的consumerGroup完全不一样
         //不同的consumer可以订阅相同的topic
+        //当前consumer尝试去锁定某个messageQueue
         if (MessageModel.CLUSTERING.equals(ConsumeMessageOrderlyService.this.defaultMQPushConsumerImpl.messageModel())) {
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override

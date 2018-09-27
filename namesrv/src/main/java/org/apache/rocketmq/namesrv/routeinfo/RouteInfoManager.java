@@ -51,6 +51,10 @@ public class RouteInfoManager {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
     private final static long BROKER_CHANNEL_EXPIRED_TIME = 1000 * 60 * 2;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+    //topic的分布状态(当前topic都分布在哪些broker上面)
+    //根据QueueData去创建messageQueue
+    //除了broker启动时可能会创建默认的topic外？还有哪些操作会创建topic？
     private final HashMap<String/* topic */, List<QueueData>> topicQueueTable;                             //topic的分布状态(当前topic都分布在哪些broker上面)
     private final HashMap<String/* brokerName */, BrokerData> brokerAddrTable;                             //brokerName列表
     private final HashMap<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;          //broker集群

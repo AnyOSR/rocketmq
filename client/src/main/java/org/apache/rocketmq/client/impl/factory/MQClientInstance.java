@@ -197,7 +197,7 @@ public class MQClientInstance {
                         continue;
                     }
 
-                    //当前的qd是有效的   writeQueueNums是几，就创建多少个messageQueue
+                    //当前的qd是有效的   writeQueueNums是几，就创建多少个messageQueue  queueId小于writeQueueNums
                     for (int i = 0; i < qd.getWriteQueueNums(); i++) {
                         MessageQueue mq = new MessageQueue(topic, qd.getBrokerName(), i);
                         info.getMessageQueueList().add(mq);
@@ -598,7 +598,8 @@ public class MQClientInstance {
     }
 
     //更新路由信息  更新了topicRouteTable
-    //也会将获取到的路由信息更新到this里面的producerTable中
+    //也会将获取到的路由信息更新到this里面的producerTable中或者consumerTable中
+    //从nameServer获取route信息
     public boolean updateTopicRouteInfoFromNameServer(final String topic, boolean isDefault, DefaultMQProducer defaultMQProducer) {
         try {
             if (this.lockNamesrv.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {

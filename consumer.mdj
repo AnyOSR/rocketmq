@@ -10544,7 +10544,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFmFS4XFIsa/Ns="
 							},
-							"name": "messageQueueLock"
+							"name": "messageQueueLock",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -10552,7 +10553,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFmFS4XFIsa/Ns="
 							},
-							"name": "consumerGroup"
+							"name": "consumerGroup",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -10578,7 +10580,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFmFS4XFIsa/Ns="
 							},
-							"name": "consumeExecutor"
+							"name": "consumeExecutor",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -10586,7 +10589,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFmFS4XFIsa/Ns="
 							},
-							"name": "scheduledExecutorService"
+							"name": "scheduledExecutorService",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -10594,7 +10598,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFmFS4XFIsa/Ns="
 							},
-							"name": "stopped"
+							"name": "stopped",
+							"type": ""
 						}
 					]
 				},

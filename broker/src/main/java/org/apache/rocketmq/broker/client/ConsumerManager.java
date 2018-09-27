@@ -40,6 +40,7 @@ public class ConsumerManager {
 
     private static final long CHANNEL_EXPIRED_TIMEOUT = 1000 * 120;
     //消费者以组为区分 consumerGroup
+    //每个consumeGroup订阅的topic都是一样的
     private final ConcurrentMap<String/* consumerGroup */, ConsumerGroupInfo> consumerTable = new ConcurrentHashMap<String, ConsumerGroupInfo>(1024);
     public ConsumerManager(final ConsumerIdsChangeListener consumerIdsChangeListener) {
         this.consumerIdsChangeListener = consumerIdsChangeListener;
