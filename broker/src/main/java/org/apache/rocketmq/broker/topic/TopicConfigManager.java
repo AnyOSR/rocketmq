@@ -40,19 +40,20 @@ import org.apache.rocketmq.common.sysflag.TopicSysFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//当前broker上分配的topic
 public class TopicConfigManager extends ConfigManager {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.BROKER_LOGGER_NAME);
     private static final long LOCK_TIMEOUT_MILLIS = 3000;
     private transient BrokerController brokerController;
 
     private transient final Lock lockTopicConfigTable = new ReentrantLock();
-    private final ConcurrentMap<String, TopicConfig> topicConfigTable = new ConcurrentHashMap<String, TopicConfig>(1024);                  //主题名称  主题配置
+    private final ConcurrentMap<String, TopicConfig> topicConfigTable = new ConcurrentHashMap<String, TopicConfig>(1024);                  //topic名称  topic配置
     private final DataVersion dataVersion = new DataVersion();                                                                         //数据版本
-    private final Set<String> systemTopicList = new HashSet<String>();                                                                      //所有主题set集合
+    private final Set<String> systemTopicList = new HashSet<String>();                                                                      //系统主题set集合
     public TopicConfigManager() {
     }
 
-    //主题配置管理器  默认添加了几个主题
+    //topic配置管理器  默认添加了几个topic
     public TopicConfigManager(BrokerController brokerController) {
         this.brokerController = brokerController;
         {
