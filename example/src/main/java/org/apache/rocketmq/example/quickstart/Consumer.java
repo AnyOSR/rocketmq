@@ -18,12 +18,11 @@ package org.apache.rocketmq.example.quickstart;
 
 import java.util.List;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.client.consumer.listener.*;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 /**
  * This example shows how to subscribe and consume messages using providing {@link DefaultMQPushConsumer}.
@@ -35,7 +34,48 @@ public class Consumer {
         /*
          * Instantiate with specified consumer group name.
          */
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name_4");
+        DefaultMQPushConsumer consumer1 = new DefaultMQPushConsumer("consumerGroup1");
+        consumer1.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+        consumer1.subscribe("broker-a", "*");
+        consumer1.setMessageModel(MessageModel.CLUSTERING);
+        consumer1.setNamesrvAddr("127.0.0.1:9871");
+        consumer1.registerMessageListener(new MessageListenerOrderly() {
+            @Override
+            public ConsumeOrderlyStatus consumeMessage(final List<MessageExt> msgs, final ConsumeOrderlyContext context) {
+                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+                return ConsumeOrderlyStatus.SUCCESS;
+            }
+        });
+        consumer1.start();
+
+        DefaultMQPushConsumer consumer2 = new DefaultMQPushConsumer("consumerGroup2");
+        consumer2.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+        consumer2.subscribe("broker-b", "*");
+        consumer2.setMessageModel(MessageModel.CLUSTERING);
+        consumer2.setNamesrvAddr("127.0.0.1:9871");
+        consumer2.registerMessageListener(new MessageListenerOrderly() {
+            @Override
+            public ConsumeOrderlyStatus consumeMessage(final List<MessageExt> msgs, final ConsumeOrderlyContext context) {
+                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+                return ConsumeOrderlyStatus.SUCCESS;
+            }
+        });
+        consumer2.start();
+
+        DefaultMQPushConsumer consumer3 = new DefaultMQPushConsumer("consumerGroup3");
+        consumer3.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+        consumer3.subscribe("broker-b", "*");
+        consumer3.setMessageModel(MessageModel.CLUSTERING);
+        consumer3.setNamesrvAddr("127.0.0.1:9871");
+        consumer3.registerMessageListener(new MessageListenerOrderly() {
+            @Override
+            public ConsumeOrderlyStatus consumeMessage(final List<MessageExt> msgs, final ConsumeOrderlyContext context) {
+                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+                return ConsumeOrderlyStatus.SUCCESS;
+            }
+        });
+        consumer3.start();
+        System.out.println("success");
 
         /*
          * Specify name server addresses.
@@ -52,30 +92,22 @@ public class Consumer {
         /*
          * Specify where to start in case the specified consumer group is a brand new one.
          */
-        consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+
 
         /*
          * Subscribe one more more topics to consume.
          */
-        consumer.subscribe("TopicTest", "*");
+
 
         /*
          *  Register callback to execute on arrival of messages fetched from brokers.
          */
-        consumer.registerMessageListener(new MessageListenerConcurrently() {
 
-            @Override
-            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
-                ConsumeConcurrentlyContext context) {
-                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
-                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-            }
-        });
 
         /*
          *  Launch the consumer instance.
          */
-        consumer.start();
+
 
         System.out.printf("Consumer Started.%n");
     }
