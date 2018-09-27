@@ -45,16 +45,17 @@ import org.apache.rocketmq.remoting.common.RemotingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//路由管理器 topic和broker之间   根据topic找到相关的broker?
+//路由管理器 topic和broker之间   根据topic找到相关的broker，并且找到某个topic在某个broker上的读写队列数
+//topic和broker之间的映射关系
 public class RouteInfoManager {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
     private final static long BROKER_CHANNEL_EXPIRED_TIME = 1000 * 60 * 2;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final HashMap<String/* topic */, List<QueueData>> topicQueueTable;                             //topic队列
-    private final HashMap<String/* brokerName */, BrokerData> brokerAddrTable;                             //broker列表
-    private final HashMap<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;          //broker集群？
+    private final HashMap<String/* topic */, List<QueueData>> topicQueueTable;                             //topic的分布状态(当前topic都分布在哪些broker上面)
+    private final HashMap<String/* brokerName */, BrokerData> brokerAddrTable;                             //brokerName列表
+    private final HashMap<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;          //broker集群
     private final HashMap<String/* brokerAddr */, BrokerLiveInfo> brokerLiveTable;                         //broker地址相关
-    private final HashMap<String/* brokerAddr */, List<String>/* Filter Server */> filterServerTable;      //filterServer是啥？
+    private final HashMap<String/* brokerAddr */, List<String>/* Filter Server */> filterServerTable;      //filterServer
 
     public RouteInfoManager() {
         this.topicQueueTable = new HashMap<String, List<QueueData>>(1024);
@@ -132,12 +133,9 @@ public class RouteInfoManager {
                 String oldAddr = brokerData.getBrokerAddrs().put(brokerId, brokerAddr);
                 registerFirst = registerFirst || (null == oldAddr);
 
-                if (null != topicConfigWrapper
-                    && MixAll.MASTER_ID == brokerId) {
-                    if (this.isBrokerTopicConfigChanged(brokerAddr, topicConfigWrapper.getDataVersion())
-                        || registerFirst) {
-                        ConcurrentMap<String, TopicConfig> tcTable =
-                            topicConfigWrapper.getTopicConfigTable();
+                if (null != topicConfigWrapper && MixAll.MASTER_ID == brokerId) {
+                    if (this.isBrokerTopicConfigChanged(brokerAddr, topicConfigWrapper.getDataVersion()) || registerFirst) {
+                        ConcurrentMap<String, TopicConfig> tcTable = topicConfigWrapper.getTopicConfigTable();
                         if (tcTable != null) {
                             for (Map.Entry<String, TopicConfig> entry : tcTable.entrySet()) {
                                 this.createAndUpdateQueueData(brokerName, entry.getValue());
@@ -378,8 +376,7 @@ public class RouteInfoManager {
                     for (String brokerName : brokerNameSet) {
                         BrokerData brokerData = this.brokerAddrTable.get(brokerName);
                         if (null != brokerData) {
-                            BrokerData brokerDataClone = new BrokerData(brokerData.getCluster(), brokerData.getBrokerName(), (HashMap<Long, String>) brokerData
-                                .getBrokerAddrs().clone());
+                            BrokerData brokerDataClone = new BrokerData(brokerData.getCluster(), brokerData.getBrokerName(), (HashMap<Long, String>) brokerData.getBrokerAddrs().clone());
                             brokerDataList.add(brokerDataClone);
                             foundBrokerData = true;
                             for (final String brokerAddr : brokerDataClone.getBrokerAddrs().values()) {

@@ -39,9 +39,9 @@ public class ConsumerGroupInfo {
     private volatile MessageModel messageModel;
     private volatile ConsumeFromWhere consumeFromWhere;
 
-    //一个ConsumerGroup里面的consumer可以订阅多个topic？
+    //一个Consumer可以订阅多个topic
     private final ConcurrentMap<String/* Topic */, SubscriptionData> subscriptionTable = new ConcurrentHashMap<String, SubscriptionData>();
-    //一个ConsumerGroup里面所有的consumer连接？
+    //属于某个ConsumerGroup的所有的consumer连接(clientId不一样)
     private final ConcurrentMap<Channel, ClientChannelInfo> channelInfoTable = new ConcurrentHashMap<Channel, ClientChannelInfo>(16);
     private volatile long lastUpdateTimestamp = System.currentTimeMillis();
     public ConsumerGroupInfo(String groupName, ConsumeType consumeType, MessageModel messageModel, ConsumeFromWhere consumeFromWhere) {
