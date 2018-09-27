@@ -39,7 +39,7 @@ public class ConsumerOffsetManager extends ConfigManager {
     private static final String TOPIC_GROUP_SEPARATOR = "@";
     private transient BrokerController brokerController;
 
-    //key:topic@group
+    //key:topic@consumerGroup
     //value:queueId,offset
     private ConcurrentMap<String/* topic@group */, ConcurrentMap<Integer, Long>> offsetTable = new ConcurrentHashMap<String, ConcurrentMap<Integer, Long>>(512);
     public ConsumerOffsetManager() {

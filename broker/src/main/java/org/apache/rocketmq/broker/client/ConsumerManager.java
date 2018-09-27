@@ -39,8 +39,8 @@ public class ConsumerManager {
     private final ConsumerIdsChangeListener consumerIdsChangeListener;
 
     private static final long CHANNEL_EXPIRED_TIMEOUT = 1000 * 120;
-    //消费者以组为区分groupName
-    private final ConcurrentMap<String/* Group */, ConsumerGroupInfo> consumerTable = new ConcurrentHashMap<String, ConsumerGroupInfo>(1024);
+    //消费者以组为区分 consumerGroup
+    private final ConcurrentMap<String/* consumerGroup */, ConsumerGroupInfo> consumerTable = new ConcurrentHashMap<String, ConsumerGroupInfo>(1024);
     public ConsumerManager(final ConsumerIdsChangeListener consumerIdsChangeListener) {
         this.consumerIdsChangeListener = consumerIdsChangeListener;
     }
