@@ -378,6 +378,7 @@ public abstract class NettyRemotingAbstract {
                 }
             });
 
+            //上面异步，下面阻塞一个timeoutMillis，既可以达到？？？？？？？
             //阻塞timeoutMillis秒，假如operationComplete没有触发，则直接唤醒
             RemotingCommand responseCommand = responseFuture.waitResponse(timeoutMillis);
             if (null == responseCommand) {
