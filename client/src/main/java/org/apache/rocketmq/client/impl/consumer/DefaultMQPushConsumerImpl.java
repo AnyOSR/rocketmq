@@ -798,8 +798,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
 
     public void subscribe(String topic, String fullClassName, String filterClassSource) throws MQClientException {
         try {
-            SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(this.defaultMQPushConsumer.getConsumerGroup(),
-                topic, "*");
+            SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(this.defaultMQPushConsumer.getConsumerGroup(), topic, "*");
             subscriptionData.setSubString(fullClassName);
             subscriptionData.setClassFilterMode(true);
             subscriptionData.setFilterClassSource(filterClassSource);
@@ -820,8 +819,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                 return;
             }
 
-            SubscriptionData subscriptionData = FilterAPI.build(topic,
-                messageSelector.getExpression(), messageSelector.getExpressionType());
+            SubscriptionData subscriptionData = FilterAPI.build(topic, messageSelector.getExpression(), messageSelector.getExpressionType());
 
             this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
             if (this.mQClientFactory != null) {
@@ -849,8 +847,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
         this.consumeMessageService.updateCorePoolSize(corePoolSize);
     }
 
-    public MessageExt viewMessage(String msgId)
-        throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
+    public MessageExt viewMessage(String msgId) throws RemotingException, MQBrokerException, InterruptedException, MQClientException {
         return this.mQClientFactory.getMQAdminImpl().viewMessage(msgId);
     }
 
