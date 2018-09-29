@@ -119,7 +119,7 @@ public class MQClientInstance {
     private final PullMessageService pullMessageService;
     private final RebalanceService rebalanceService;
     private final ConsumerStatsManager consumerStatsManager;
-    private DatagramSocket datagramSocket;
+    private DatagramSocket datagramSocket;    //UDP
 
 
     public MQClientInstance(ClientConfig clientConfig, int instanceIndex, String clientId) {
@@ -242,7 +242,7 @@ public class MQClientInstance {
                     // Start various schedule tasks
                     this.startScheduledTask();
                     // Start pull service
-                    this.pullMessageService.start();
+                    this.pullMessageService.start();   //执行拉取消息任务
                     // Start rebalance service
                     this.rebalanceService.start();
                     // Start push service
@@ -263,6 +263,7 @@ public class MQClientInstance {
     }
 
     private void startScheduledTask() {
+        //每两分钟获取一次nameServer
         if (null == this.clientConfig.getNamesrvAddr()) {
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
@@ -277,6 +278,7 @@ public class MQClientInstance {
             }, 1000 * 10, 1000 * 60 * 2, TimeUnit.MILLISECONDS);
         }
 
+        //每30s更新topic路由信息
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -289,6 +291,7 @@ public class MQClientInstance {
             }
         }, 10, this.clientConfig.getPollNameServerInterval(), TimeUnit.MILLISECONDS);
 
+        //每30s 进行一次心跳检测
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -302,6 +305,7 @@ public class MQClientInstance {
             }
         }, 1000, this.clientConfig.getHeartbeatBrokerInterval(), TimeUnit.MILLISECONDS);
 
+        //5秒一次offset持久化
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -314,6 +318,7 @@ public class MQClientInstance {
             }
         }, 1000 * 10, this.clientConfig.getPersistConsumerOffsetInterval(), TimeUnit.MILLISECONDS);
 
+        //每分钟调整一次线程池
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -436,9 +441,7 @@ public class MQClientInstance {
 
                 if (addr != null) {
                     try {
-                        this.getMQClientAPIImpl().checkClientInBroker(
-                            addr, entry.getKey(), this.clientId, subscriptionData, 3 * 1000
-                        );
+                        this.getMQClientAPIImpl().checkClientInBroker(addr, entry.getKey(), this.clientId, subscriptionData, 3 * 1000);
                     } catch (Exception e) {
                         if (e instanceof MQClientException) {
                             throw (MQClientException) e;

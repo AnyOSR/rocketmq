@@ -54,9 +54,7 @@ public class Validators {
             throw new MQClientException("the specified group is blank", null);
         }
         if (!regularExpressionMatcher(group, PATTERN)) {
-            throw new MQClientException(String.format(
-                "the specified group[%s] contains illegal characters, allowing only %s", group,
-                VALID_PATTERN_STR), null);
+            throw new MQClientException(String.format("the specified group[%s] contains illegal characters, allowing only %s", group, VALID_PATTERN_STR), null);
         }
         if (group.length() > CHARACTER_MAX_LENGTH) {
             throw new MQClientException("the specified group is longer than group max length 255.", null);

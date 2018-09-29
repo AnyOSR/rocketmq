@@ -27,6 +27,7 @@ import org.apache.rocketmq.common.ServiceThread;
 import org.apache.rocketmq.common.utils.ThreadUtils;
 import org.slf4j.Logger;
 
+//定时去broker拉取消息
 public class PullMessageService extends ServiceThread {
     private final Logger log = ClientLogger.getLog();
     private final LinkedBlockingQueue<PullRequest> pullRequestQueue = new LinkedBlockingQueue<PullRequest>();
@@ -69,6 +70,7 @@ public class PullMessageService extends ServiceThread {
         return scheduledExecutorService;
     }
 
+    //选一个consumer去拉取消息
     private void pullMessage(final PullRequest pullRequest) {
         final MQConsumerInner consumer = this.mQClientFactory.selectConsumer(pullRequest.getConsumerGroup());
         if (consumer != null) {
@@ -79,13 +81,14 @@ public class PullMessageService extends ServiceThread {
         }
     }
 
+    //定时拉取消息
     @Override
     public void run() {
         log.info(this.getServiceName() + " service started");
 
         while (!this.isStopped()) {
             try {
-                PullRequest pullRequest = this.pullRequestQueue.take();
+                PullRequest pullRequest = this.pullRequestQueue.take();   //是谁向这个pullRequestQueue里面插入任务的？
                 if (pullRequest != null) {
                     this.pullMessage(pullRequest);
                 }

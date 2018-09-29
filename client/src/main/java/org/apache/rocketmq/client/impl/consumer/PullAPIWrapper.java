@@ -67,14 +67,13 @@ public class PullAPIWrapper {
         this.unitMode = unitMode;
     }
 
-    //这个pullResult是怎么来的？
     public PullResult processPullResult(final MessageQueue mq, final PullResult pullResult, final SubscriptionData subscriptionData) {
         PullResultExt pullResultExt = (PullResultExt) pullResult;
-
         this.updatePullFromWhichNode(mq, pullResultExt.getSuggestWhichBrokerId());
+
         if (PullStatus.FOUND == pullResult.getPullStatus()) {
             ByteBuffer byteBuffer = ByteBuffer.wrap(pullResultExt.getMessageBinary());
-            List<MessageExt> msgList = MessageDecoder.decodes(byteBuffer);
+            List<MessageExt> msgList = MessageDecoder.decodes(byteBuffer);  //消息解码
 
             List<MessageExt> msgListFilterAgain = msgList;
 
@@ -98,6 +97,7 @@ public class PullAPIWrapper {
                 this.executeHook(filterMessageContext);
             }
 
+            //将每个message的PROPERTY_MIN_OFFSET属性和PROPERTY_MAX_OFFSET属性分别设置成pullResult的maxOffset和minOffset 之后会用到
             for (MessageExt msg : msgListFilterAgain) {
                 MessageAccessor.putProperty(msg, MessageConst.PROPERTY_MIN_OFFSET, Long.toString(pullResult.getMinOffset()));
                 MessageAccessor.putProperty(msg, MessageConst.PROPERTY_MAX_OFFSET, Long.toString(pullResult.getMaxOffset()));
@@ -152,6 +152,7 @@ public class PullAPIWrapper {
         final PullCallback pullCallback
     ) throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
 
+        //查找broker信息
         FindBrokerResult findBrokerResult = this.mQClientFactory.findBrokerAddressInSubscribe(mq.getBrokerName(), this.recalculatePullFromWhichNode(mq), false);
         if (null == findBrokerResult) {
             this.mQClientFactory.updateTopicRouteInfoFromNameServer(mq.getTopic());

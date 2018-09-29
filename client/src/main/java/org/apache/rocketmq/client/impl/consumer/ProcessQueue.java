@@ -135,6 +135,7 @@ public class ProcessQueue {
         }
     }
 
+    //返回是否还有消息需要被用户消费
     public boolean putMessage(final List<MessageExt> msgs) {
         boolean dispatchToConsume = false;
         try {
