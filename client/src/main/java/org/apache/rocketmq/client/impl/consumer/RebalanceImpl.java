@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 /**
  * Base class for rebalance algorithm
  */
+//Rebalance会生成拉取任务
 public abstract class RebalanceImpl {
     protected static final Logger log = ClientLogger.getLog();
     protected final ConcurrentMap<MessageQueue, ProcessQueue> processQueueTable = new ConcurrentHashMap<MessageQueue, ProcessQueue>(64);
@@ -394,7 +395,7 @@ public abstract class RebalanceImpl {
             }
         }
         //没有意外情况的话，mqset和processQueueTable已经equal了
-
+        //拉取任务入口
         this.dispatchPullRequest(pullRequestList);
 
         return changed;
