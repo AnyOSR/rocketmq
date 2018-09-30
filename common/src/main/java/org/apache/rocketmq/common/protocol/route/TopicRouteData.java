@@ -27,6 +27,7 @@ import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 
 //topic route信息
 //所有的信息都有了
+//只包含基本的配置信息(queueDatas)以及基本的broker主机信息(brokerDatas) 不包含逻辑信息
 public class TopicRouteData extends RemotingSerializable {
     private String orderTopicConf;
     private List<QueueData> queueDatas;                    //queue信息 每个broker上有几个queue

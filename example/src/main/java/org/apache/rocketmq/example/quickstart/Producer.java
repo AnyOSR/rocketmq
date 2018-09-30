@@ -33,8 +33,8 @@ public class Producer {
          */
         DefaultMQProducer producer = new DefaultMQProducer("wjProducerGroup");
         producer.setNamesrvAddr("127.0.0.1:9871");
-        producer.setInstanceName("wjInstanceName");
-        producer.setCreateTopicKey("wjTopic");
+//        producer.setInstanceName("wjInstanceName");
+//        producer.setCreateTopicKey("wjTopic");
 
         /*
          * Specify name server addresses.
