@@ -32,8 +32,7 @@ public class SendResult {
     public SendResult() {
     }
 
-    public SendResult(SendStatus sendStatus, String msgId, String offsetMsgId, MessageQueue messageQueue,
-        long queueOffset) {
+    public SendResult(SendStatus sendStatus, String msgId, String offsetMsgId, MessageQueue messageQueue, long queueOffset) {
         this.sendStatus = sendStatus;
         this.msgId = msgId;
         this.offsetMsgId = offsetMsgId;

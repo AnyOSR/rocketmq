@@ -24,6 +24,8 @@ import org.apache.rocketmq.common.protocol.route.QueueData;
 import org.apache.rocketmq.common.protocol.route.TopicRouteData;
 
 //当前topic的分布信息
+//不但包含TopicRouteData(不包含逻辑信息，只包含配置和broker机器信息)
+//还包含逻辑信息messageQueueList(根据TopicRouteData计算得到的messageQueue)
 public class TopicPublishInfo {
     private boolean orderTopic = false;
     private boolean haveTopicRouterInfo = false;
