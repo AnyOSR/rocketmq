@@ -71,6 +71,7 @@ public class ClientManageProcessor implements NettyRequestProcessor {
         return false;
     }
 
+    //broker对心跳的处理
     public RemotingCommand heartBeat(ChannelHandlerContext ctx, RemotingCommand request) {
         RemotingCommand response = RemotingCommand.createResponseCommand(null);
         HeartbeatData heartbeatData = HeartbeatData.decode(request.getBody(), HeartbeatData.class);
@@ -83,8 +84,8 @@ public class ClientManageProcessor implements NettyRequestProcessor {
 
         //心跳时，对于consumer来说
         for (ConsumerData data : heartbeatData.getConsumerDataSet()) {
-
-            //broker如果没有找到当前consumerGroup的订阅信息，且开启了自动创建订阅信息开关，则会自动创建一个SubscriptionGroupConfig
+            //如果consumerGroup不存在于subscriptionGroupManager
+            // 且开启了autoCreateSubscriptionGroup，会自动创建一个groupName的subscriptionGroupConfig
             SubscriptionGroupConfig subscriptionGroupConfig = this.brokerController.getSubscriptionGroupManager().findSubscriptionGroupConfig(data.getGroupName());
             boolean isNotifyConsumerIdsChangedEnable = true;
             if (null != subscriptionGroupConfig) {
@@ -94,7 +95,7 @@ public class ClientManageProcessor implements NettyRequestProcessor {
                     topicSysFlag = TopicSysFlag.buildSysFlag(false, true);
                 }
 
-                //当前broker上会创建一个RETRY+consumerGroup的topic
+                //以及有可能会创建一个 RETRY + groupName的topic
                 String newTopic = MixAll.getRetryTopic(data.getGroupName());
                 this.brokerController.getTopicConfigManager().createTopicInSendMessageBackMethod(
                     newTopic,
@@ -117,6 +118,7 @@ public class ClientManageProcessor implements NettyRequestProcessor {
             }
         }
 
+        //对于producer来说，只是在当前broker上注册producer的信息
         for (ProducerData data : heartbeatData.getProducerDataSet()) {
             this.brokerController.getProducerManager().registerProducer(data.getGroupName(), clientChannelInfo);
         }

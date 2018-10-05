@@ -36,7 +36,7 @@ public class Consumer {
          */
         DefaultMQPushConsumer consumer1 = new DefaultMQPushConsumer("consumerGroup1");
         consumer1.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        consumer1.subscribe("broker-a", "asdasd||zxczxc||sdfsdf");
+        consumer1.subscribe("broker-a", "TagA");
         consumer1.setMessageModel(MessageModel.CLUSTERING);
         consumer1.setNamesrvAddr("127.0.0.1:9871");
         consumer1.registerMessageListener(new MessageListenerOrderly() {
@@ -47,34 +47,6 @@ public class Consumer {
             }
         });
         consumer1.start();
-
-        DefaultMQPushConsumer consumer2 = new DefaultMQPushConsumer("consumerGroup2");
-        consumer2.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        consumer2.subscribe("broker-b", "*");
-        consumer2.setMessageModel(MessageModel.CLUSTERING);
-        consumer2.setNamesrvAddr("127.0.0.1:9871");
-        consumer2.registerMessageListener(new MessageListenerOrderly() {
-            @Override
-            public ConsumeOrderlyStatus consumeMessage(final List<MessageExt> msgs, final ConsumeOrderlyContext context) {
-                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
-                return ConsumeOrderlyStatus.SUCCESS;
-            }
-        });
-        consumer2.start();
-
-        DefaultMQPushConsumer consumer3 = new DefaultMQPushConsumer("consumerGroup3");
-        consumer3.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        consumer3.subscribe("broker-b", "*");
-        consumer3.setMessageModel(MessageModel.CLUSTERING);
-        consumer3.setNamesrvAddr("127.0.0.1:9871");
-        consumer3.registerMessageListener(new MessageListenerOrderly() {
-            @Override
-            public ConsumeOrderlyStatus consumeMessage(final List<MessageExt> msgs, final ConsumeOrderlyContext context) {
-                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
-                return ConsumeOrderlyStatus.SUCCESS;
-            }
-        });
-        consumer3.start();
         System.out.println("success");
 
         /*

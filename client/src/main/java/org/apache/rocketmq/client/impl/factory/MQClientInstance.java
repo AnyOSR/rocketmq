@@ -105,6 +105,8 @@ public class MQClientInstance {
     private final ConcurrentMap<String/* group */, MQProducerInner> producerTable = new ConcurrentHashMap<String, MQProducerInner>();              //所有的producer信息？反正可以从nameServer拿到
     private final ConcurrentMap<String/* group */, MQConsumerInner> consumerTable = new ConcurrentHashMap<String, MQConsumerInner>();              //为什么要有这几个table？为了rebalance？
     private final ConcurrentMap<String/* group */, MQAdminExtInner> adminExtTable = new ConcurrentHashMap<String, MQAdminExtInner>();
+
+    //全局的路由信息
     private final ConcurrentMap<String/* Topic */, TopicRouteData> topicRouteTable = new ConcurrentHashMap<String, TopicRouteData>();
     private final ConcurrentMap<String/* Broker Name */, HashMap<Long/* brokerId */, String/* address */>> brokerAddrTable = new ConcurrentHashMap<String, HashMap<Long, String>>();
     private final ConcurrentMap<String/* Broker Name */, HashMap<String/* address */, Integer>> brokerVersionTable = new ConcurrentHashMap<String, HashMap<String, Integer>>();
@@ -149,7 +151,7 @@ public class MQClientInstance {
         this.rebalanceService = new RebalanceService(this);
 
         this.defaultMQProducer = new DefaultMQProducer(MixAll.CLIENT_INNER_PRODUCER_GROUP);      //这个是干嘛的？
-        this.defaultMQProducer.resetClientConfig(clientConfig);
+        this.defaultMQProducer.resetClientConfig(clientConfig);                                  //防止出现两个MQClientInstance
 
         this.consumerStatsManager = new ConsumerStatsManager(this.scheduledExecutorService);
 
@@ -522,6 +524,7 @@ public class MQClientInstance {
     }
 
     //发送心跳数据
+    //只与master发送心跳数据
     private void sendHeartbeatToAllBroker() {
         //组装producer数据和consumer数据
         final HeartbeatData heartbeatData = this.prepareHeartbeatData();
@@ -550,7 +553,8 @@ public class MQClientInstance {
                                     continue;
                             }
 
-                            ////  !consumerEmpty || id == MixAll.MASTER_ID
+                            //  !consumerEmpty || id == MixAll.MASTER_ID
+                            // 只与master发送心跳数据
                             try {
                                 int version = this.mQClientAPIImpl.sendHearbeat(addr, heartbeatData, 3000);
                                 if (!this.brokerVersionTable.containsKey(brokerName)) {
@@ -666,6 +670,8 @@ public class MQClientInstance {
                                     }
                                 }
                             }
+
+                            //
                             log.info("topicRouteTable.put. Topic = {}, TopicRouteData[{}]", topic, cloneTopicRouteData);
                             this.topicRouteTable.put(topic, cloneTopicRouteData);
                             return true;
@@ -697,15 +703,19 @@ public class MQClientInstance {
         // clientID
         heartbeatData.setClientID(this.clientId);
 
-        // Consumer   组装consumer数据
+        //组装consumer数据
         for (Map.Entry<String, MQConsumerInner> entry : this.consumerTable.entrySet()) {
             MQConsumerInner impl = entry.getValue();
             if (impl != null) {
                 ConsumerData consumerData = new ConsumerData();
-                consumerData.setGroupName(impl.groupName());
+                consumerData.setGroupName(impl.groupName());                         //当前Consumer的consumerGroup
                 consumerData.setConsumeType(impl.consumeType());
                 consumerData.setMessageModel(impl.messageModel());
                 consumerData.setConsumeFromWhere(impl.consumeFromWhere());
+
+                //当前consumer订阅的topic信息
+                //对于consumer来说，发送心跳时带上了自己的  订阅信息+groupName信息
+                //而对于producer来说，只带上了自己的groupName信息
                 consumerData.getSubscriptionDataSet().addAll(impl.subscriptions());
                 consumerData.setUnitMode(impl.isUnitMode());
 
@@ -713,7 +723,7 @@ public class MQClientInstance {
             }
         }
 
-        // Producer
+        // 组装producer信息
         for (Map.Entry<String/* group */, MQProducerInner> entry : this.producerTable.entrySet()) {
             MQProducerInner impl = entry.getValue();
             if (impl != null) {

@@ -22,6 +22,11 @@ package org.apache.rocketmq.common.protocol.route;
 
 public class QueueData implements Comparable<QueueData> {
     private String brokerName;
+
+    // readQueueNums是不是必须得等于writeQueueNums
+    // 要不然producer发送到的的messageQueue和consumer订阅的messageQueue可能不匹配？
+    //producer发送到了messageQueue(broker-a broker-a 8)，可consumer的topicSubscribeInfoTable里面根本没有这个messageQueue？
+    //我记得哪儿好像有一个max(readQueueNums,writeQueueNums)还是min(readQueueNums,writeQueueNums)来着？
     private int readQueueNums;
     private int writeQueueNums;    //可写queue数
     private int perm;
