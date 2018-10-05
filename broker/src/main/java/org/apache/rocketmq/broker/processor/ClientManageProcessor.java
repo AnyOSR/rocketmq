@@ -81,10 +81,11 @@ public class ClientManageProcessor implements NettyRequestProcessor {
             request.getVersion()
         );
 
+        //心跳时，对于consumer来说
         for (ConsumerData data : heartbeatData.getConsumerDataSet()) {
-            SubscriptionGroupConfig subscriptionGroupConfig =
-                this.brokerController.getSubscriptionGroupManager().findSubscriptionGroupConfig(
-                    data.getGroupName());
+
+            //broker如果没有找到当前consumerGroup的订阅信息，且开启了自动创建订阅信息开关，则会自动创建一个SubscriptionGroupConfig
+            SubscriptionGroupConfig subscriptionGroupConfig = this.brokerController.getSubscriptionGroupManager().findSubscriptionGroupConfig(data.getGroupName());
             boolean isNotifyConsumerIdsChangedEnable = true;
             if (null != subscriptionGroupConfig) {
                 isNotifyConsumerIdsChangedEnable = subscriptionGroupConfig.isNotifyConsumerIdsChangedEnable();
@@ -92,6 +93,8 @@ public class ClientManageProcessor implements NettyRequestProcessor {
                 if (data.isUnitMode()) {
                     topicSysFlag = TopicSysFlag.buildSysFlag(false, true);
                 }
+
+                //当前broker上会创建一个RETRY+consumerGroup的topic
                 String newTopic = MixAll.getRetryTopic(data.getGroupName());
                 this.brokerController.getTopicConfigManager().createTopicInSendMessageBackMethod(
                     newTopic,
@@ -110,16 +113,12 @@ public class ClientManageProcessor implements NettyRequestProcessor {
             );
 
             if (changed) {
-                log.info("registerConsumer info changed {} {}",
-                    data.toString(),
-                    RemotingHelper.parseChannelRemoteAddr(ctx.channel())
-                );
+                log.info("registerConsumer info changed {} {}", data.toString(), RemotingHelper.parseChannelRemoteAddr(ctx.channel()));
             }
         }
 
         for (ProducerData data : heartbeatData.getProducerDataSet()) {
-            this.brokerController.getProducerManager().registerProducer(data.getGroupName(),
-                clientChannelInfo);
+            this.brokerController.getProducerManager().registerProducer(data.getGroupName(), clientChannelInfo);
         }
         response.setCode(ResponseCode.SUCCESS);
         response.setRemark(null);
