@@ -613,16 +613,14 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
             case RUNNING:
             case START_FAILED:
             case SHUTDOWN_ALREADY:
-                throw new MQClientException("The PushConsumer service state not OK, maybe started once, "
-                    + this.serviceState
-                    + FAQUrl.suggestTodo(FAQUrl.CLIENT_SERVICE_NOT_OK),
-                    null);
+                throw new MQClientException("The PushConsumer service state not OK, maybe started once, " + this.serviceState + FAQUrl.suggestTodo(FAQUrl.CLIENT_SERVICE_NOT_OK), null);
             default:
                 break;
         }
 
         this.updateTopicSubscribeInfoWhenSubscriptionChanged();
         this.mQClientFactory.checkClientInBroker();
+        //
         this.mQClientFactory.sendHeartbeatToAllBrokerWithLock();
         this.mQClientFactory.rebalanceImmediately();
     }

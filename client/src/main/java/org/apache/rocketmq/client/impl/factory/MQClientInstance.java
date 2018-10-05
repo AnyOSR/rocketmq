@@ -522,6 +522,7 @@ public class MQClientInstance {
     }
 
     //发送心跳数据
+    //只与master发送心跳数据
     private void sendHeartbeatToAllBroker() {
         //组装producer数据和consumer数据
         final HeartbeatData heartbeatData = this.prepareHeartbeatData();
@@ -550,7 +551,8 @@ public class MQClientInstance {
                                     continue;
                             }
 
-                            ////  !consumerEmpty || id == MixAll.MASTER_ID
+                            //  !consumerEmpty || id == MixAll.MASTER_ID
+                            // 只与master发送心跳数据
                             try {
                                 int version = this.mQClientAPIImpl.sendHearbeat(addr, heartbeatData, 3000);
                                 if (!this.brokerVersionTable.containsKey(brokerName)) {
@@ -697,15 +699,19 @@ public class MQClientInstance {
         // clientID
         heartbeatData.setClientID(this.clientId);
 
-        // Consumer   组装consumer数据
+        //组装consumer数据
         for (Map.Entry<String, MQConsumerInner> entry : this.consumerTable.entrySet()) {
             MQConsumerInner impl = entry.getValue();
             if (impl != null) {
                 ConsumerData consumerData = new ConsumerData();
-                consumerData.setGroupName(impl.groupName());
+                consumerData.setGroupName(impl.groupName());                         //当前Consumer的consumerGroup
                 consumerData.setConsumeType(impl.consumeType());
                 consumerData.setMessageModel(impl.messageModel());
                 consumerData.setConsumeFromWhere(impl.consumeFromWhere());
+
+                //当前consumer订阅的topic信息
+                //对于consumer来说，发送心跳时带上了自己的  订阅信息+groupName信息
+                //而对于producer来说，只带上了自己的groupName信息
                 consumerData.getSubscriptionDataSet().addAll(impl.subscriptions());
                 consumerData.setUnitMode(impl.isUnitMode());
 
@@ -713,7 +719,7 @@ public class MQClientInstance {
             }
         }
 
-        // Producer
+        // 组装producer信息
         for (Map.Entry<String/* group */, MQProducerInner> entry : this.producerTable.entrySet()) {
             MQProducerInner impl = entry.getValue();
             if (impl != null) {

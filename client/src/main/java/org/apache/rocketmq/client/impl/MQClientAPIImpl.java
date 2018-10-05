@@ -765,6 +765,7 @@ public class MQClientAPIImpl {
         this.remotingClient.invokeOneway(MixAll.brokerVIPChannel(this.clientConfig.isVipChannelEnabled(), addr), request, timeoutMillis);
     }
 
+    //发送心跳时，会将当前MQClientInsatance所有的生产者和消费者的信息(尤其是groupName)带过去
     public int sendHearbeat(final String addr, final HeartbeatData heartbeatData, final long timeoutMillis) throws RemotingException, MQBrokerException, InterruptedException {
         RemotingCommand request = RemotingCommand.createRequestCommand(RequestCode.HEART_BEAT, null);
 

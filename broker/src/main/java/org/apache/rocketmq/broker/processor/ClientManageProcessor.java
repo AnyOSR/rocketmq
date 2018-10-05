@@ -71,6 +71,7 @@ public class ClientManageProcessor implements NettyRequestProcessor {
         return false;
     }
 
+    //broker对心跳的处理
     public RemotingCommand heartBeat(ChannelHandlerContext ctx, RemotingCommand request) {
         RemotingCommand response = RemotingCommand.createResponseCommand(null);
         HeartbeatData heartbeatData = HeartbeatData.decode(request.getBody(), HeartbeatData.class);
@@ -81,10 +82,11 @@ public class ClientManageProcessor implements NettyRequestProcessor {
             request.getVersion()
         );
 
+        //心跳时，对于consumer来说
         for (ConsumerData data : heartbeatData.getConsumerDataSet()) {
-            SubscriptionGroupConfig subscriptionGroupConfig =
-                this.brokerController.getSubscriptionGroupManager().findSubscriptionGroupConfig(
-                    data.getGroupName());
+            //如果consumerGroup不存在于subscriptionGroupManager
+            // 且开启了autoCreateSubscriptionGroup，会自动创建一个groupName的subscriptionGroupConfig
+            SubscriptionGroupConfig subscriptionGroupConfig = this.brokerController.getSubscriptionGroupManager().findSubscriptionGroupConfig(data.getGroupName());
             boolean isNotifyConsumerIdsChangedEnable = true;
             if (null != subscriptionGroupConfig) {
                 isNotifyConsumerIdsChangedEnable = subscriptionGroupConfig.isNotifyConsumerIdsChangedEnable();
@@ -92,6 +94,8 @@ public class ClientManageProcessor implements NettyRequestProcessor {
                 if (data.isUnitMode()) {
                     topicSysFlag = TopicSysFlag.buildSysFlag(false, true);
                 }
+
+                //以及有可能会创建一个 RETRY + groupName的topic
                 String newTopic = MixAll.getRetryTopic(data.getGroupName());
                 this.brokerController.getTopicConfigManager().createTopicInSendMessageBackMethod(
                     newTopic,
@@ -117,9 +121,9 @@ public class ClientManageProcessor implements NettyRequestProcessor {
             }
         }
 
+        //对于producer来说，只是在当前broker上注册producer的信息
         for (ProducerData data : heartbeatData.getProducerDataSet()) {
-            this.brokerController.getProducerManager().registerProducer(data.getGroupName(),
-                clientChannelInfo);
+            this.brokerController.getProducerManager().registerProducer(data.getGroupName(), clientChannelInfo);
         }
         response.setCode(ResponseCode.SUCCESS);
         response.setRemark(null);
