@@ -259,7 +259,8 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                 return;
             }
         } else {
-            //如果是顺序消费
+            //顺序消费时，需要去broker上上锁才能消费   顺序消费时，只有集群模式下才会去broker上锁
+            //所以顺序消费只能以集群模式去运行
             if (processQueue.isLocked()) {
                 if (!pullRequest.isLockedFirst()) {
                     final long offset = this.rebalanceImpl.computePullFromWhere(pullRequest.getMessageQueue());

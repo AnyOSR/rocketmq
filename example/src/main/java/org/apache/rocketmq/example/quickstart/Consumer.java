@@ -37,15 +37,26 @@ public class Consumer {
         DefaultMQPushConsumer consumer1 = new DefaultMQPushConsumer("consumerGroup1");
         consumer1.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         consumer1.subscribe("wjtest", "TagA");
-        consumer1.setMessageModel(MessageModel.CLUSTERING);
+        consumer1.setMessageModel(MessageModel.BROADCASTING);
         consumer1.setNamesrvAddr("127.0.0.1:9871");
-        consumer1.registerMessageListener(new MessageListenerOrderly() {
+//        consumer1.registerMessageListener(new MessageListenerOrderly() {
+//            @Override
+//            public ConsumeOrderlyStatus consumeMessage(final List<MessageExt> msgs, final ConsumeOrderlyContext context) {
+//                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+//                return ConsumeOrderlyStatus.SUCCESS;
+//            }
+//        });
+
+        consumer1.registerMessageListener(new MessageListenerConcurrently() {
+
             @Override
-            public ConsumeOrderlyStatus consumeMessage(final List<MessageExt> msgs, final ConsumeOrderlyContext context) {
+            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
+                                                            ConsumeConcurrentlyContext context) {
                 System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
-                return ConsumeOrderlyStatus.SUCCESS;
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });
+
         consumer1.start();
         System.out.println("success");
 
