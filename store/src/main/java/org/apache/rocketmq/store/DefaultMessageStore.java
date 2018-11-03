@@ -442,9 +442,9 @@ public class DefaultMessageStore implements MessageStore {
         return commitLog;
     }
 
-    public GetMessageResult getMessage(final String group, final String topic, final int queueId, final long offset,
-        final int maxMsgNums,
-        final MessageFilter messageFilter) {
+    //先拿到cq
+    //根据cq拿到物理便宜和size
+    public GetMessageResult getMessage(final String group, final String topic, final int queueId, final long offset, final int maxMsgNums, final MessageFilter messageFilter) {
         if (this.shutdown) {
             log.warn("message store has shutdown, so getMessage is forbidden");
             return null;
@@ -550,8 +550,7 @@ public class DefaultMessageStore implements MessageStore {
                                 continue;
                             }
 
-                            if (messageFilter != null
-                                && !messageFilter.isMatchedByCommitLog(selectResult.getByteBuffer().slice(), null)) {
+                            if (messageFilter != null && !messageFilter.isMatchedByCommitLog(selectResult.getByteBuffer().slice(), null)) {
                                 if (getResult.getBufferTotalSize() == 0) {
                                     status = GetMessageStatus.NO_MATCHED_MESSAGE;
                                 }
@@ -574,8 +573,7 @@ public class DefaultMessageStore implements MessageStore {
                         nextBeginOffset = offset + (i / ConsumeQueue.CQ_STORE_UNIT_SIZE);
 
                         long diff = maxOffsetPy - maxPhyOffsetPulling;
-                        long memory = (long) (StoreUtil.TOTAL_PHYSICAL_MEMORY_SIZE
-                            * (this.messageStoreConfig.getAccessMessageInMemoryMaxRatio() / 100.0));
+                        long memory = (long) (StoreUtil.TOTAL_PHYSICAL_MEMORY_SIZE * (this.messageStoreConfig.getAccessMessageInMemoryMaxRatio() / 100.0));
                         getResult.setSuggestPullingFromSlave(diff > memory);
                     } finally {
 
@@ -1781,10 +1779,9 @@ public class DefaultMessageStore implements MessageStore {
                                     DefaultMessageStore.this.doDispatch(dispatchRequest);
 
                                     //如果当前broker是master
-                                    if (BrokerRole.SLAVE != DefaultMessageStore.this.getMessageStoreConfig().getBrokerRole()
-                                        && DefaultMessageStore.this.brokerConfig.isLongPollingEnable()) {
+                                    if (BrokerRole.SLAVE != DefaultMessageStore.this.getMessageStoreConfig().getBrokerRole() && DefaultMessageStore.this.brokerConfig.isLongPollingEnable()) {
                                         //longPollingEnable 是干啥的？长轮询？
-                                        //通知？？
+                                        //通知？？ index和cq已经写完了
                                         DefaultMessageStore.this.messageArrivingListener.arriving(dispatchRequest.getTopic(),
                                             dispatchRequest.getQueueId(), dispatchRequest.getConsumeQueueOffset() + 1,
                                             dispatchRequest.getTagsCode(), dispatchRequest.getStoreTimestamp(),

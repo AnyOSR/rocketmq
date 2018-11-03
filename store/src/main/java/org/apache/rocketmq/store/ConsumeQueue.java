@@ -444,7 +444,8 @@ public class ConsumeQueue {
         this.byteBufferIndex.putInt(size);
         this.byteBufferIndex.putLong(tagsCode);
 
-        //根据offset计算存储位置
+        //根据queueOffset计算存储位置
+        //查询的时候可以根据这个拿到物理偏移
         final long expectLogicOffset = cqOffset * CQ_STORE_UNIT_SIZE;
 
         MappedFile mappedFile = this.mappedFileQueue.getLastMappedFile(expectLogicOffset);
