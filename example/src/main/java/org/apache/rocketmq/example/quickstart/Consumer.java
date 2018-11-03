@@ -36,7 +36,7 @@ public class Consumer {
          */
         DefaultMQPushConsumer consumer1 = new DefaultMQPushConsumer("consumerGroup1");
         consumer1.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        consumer1.subscribe("broker-a", "TagA");
+        consumer1.subscribe("wjtest", "TagA");
         consumer1.setMessageModel(MessageModel.CLUSTERING);
         consumer1.setNamesrvAddr("127.0.0.1:9871");
         consumer1.registerMessageListener(new MessageListenerOrderly() {
