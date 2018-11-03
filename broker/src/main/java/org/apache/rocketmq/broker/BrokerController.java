@@ -321,16 +321,16 @@ public class BrokerController {
             }, 3, 3, TimeUnit.MINUTES);
 
             //定时任务 打印出几个queue任务里面当前任务的创建时间与当前时间之差
-            this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        BrokerController.this.printWaterMark();
-                    } catch (Throwable e) {
-                        log.error("printWaterMark error.", e);
-                    }
-                }
-            }, 10, 1, TimeUnit.SECONDS);
+//            this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        BrokerController.this.printWaterMark();
+//                    } catch (Throwable e) {
+//                        log.error("printWaterMark error.", e);
+//                    }
+//                }
+//            }, 10, 1, TimeUnit.SECONDS);
 
             //每60s打印一次  还需要重放多少
             this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
