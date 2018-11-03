@@ -115,6 +115,8 @@ public class PullRequestHoldService extends ServiceThread {
         notifyMessageArriving(topic, queueId, maxOffset, null, 0, null, null);
     }
 
+    //只能写入cq后才能消费？
+    //maxOffset 逻辑便宜
     public void notifyMessageArriving(final String topic, final int queueId, final long maxOffset, final Long tagsCode, long msgStoreTime, byte[] filterBitMap, Map<String, String> properties) {
         String key = this.buildKey(topic, queueId);
         ManyPullRequest mpr = this.pullRequestTable.get(key);
@@ -146,6 +148,7 @@ public class PullRequestHoldService extends ServiceThread {
                         }
                     }
 
+                    //一个任务已经可以完成了，
                     if (System.currentTimeMillis() >= (request.getSuspendTimestamp() + request.getTimeoutMillis())) {
                         try {
                             this.brokerController.getPullMessageProcessor().executeRequestWhenWakeup(request.getClientChannel(), request.getRequestCommand());

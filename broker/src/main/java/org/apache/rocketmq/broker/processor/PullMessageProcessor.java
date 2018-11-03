@@ -169,8 +169,7 @@ public class PullMessageProcessor implements NettyRequestProcessor {
                 return response;
             }
 
-            if (!subscriptionGroupConfig.isConsumeBroadcastEnable()
-                && consumerGroupInfo.getMessageModel() == MessageModel.BROADCASTING) {
+            if (!subscriptionGroupConfig.isConsumeBroadcastEnable() && consumerGroupInfo.getMessageModel() == MessageModel.BROADCASTING) {
                 response.setCode(ResponseCode.NO_PERMISSION);
                 response.setRemark("the consumer group[" + requestHeader.getConsumerGroup() + "] can not consume by broadcast way");
                 return response;
@@ -185,23 +184,20 @@ public class PullMessageProcessor implements NettyRequestProcessor {
             }
 
             if (subscriptionData.getSubVersion() < requestHeader.getSubVersion()) {
-                log.warn("The broker's subscription is not latest, group: {} {}", requestHeader.getConsumerGroup(),
-                    subscriptionData.getSubString());
+                log.warn("The broker's subscription is not latest, group: {} {}", requestHeader.getConsumerGroup(), subscriptionData.getSubString());
                 response.setCode(ResponseCode.SUBSCRIPTION_NOT_LATEST);
                 response.setRemark("the consumer's subscription not latest");
                 return response;
             }
             if (!ExpressionType.isTagType(subscriptionData.getExpressionType())) {
-                consumerFilterData = this.brokerController.getConsumerFilterManager().get(requestHeader.getTopic(),
-                    requestHeader.getConsumerGroup());
+                consumerFilterData = this.brokerController.getConsumerFilterManager().get(requestHeader.getTopic(), requestHeader.getConsumerGroup());
                 if (consumerFilterData == null) {
                     response.setCode(ResponseCode.FILTER_DATA_NOT_EXIST);
                     response.setRemark("The broker's consumer filter data is not exist!Your expression may be wrong!");
                     return response;
                 }
                 if (consumerFilterData.getClientVersion() < requestHeader.getSubVersion()) {
-                    log.warn("The broker's consumer filter data is not latest, group: {}, topic: {}, serverV: {}, clientV: {}",
-                        requestHeader.getConsumerGroup(), requestHeader.getTopic(), consumerFilterData.getClientVersion(), requestHeader.getSubVersion());
+                    log.warn("The broker's consumer filter data is not latest, group: {}, topic: {}, serverV: {}, clientV: {}", requestHeader.getConsumerGroup(), requestHeader.getTopic(), consumerFilterData.getClientVersion(), requestHeader.getSubVersion());
                     response.setCode(ResponseCode.FILTER_DATA_NOT_LATEST);
                     response.setRemark("the consumer's consumer filter data not latest");
                     return response;
@@ -209,8 +205,7 @@ public class PullMessageProcessor implements NettyRequestProcessor {
             }
         }
 
-        if (!ExpressionType.isTagType(subscriptionData.getExpressionType())
-            && !this.brokerController.getBrokerConfig().isEnablePropertyFilter()) {
+        if (!ExpressionType.isTagType(subscriptionData.getExpressionType()) && !this.brokerController.getBrokerConfig().isEnablePropertyFilter()) {
             response.setCode(ResponseCode.SYSTEM_ERROR);
             response.setRemark("The broker does not support consumer to filter message by " + subscriptionData.getExpressionType());
             return response;
@@ -218,16 +213,14 @@ public class PullMessageProcessor implements NettyRequestProcessor {
 
         MessageFilter messageFilter;
         if (this.brokerController.getBrokerConfig().isFilterSupportRetry()) {
-            messageFilter = new ExpressionForRetryMessageFilter(subscriptionData, consumerFilterData,
-                this.brokerController.getConsumerFilterManager());
+            messageFilter = new ExpressionForRetryMessageFilter(subscriptionData, consumerFilterData, this.brokerController.getConsumerFilterManager());
         } else {
-            messageFilter = new ExpressionMessageFilter(subscriptionData, consumerFilterData,
-                this.brokerController.getConsumerFilterManager());
+            messageFilter = new ExpressionMessageFilter(subscriptionData, consumerFilterData, this.brokerController.getConsumerFilterManager());
         }
 
-        final GetMessageResult getMessageResult =
-            this.brokerController.getMessageStore().getMessage(requestHeader.getConsumerGroup(), requestHeader.getTopic(),
-                requestHeader.getQueueId(), requestHeader.getQueueOffset(), requestHeader.getMaxMsgNums(), messageFilter);
+        //消息拉取
+        final GetMessageResult getMessageResult = this.brokerController.getMessageStore().getMessage(requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId(), requestHeader.getQueueOffset(), requestHeader.getMaxMsgNums(), messageFilter);
+
         if (getMessageResult != null) {
             response.setRemark(getMessageResult.getStatus().name());
             responseHeader.setNextBeginOffset(getMessageResult.getNextBeginOffset());
@@ -360,24 +353,19 @@ public class PullMessageProcessor implements NettyRequestProcessor {
             switch (response.getCode()) {
                 case ResponseCode.SUCCESS:
 
-                    this.brokerController.getBrokerStatsManager().incGroupGetNums(requestHeader.getConsumerGroup(), requestHeader.getTopic(),
-                        getMessageResult.getMessageCount());
+                    this.brokerController.getBrokerStatsManager().incGroupGetNums(requestHeader.getConsumerGroup(), requestHeader.getTopic(), getMessageResult.getMessageCount());
 
-                    this.brokerController.getBrokerStatsManager().incGroupGetSize(requestHeader.getConsumerGroup(), requestHeader.getTopic(),
-                        getMessageResult.getBufferTotalSize());
+                    this.brokerController.getBrokerStatsManager().incGroupGetSize(requestHeader.getConsumerGroup(), requestHeader.getTopic(), getMessageResult.getBufferTotalSize());
 
                     this.brokerController.getBrokerStatsManager().incBrokerGetNums(getMessageResult.getMessageCount());
                     if (this.brokerController.getBrokerConfig().isTransferMsgByHeap()) {
                         final long beginTimeMills = this.brokerController.getMessageStore().now();
                         final byte[] r = this.readGetMessageResult(getMessageResult, requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId());
-                        this.brokerController.getBrokerStatsManager().incGroupGetLatency(requestHeader.getConsumerGroup(),
-                            requestHeader.getTopic(), requestHeader.getQueueId(),
-                            (int) (this.brokerController.getMessageStore().now() - beginTimeMills));
+                        this.brokerController.getBrokerStatsManager().incGroupGetLatency(requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId(), (int) (this.brokerController.getMessageStore().now() - beginTimeMills));
                         response.setBody(r);
                     } else {
                         try {
-                            FileRegion fileRegion =
-                                new ManyMessageTransfer(response.encodeHeader(getMessageResult.getBufferTotalSize()), getMessageResult);
+                            FileRegion fileRegion = new ManyMessageTransfer(response.encodeHeader(getMessageResult.getBufferTotalSize()), getMessageResult);
                             channel.writeAndFlush(fileRegion).addListener(new ChannelFutureListener() {
                                 @Override
                                 public void operationComplete(ChannelFuture future) throws Exception {
@@ -395,6 +383,8 @@ public class PullMessageProcessor implements NettyRequestProcessor {
                         response = null;
                     }
                     break;
+
+                //如果没有拉取到，放到pullRequestHoldService等待继续拉取
                 case ResponseCode.PULL_NOT_FOUND:
 
                     if (brokerAllowSuspend && hasSuspendFlag) {
@@ -406,8 +396,7 @@ public class PullMessageProcessor implements NettyRequestProcessor {
                         String topic = requestHeader.getTopic();
                         long offset = requestHeader.getQueueOffset();
                         int queueId = requestHeader.getQueueId();
-                        PullRequest pullRequest = new PullRequest(request, channel, pollingTimeMills,
-                            this.brokerController.getMessageStore().now(), offset, subscriptionData, messageFilter);
+                        PullRequest pullRequest = new PullRequest(request, channel, pollingTimeMills, this.brokerController.getMessageStore().now(), offset, subscriptionData, messageFilter);
                         this.brokerController.getPullRequestHoldService().suspendPullRequest(topic, queueId, pullRequest);
                         response = null;
                         break;
@@ -452,11 +441,9 @@ public class PullMessageProcessor implements NettyRequestProcessor {
 
         boolean storeOffsetEnable = brokerAllowSuspend;
         storeOffsetEnable = storeOffsetEnable && hasCommitOffsetFlag;
-        storeOffsetEnable = storeOffsetEnable
-            && this.brokerController.getMessageStoreConfig().getBrokerRole() != BrokerRole.SLAVE;
+        storeOffsetEnable = storeOffsetEnable && this.brokerController.getMessageStoreConfig().getBrokerRole() != BrokerRole.SLAVE;
         if (storeOffsetEnable) {
-            this.brokerController.getConsumerOffsetManager().commitOffset(RemotingHelper.parseChannelRemoteAddr(channel),
-                requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId(), requestHeader.getCommitOffset());
+            this.brokerController.getConsumerOffsetManager().commitOffset(RemotingHelper.parseChannelRemoteAddr(channel), requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId(), requestHeader.getCommitOffset());
         }
         return response;
     }
